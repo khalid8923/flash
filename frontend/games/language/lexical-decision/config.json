@@ -1,0 +1,10 @@
+{
+  "id": "lexical-decision",
+  "name": "Lexical Decision",
+  "domain": "language",
+  "icon": "📖",
+  "description": "Semantic priming & word recognition speed",
+  "difficulty": 4,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "primingEffect", "avgWordRT", "maxStreak"]
+}

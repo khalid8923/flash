@@ -1,0 +1,20 @@
+{
+  "id": "color-match",
+  "name": "Color Match",
+  "domain": "speed",
+  "icon": "🎨",
+  "description": "Stroop interference · ink color vs word (Stroop 1935)",
+  "difficulty": 3,
+  "maxLevel": 15,
+  "metrics": [
+    "maxLevel",
+    "accuracy",
+    "medianRT",
+    "rtv",
+    "rcs",
+    "stroopEffect",
+    "congruentRT",
+    "incongruentRT",
+    "maxStreak"
+  ]
+}

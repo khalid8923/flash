@@ -1,0 +1,33 @@
+{
+  "id": "flanker",
+  "name": "Flanker Test",
+  "domain": "attention",
+  "icon": "🎯",
+  "description": "Conflict resolution against distractor arrows",
+  "difficulty": 4,
+  "maxLevel": 15,
+  "modes": ["classic", "daily"],
+  "features": [
+    "practice-gate",
+    "iti-jitter",
+    "rt-validation",
+    "median-rtv",
+    "rcs-scoring",
+    "personal-best",
+    "session-history",
+    "insights-engine",
+    "daily-challenge",
+    "accessibility"
+  ],
+  "metrics": [
+    "maxLevel",
+    "accuracy",
+    "medianRT",
+    "rtv",
+    "rcs",
+    "flankerEffect",
+    "maxStreak",
+    "congruentRT",
+    "incongruentRT"
+  ]
+}

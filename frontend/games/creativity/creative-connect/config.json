@@ -1,0 +1,10 @@
+{
+  "id": "creative-connect",
+  "name": "Creative Connect",
+  "domain": "creativity",
+  "icon": "🌐",
+  "description": "Find the connecting word (Remote Associates Test)",
+  "difficulty": 5,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "avgResponseTime", "maxStreak", "hardPuzzlesSolved"]
+}

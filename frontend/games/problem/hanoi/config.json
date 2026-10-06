@@ -1,0 +1,25 @@
+{
+  "id": "hanoi",
+  "name": "Tower of Hanoi",
+  "domain": "problem",
+  "icon": "🗼",
+  "description": "Recursive planning — Simon (1975)",
+  "difficulty": 5,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "medianRT", "rcs", "maxStreak", "avgMovePenalty"],
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "features": [
+    "shared-stages",
+    "shared-settings",
+    "shared-i18n",
+    "missions",
+    "badges",
+    "insights",
+    "history-chart",
+    "personal-best",
+    "postmessage",
+    "back-button",
+    "accessibility",
+    "recursive-planner"
+  ]
+}

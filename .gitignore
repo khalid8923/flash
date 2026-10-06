@@ -1,0 +1,37 @@
+﻿# Dependencies
+node_modules/
+package-lock.json
+
+# OS
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+
+# Env & Secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Build artifacts
+dist/
+build/
+
+# Temp / backups
+*.bak
+*.tmp
+*~
+backup_*/
+
+# مشروع FLASH
+Flash-old/

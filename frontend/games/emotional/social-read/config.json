@@ -1,0 +1,10 @@
+{
+  "id": "social-read",
+  "name": "Social Read",
+  "domain": "emotional",
+  "icon": "👥",
+  "description": "Decode complex social group dynamics",
+  "difficulty": 5,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "avgResponseTime", "maxStreak", "subtleDynamicsAccuracy"]
+}

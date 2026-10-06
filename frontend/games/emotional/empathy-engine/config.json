@@ -1,0 +1,10 @@
+{
+  "id": "empathy-engine",
+  "name": "Empathy Engine",
+  "domain": "emotional",
+  "icon": "🫂",
+  "description": "Model and predict others' internal mental states",
+  "difficulty": 5,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "avgResponseTime", "maxStreak", "deepReadAccuracy"]
+}

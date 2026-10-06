@@ -1,0 +1,10 @@
+{
+  "id": "story-spark",
+  "name": "Story Spark",
+  "domain": "creativity",
+  "icon": "📖",
+  "description": "Build narratives from random prompts",
+  "difficulty": 4,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "avgResponseTime", "maxStreak", "coherentPicks"]
+}

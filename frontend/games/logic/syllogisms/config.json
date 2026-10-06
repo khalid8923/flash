@@ -1,0 +1,25 @@
+{
+  "id": "syllogisms",
+  "name": "Syllogisms",
+  "domain": "logic",
+  "icon": "🎯",
+  "description": "Deductive reasoning — Aristotle / Modern logic",
+  "difficulty": 4,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "medianRT", "rtv", "rcs", "maxStreak", "validAccuracy", "invalidAccuracy"],
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "features": [
+    "shared-stages",
+    "shared-settings",
+    "shared-i18n",
+    "missions",
+    "badges",
+    "insights",
+    "history-chart",
+    "personal-best",
+    "postmessage",
+    "back-button",
+    "accessibility",
+    "logic-engine"
+  ]
+}

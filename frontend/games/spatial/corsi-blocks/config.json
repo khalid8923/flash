@@ -1,0 +1,25 @@
+{
+  "id": "corsi-blocks",
+  "name": "Corsi Blocks",
+  "domain": "spatial",
+  "icon": "🧱",
+  "description": "Visuospatial working memory span — Corsi (1972)",
+  "difficulty": 4,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "medianRT", "rtv", "rcs", "maxStreak", "maxSpan"],
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "features": [
+    "shared-stages",
+    "shared-settings",
+    "shared-i18n",
+    "missions",
+    "badges",
+    "insights",
+    "history-chart",
+    "personal-best",
+    "postmessage",
+    "back-button",
+    "accessibility",
+    "span-tracking"
+  ]
+}

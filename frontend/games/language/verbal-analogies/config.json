@@ -1,0 +1,47 @@
+{
+  "id": "verbal-analogies",
+  "name": "Verbal Analogies",
+  "domain": "language",
+  "icon": "🔗",
+  "description": "Analogical reasoning · A→B :: C→? — Sternberg (1977)",
+  "difficulty": 4,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "medianRT", "rtv", "rcs", "maxStreak"],
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "relations": [
+    "synonym",
+    "antonym",
+    "part-whole",
+    "category",
+    "function",
+    "cause-effect",
+    "degree",
+    "producer",
+    "location",
+    "characteristic",
+    "instrument",
+    "worker"
+  ],
+  "tiers": {
+    "easy": 25,
+    "medium": 20,
+    "hard": 15
+  },
+  "features": [
+    "shared-stages",
+    "shared-settings",
+    "shared-i18n",
+    "missions",
+    "badges",
+    "insights",
+    "history-chart",
+    "personal-best",
+    "postmessage",
+    "back-button",
+    "accessibility",
+    "60-analogy-bank",
+    "12-relation-types",
+    "missed-relations-tracking",
+    "keyboard-input"
+  ]
+}

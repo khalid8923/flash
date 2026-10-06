@@ -1,0 +1,25 @@
+{
+  "id": "map-memory",
+  "name": "Map Memory",
+  "domain": "spatial",
+  "icon": "🗺️",
+  "description": "Topographical memory — Postma & De Haan (1996)",
+  "difficulty": 5,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "medianRT", "rtv", "rcs", "maxStreak", "avgPlacementError", "maxLandmarks"],
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "features": [
+    "shared-stages",
+    "shared-settings",
+    "shared-i18n",
+    "missions",
+    "badges",
+    "insights",
+    "history-chart",
+    "personal-best",
+    "postmessage",
+    "back-button",
+    "accessibility",
+    "grid-rendering"
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "id": "seq-mem",
+  "name": "Seq-Mem",
+  "domain": "memory",
+  "icon": "🔢",
+  "description": "Forward digit span — Miller (1956)",
+  "difficulty": 3,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "medianRT", "rtv", "rcs", "maxSpan", "maxStreak"],
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "features": [
+    "shared-stages",
+    "shared-settings",
+    "shared-i18n",
+    "missions",
+    "badges",
+    "insights",
+    "history-chart",
+    "personal-best",
+    "postmessage",
+    "back-button",
+    "accessibility",
+    "adaptive-span",
+    "keypad-input",
+    "keyboard-input"
+  ]
+}

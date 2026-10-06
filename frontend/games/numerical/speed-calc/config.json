@@ -1,0 +1,9 @@
+{
+  "id": "speed-calc",
+  "name": "Speed Calculus",
+  "domain": "numerical",
+  "icon": "⚡",
+  "description": "Complex equations solved under extreme time pressure",
+  "difficulty": 5,
+  "metrics": ["totalScore", "questionsAnswered", "accuracy", "maxStreak", "finalDifficulty"]
+}

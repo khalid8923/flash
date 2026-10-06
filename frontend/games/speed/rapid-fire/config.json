@@ -1,0 +1,20 @@
+{
+  "id": "rapid-fire",
+  "name": "Rapid Fire",
+  "domain": "speed",
+  "icon": "🔥",
+  "description": "Task switching under speed (Monsell 2003)",
+  "difficulty": 5,
+  "maxLevel": 15,
+  "metrics": [
+    "maxLevel",
+    "accuracy",
+    "medianRT",
+    "rtv",
+    "rcs",
+    "switchCost",
+    "repeatRT",
+    "switchRT",
+    "maxStreak"
+  ]
+}

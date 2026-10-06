@@ -1,0 +1,10 @@
+{
+  "id": "truth-tbl",
+  "name": "Truth Tables",
+  "domain": "logic",
+  "icon": "📋",
+  "description": "Boolean logic deduction with multi-variable expressions",
+  "difficulty": 4,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "avgResponseTime", "maxStreak"]
+}

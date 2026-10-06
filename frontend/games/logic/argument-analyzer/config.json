@@ -1,0 +1,36 @@
+{
+  "id": "argument-analyzer",
+  "name": "Argument Analyzer",
+  "domain": "logic",
+  "icon": "⚖️",
+  "description": "Critical thinking · Fallacy detection — Abrami (2015)",
+  "difficulty": 4,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "medianRT", "rtv", "rcs", "maxStreak"],
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "fallacies": [
+    "ad-hominem",
+    "straw-man",
+    "false-dilemma",
+    "slippery-slope",
+    "appeal-authority",
+    "circular"
+  ],
+  "features": [
+    "shared-stages",
+    "shared-settings",
+    "shared-i18n",
+    "missions",
+    "badges",
+    "insights",
+    "history-chart",
+    "personal-best",
+    "postmessage",
+    "back-button",
+    "accessibility",
+    "72-argument-bank",
+    "difficulty-scaling",
+    "weakest-fallacy-tracking",
+    "keyboard-input"
+  ]
+}
