@@ -3,6 +3,8 @@ import { pool } from '../config/db.js';
 import { SessionSchema } from '../schemas/session.js';
 import { deriveMetrics } from '../services/derive.js';
 import { getOrCreateDemoUser, getNextChangeSeq } from '../services/users.js';
+import { checkAndUpdatePB, getGameMetricInfo } from '../services/pb.js';
+import { checkAndUnlockBadges } from '../services/badges.js';
 
 const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.post('/sessions', async (request, reply) => {
@@ -25,6 +27,9 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
         status: 'already_accepted',
         server_session_id: existing.rows[0].id,
         change_seq: existing.rows[0].change_seq,
+        derived: null,
+        pb: null,
+        badges: [],
       });
     }
 
@@ -38,6 +43,7 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
     const changeSeq = await getNextChangeSeq(userId);
 
     const client = await pool.connect();
+    let sessionId = '';
     try {
       await client.query('BEGIN');
 
@@ -61,20 +67,13 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
         ]
       );
 
-      const sessionId = insertRes.rows[0].id;
+      sessionId = insertRes.rows[0].id;
       await client.query(
         'INSERT INTO session_trials (session_id, trial_schema_version, trials) VALUES ($1, $2, $3)',
         [sessionId, 1, JSON.stringify(session.trials)]
       );
 
       await client.query('COMMIT');
-
-      return reply.code(201).send({
-        status: 'accepted',
-        server_session_id: sessionId,
-        change_seq: changeSeq,
-        derived: metrics,
-      });
     } catch (err) {
       await client.query('ROLLBACK');
       request.log.error(err);
@@ -82,6 +81,36 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
     } finally {
       client.release();
     }
+
+    const metricInfo = await getGameMetricInfo(session.game_id);
+    let pbResult = null;
+    if (metricInfo) {
+      pbResult = await checkAndUpdatePB({
+        userId,
+        gameId: session.game_id,
+        variant: session.mode,
+        metric: metricInfo.primary_metric,
+        direction: metricInfo.metric_direction,
+        value: metrics.primary_score,
+        sessionId,
+      });
+    }
+
+    const badges = await checkAndUnlockBadges({
+      userId,
+      sessionId,
+      mode: session.mode,
+      accuracy: metrics.accuracy,
+    });
+
+    return reply.code(201).send({
+      status: 'accepted',
+      server_session_id: sessionId,
+      change_seq: changeSeq,
+      derived: metrics,
+      pb: pbResult,
+      badges,
+    });
   });
 };
 
