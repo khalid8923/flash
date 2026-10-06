@@ -10,7 +10,10 @@
     "start": "node dist/server.js",
     "typecheck": "tsc --noEmit",
     "migrate": "tsx src/migrate.ts",
-    "seed": "tsx src/seed.ts"
+    "seed": "tsx src/seed.ts",
+    "seed:atlas": "tsx src/seed-atlas.ts",
+    "seed:atlas": "tsx src/seed-atlas.ts",
+    "seed:atlas": "tsx src/seed-atlas.ts"
   },
   "dependencies": {
     "fastify": "^5.1.0",

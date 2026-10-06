@@ -5,6 +5,11 @@ import { deriveMetrics } from '../services/derive.js';
 import { getOrCreateDemoUser, getNextChangeSeq } from '../services/users.js';
 import { checkAndUpdatePB, getGameMetricInfo } from '../services/pb.js';
 import { checkAndUnlockBadges } from '../services/badges.js';
+import {
+  getOrInitAbility,
+  decideNextLevel,
+  applyDecision,
+} from '../services/difficulty/engine.js';
 
 const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.post('/sessions', async (request, reply) => {
@@ -27,9 +32,6 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
         status: 'already_accepted',
         server_session_id: existing.rows[0].id,
         change_seq: existing.rows[0].change_seq,
-        derived: null,
-        pb: null,
-        badges: [],
       });
     }
 
@@ -82,6 +84,7 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
       client.release();
     }
 
+    /* PB */
     const metricInfo = await getGameMetricInfo(session.game_id);
     let pbResult = null;
     if (metricInfo) {
@@ -96,12 +99,33 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
       });
     }
 
+    /* Badges */
     const badges = await checkAndUnlockBadges({
       userId,
       sessionId,
       mode: session.mode,
       accuracy: metrics.accuracy,
     });
+
+    /* ═══ Adaptive Difficulty Engine ═══ */
+    let engineDecision = null;
+    try {
+      const currentAbility = await getOrInitAbility(userId, session.game_id, session.mode);
+      const decision = decideNextLevel(currentAbility, metrics.accuracy, metrics.median_rt_ms);
+      await applyDecision(
+        userId, session.game_id, session.mode, sessionId,
+        currentAbility, decision, metrics.accuracy
+      );
+      engineDecision = {
+        from_level: decision.from_level,
+        to_level: decision.to_level,
+        reason_code: decision.reason_code,
+        explanation: decision.explanation,
+        predicted_success: decision.predicted_success,
+      };
+    } catch (err) {
+      request.log.warn({ err }, 'Engine decision failed (non-fatal)');
+    }
 
     return reply.code(201).send({
       status: 'accepted',
@@ -110,6 +134,7 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
       derived: metrics,
       pb: pbResult,
       badges,
+      engine: engineDecision,
     });
   });
 };

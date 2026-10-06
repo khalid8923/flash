@@ -4,6 +4,10 @@ import rateLimit from '@fastify/rate-limit';
 import { env } from './config/env.js';
 import healthRoutes from './routes/health.js';
 import sessionsRoutes from './routes/sessions.js';
+import gamesRoutes from './routes/games.js';
+import profileRoutes from './routes/profile.js';
+import aiRoutes from './routes/ai.js';
+import nextRoutes from './routes/next.js';
 
 export async function buildServer() {
   const fastify = Fastify({
@@ -17,12 +21,16 @@ export async function buildServer() {
   });
 
   await fastify.register(rateLimit, {
-    max: 100,
+    max: 200,
     timeWindow: '1 minute',
   });
 
   await fastify.register(healthRoutes);
   await fastify.register(sessionsRoutes);
+  await fastify.register(gamesRoutes);
+  await fastify.register(profileRoutes);
+  await fastify.register(aiRoutes);
+  await fastify.register(nextRoutes);
 
   return fastify;
 }
