@@ -1,4 +1,4 @@
-import { createHash } from 'node:crypto';
+﻿import { createHash } from 'node:crypto';
 import { pool } from '../../config/db.js';
 import { groq } from './groq-client.js';
 import { getPrompt, isGenerativeGame } from './prompts.js';
@@ -71,7 +71,7 @@ export async function generateContent(params: GenerateParams): Promise<GenerateR
 
   // Generate new via Groq
   if (!groq.isEnabled()) {
-    throw new Error('Groq not configured — cannot generate new content');
+    throw new Error('Groq not configured â€” cannot generate new content');
   }
 
   const { data, meta } = await groq.json<Record<string, unknown>>(
@@ -79,7 +79,7 @@ export async function generateContent(params: GenerateParams): Promise<GenerateR
       { role: 'system', content: prompt.system },
       { role: 'user', content: prompt.user },
     ],
-    { temperature: 0.85, max_tokens: 800, json_mode: true }
+    { temperature: 0.85, max_tokens: 1500, json_mode: true }
   );
 
   const hash = contentFingerprint(data);
