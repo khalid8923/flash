@@ -8,6 +8,7 @@ import gamesRoutes from './routes/games.js';
 import profileRoutes from './routes/profile.js';
 import aiRoutes from './routes/ai.js';
 import nextRoutes from './routes/next.js';
+import planRoutes from './routes/plan.js';
 
 export async function buildServer() {
   const fastify = Fastify({
@@ -31,6 +32,7 @@ export async function buildServer() {
   await fastify.register(profileRoutes);
   await fastify.register(aiRoutes);
   await fastify.register(nextRoutes);
+  await fastify.register(planRoutes);
 
   return fastify;
 }
