@@ -11,6 +11,9 @@ import {
 } from '../services/difficulty/engine.js';
 import { updateUserGameStats, updateDomainScores } from '../services/stats.js';
 import { withUserLock } from '../services/user-lock.js';
+import { optionalPlayer } from '../middleware/auth.js';
+import { validateIngestion, validateDuration } from '../services/ingestion-validator.js';
+import { evaluateSession, logIntegrityEvent } from '../services/integrity-rules.js';
 
 type Metrics = Awaited<ReturnType<typeof deriveMetrics>>;
 
@@ -19,7 +22,7 @@ type LockResult =
   | { kind: 'accepted'; id: string; seq: number; metrics: Metrics };
 
 const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
-  fastify.post('/sessions', async (request, reply) => {
+  fastify.post('/sessions', { preHandler: optionalPlayer }, async (request, reply) => {
     /* 1. Validate */
     const parsed = SessionSchema.safeParse(request.body);
     if (!parsed.success) {
@@ -29,16 +32,29 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
       });
     }
     const session = parsed.data;
-    const userId = await getOrCreateDemoUser();
+    const userId = request.player?.playerId ?? (await getOrCreateDemoUser());
 
-    /* 2. Duration check (cheap, before lock) */
-    const duration_ms = new Date(session.ended_at).getTime() -
-                        new Date(session.started_at).getTime();
-    if (duration_ms < 0 || duration_ms > 3_600_000) {
+    /* 2. Duration + ingestion checks (R07) */
+    const dur = validateDuration(session.started_at, session.ended_at);
+    if (!dur.ok) {
       return reply.code(400).send({ error: 'invalid_duration' });
     }
+    const duration_ms = dur.durationMs;
 
-    /* 3. Derive metrics (read-only, safe to do before lock) */
+    const ing = validateIngestion({
+      gameId: session.game_id,
+      mode: session.mode,
+      trials: session.trials as any,
+    });
+    if (!ing.ok) {
+      return reply.code(400).send({
+        error: 'invalid_trials',
+        details: ing.errors,
+        stats: ing.stats,
+      });
+    }
+
+    /* 3. Derive metrics */
     let metrics: Metrics;
     try {
       metrics = await deriveMetrics(session.game_id, session.trials);
@@ -47,11 +63,10 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
       return reply.code(500).send({ error: 'internal_error' });
     }
 
-    /* 4. Critical section: serialize per user (R05) */
+    /* 4. Critical section (R05) */
     let result: LockResult;
     try {
       result = await withUserLock<LockResult>(userId, async (client) => {
-        /* 4a. Idempotency check INSIDE lock */
         const existing = await client.query<{ id: string; change_seq: number }>(
           'SELECT id, change_seq FROM sessions WHERE user_id = $1 AND client_session_id = $2',
           [userId, session.client_session_id]
@@ -61,10 +76,8 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
           return { kind: 'duplicate', id: row.id, seq: row.change_seq };
         }
 
-        /* 4b. Next change_seq */
         const changeSeq = await getNextChangeSeq(userId);
 
-        /* 4c. Insert session */
         const insertRes = await client.query<{ id: string }>(
           `INSERT INTO sessions (
             user_id, client_session_id, game_id, domain_id, mode, seed, ticket_id,
@@ -86,7 +99,6 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
         );
         const sessionId = insertRes.rows[0]!.id;
 
-        /* 4d. Insert trials */
         await client.query(
           'INSERT INTO session_trials (session_id, trial_schema_version, trials) VALUES ($1, $2, $3)',
           [sessionId, 1, JSON.stringify(session.trials)]
@@ -99,7 +111,6 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
       return reply.code(500).send({ error: 'internal_error' });
     }
 
-    /* 5. Duplicate fast path */
     if (result.kind === 'duplicate') {
       return reply.code(200).send({
         status: 'already_accepted',
@@ -108,11 +119,10 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
       });
     }
 
-    /* 6. Side-effects (outside lock - idempotent) */
     const sessionId = result.id;
     const changeSeq = result.seq;
 
-    /* PB */
+    /* 5. PB */
     const metricInfo = await getGameMetricInfo(session.game_id);
     let pbResult = null;
     if (metricInfo) {
@@ -127,7 +137,7 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
       });
     }
 
-    /* Badges */
+    /* 6. Badges */
     const badges = await checkAndUnlockBadges({
       userId,
       sessionId,
@@ -135,7 +145,7 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
       accuracy: metrics.accuracy,
     });
 
-    /* Stats (non-fatal) */
+    /* 7. Stats (non-fatal) */
     try {
       await updateUserGameStats(userId, session.game_id, session.mode);
       await updateDomainScores(userId);
@@ -143,7 +153,7 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
       request.log.warn({ err: statsErr }, 'Stats update failed (non-fatal)');
     }
 
-    /* Adaptive engine (non-fatal) */
+    /* 8. Adaptive engine (non-fatal) */
     let engineDecision = null;
     try {
       const currentAbility = await getOrInitAbility(userId, session.game_id, session.mode);
@@ -157,10 +167,27 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
         to_level: decision.to_level,
         reason_code: decision.reason_code,
         explanation: decision.explanation,
-        predicted_success: decision.predicted_success,
+        predicted_success: decision.predicted_success ?? 0,
       };
     } catch (err) {
       request.log.warn({ err }, 'Engine decision failed (non-fatal)');
+    }
+
+    /* 9. Integrity shadow (R40) */
+    try {
+      const flags = evaluateSession({
+        gameId: session.game_id,
+        mode: session.mode,
+        durationMs: duration_ms,
+        accuracy: metrics.accuracy,
+        medianRtMs: metrics.median_rt_ms,
+        trials: session.trials as any,
+      });
+      for (const flag of flags) {
+        await logIntegrityEvent({ sessionId, userId, flag });
+      }
+    } catch (integrityErr) {
+      request.log.warn({ err: integrityErr }, 'integrity shadow failed (non-fatal)');
     }
 
     return reply.code(201).send({

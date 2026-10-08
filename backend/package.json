@@ -14,7 +14,8 @@
     "catalog:sync": "tsx src/scripts/sync-catalog.ts",
     "seed:atlas": "tsx src/seed-atlas.ts",
     "backup": "tsx scripts/backup-db.ts",
-    "admin:setup": "tsx scripts/setup-owner.ts"
+    "admin:setup": "tsx scripts/setup-owner.ts",
+    "test:golden": "tsx scripts/golden-tests.ts"
   },
   "dependencies": {
     "@fastify/compress": "^9.2.1",

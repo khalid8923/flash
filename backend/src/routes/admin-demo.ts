@@ -9,6 +9,7 @@ import type { FastifyPluginAsync } from 'fastify';
 import { z } from 'zod';
 import { pool } from '../config/db.js';
 import { requireAdmin, audit } from '../middleware/admin-auth.js';
+import { requireStepUp } from '../middleware/step-up.js';
 
 const SetOriginBody = z.object({
   origin: z.enum(['real', 'demo', 'test', 'internal']),
@@ -86,7 +87,7 @@ const adminDemoRoutes: FastifyPluginAsync = async (fastify) => {
   });
 
   /* ═══ POST /admin/demo/reset — delete all demo users ═══ */
-  fastify.post('/admin/demo/reset', { preHandler: requireAdmin('ops') }, async (req, reply) => {
+  fastify.post('/admin/demo/reset', { preHandler: [requireAdmin('ops'), requireStepUp] }, async (req, reply) => {
     const body = z.object({ reason: z.string().min(3).max(500) }).safeParse(req.body);
     if (!body.success) {
       return reply.code(400).send({ error: 'invalid_payload', issues: body.error.flatten().fieldErrors });
