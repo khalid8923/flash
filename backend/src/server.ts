@@ -9,6 +9,7 @@ import { ipKey } from './config/rate-limit.js';
 
 import healthRoutes from './routes/health.js';
 import authRoutes from './routes/auth.js';
+import playsRoutes from './routes/plays.js';
 import sessionsRoutes from './routes/sessions.js';
 import gamesRoutes from './routes/games.js';
 import profileRoutes from './routes/profile.js';
@@ -24,6 +25,7 @@ import profileSnapshotRoutes from './routes/profile-snapshot.js';
 import adminCatalogRoutes from './routes/admin-catalog.js';
 import adminAuthRoutes from './routes/admin-auth.js';
 import adminAiRoutes from './routes/admin-ai.js';
+import adminDemoRoutes from './routes/admin-demo.js';
 import nextRoutes from './routes/next.js';
 import planRoutes from './routes/plan.js';
 
@@ -109,6 +111,7 @@ export async function buildServer() {
   /* ═══ Routes ═══ */
   await fastify.register(healthRoutes);
   await fastify.register(authRoutes);
+  await fastify.register(playsRoutes);
   await fastify.register(sessionsRoutes);
   await fastify.register(gamesRoutes);
   await fastify.register(profileRoutes);
@@ -123,6 +126,7 @@ export async function buildServer() {
   await fastify.register(profileSnapshotRoutes);
   await fastify.register(adminAuthRoutes);
   await fastify.register(adminAiRoutes);
+  await fastify.register(adminDemoRoutes);
   await fastify.register(adminCatalogRoutes);
   await fastify.register(nextRoutes);
   await fastify.register(planRoutes);
