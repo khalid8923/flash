@@ -20,10 +20,10 @@ const EnvSchema = z.object({
 
   // Gemini (Arabic)
   GEMINI_API_KEY: z.string().optional(),
-  GEMINI_MODEL: z.string().default('gemini-3.8-flash'),
+  GEMINI_MODEL: z.string().default('gemini-2.0-flash'),
 
   OPENROUTER_API_KEY: z.string().optional(),
-  OPENROUTER_MODEL: z.string().default('meta-llama/llama-3.3-70b-instruct'),
+  OPENROUTER_MODEL: z.string().default('google/gemini-2.0-flash-exp:free'),
 
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().optional(),

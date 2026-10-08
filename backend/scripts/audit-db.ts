@@ -1,4 +1,4 @@
-import { pool } from './src/config/db.js';
+import { pool } from '../src/config/db.js';
 
 console.log('\n═══════════════════════════════════════════════════════════');
 console.log('  DB AUDIT — Phase 1: Indexes');

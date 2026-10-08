@@ -1,4 +1,4 @@
-import { pool } from './src/config/db.js';
+import { pool } from '../src/config/db.js';
 
 const [domains, games, badges] = await Promise.all([
   pool.query('SELECT COUNT(*) FROM domains'),
