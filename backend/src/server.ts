@@ -1,8 +1,11 @@
 import Fastify from 'fastify';
 import cors from '@fastify/cors';
+import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
 import multipart from '@fastify/multipart';
+import compress from '@fastify/compress';
 import { env } from './config/env.js';
+import { ipKey } from './config/rate-limit.js';
 
 import healthRoutes from './routes/health.js';
 import sessionsRoutes from './routes/sessions.js';
@@ -18,26 +21,81 @@ import aiJournalRoutes from './routes/ai-journal.js';
 import aiPredictionsRoutes from './routes/ai-predictions.js';
 import profileSnapshotRoutes from './routes/profile-snapshot.js';
 import adminCatalogRoutes from './routes/admin-catalog.js';
+import adminAuthRoutes from './routes/admin-auth.js';
 import nextRoutes from './routes/next.js';
 import planRoutes from './routes/plan.js';
 
 export async function buildServer() {
   const fastify = Fastify({
     logger: { level: env.LOG_LEVEL },
-    bodyLimit: 15 * 1024 * 1024, // 15 MB — allows audio uploads
+    bodyLimit: 15 * 1024 * 1024,
+    trustProxy: true,
+    disableRequestLogging: env.NODE_ENV === 'production',
   });
 
+  /* ═══ Security headers ═══ */
+  await fastify.register(helmet, {
+    contentSecurityPolicy: false,
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    hsts: env.NODE_ENV === 'production'
+      ? { maxAge: 31536000, includeSubDomains: true, preload: true }
+      : false,
+  });
+
+  /* ═══ Compression ═══ */
+  await fastify.register(compress, {
+    global: true,
+    threshold: 1024,
+    encodings: ['br', 'gzip', 'deflate'],
+  });
+
+  /* ═══ CORS ═══ */
   await fastify.register(cors, {
     origin: env.CORS_ORIGIN.split(',').map((o) => o.trim()),
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-token', 'x-client-version'],
+    exposedHeaders: ['x-request-id', 'x-ratelimit-limit', 'x-ratelimit-remaining', 'x-ratelimit-reset', 'retry-after'],
+    maxAge: 86400,
   });
 
+  /* ═══ Rate limiting (R11) - layered ═══ */
   await fastify.register(rateLimit, {
+    global: true,
     max: 200,
     timeWindow: '1 minute',
+    keyGenerator: ipKey,
+    /* Health checks and preflight should not be limited */
+    allowList: (req) => {
+      const url = req.url;
+      if (req.method === 'OPTIONS') return true;
+      if (url === '/health' || url === '/ready') return true;
+      if (url.startsWith('/_internal/')) return true;
+      return false;
+    },
+    /* Standard headers on every response */
+    addHeadersOnExceeding: {
+      'x-ratelimit-limit': true,
+      'x-ratelimit-remaining': true,
+      'x-ratelimit-reset': true,
+    },
+    addHeaders: {
+      'x-ratelimit-limit': true,
+      'x-ratelimit-remaining': true,
+      'x-ratelimit-reset': true,
+      'retry-after': true,
+    },
+    errorResponseBuilder: (_req, context) => ({
+      error: 'rate_limit_exceeded',
+      message: 'Too many requests — slow down.',
+      limit: context.max,
+      window: context.after,
+      retry_after: Math.ceil(context.ttl / 1000),
+    }),
   });
 
-  /* Multipart for audio uploads */
+  /* ═══ Multipart ═══ */
   await fastify.register(multipart, {
     limits: {
       fileSize: env.VOICE_MAX_BYTES,
@@ -46,6 +104,7 @@ export async function buildServer() {
     },
   });
 
+  /* ═══ Routes ═══ */
   await fastify.register(healthRoutes);
   await fastify.register(sessionsRoutes);
   await fastify.register(gamesRoutes);
@@ -59,6 +118,7 @@ export async function buildServer() {
   await fastify.register(aiJournalRoutes);
   await fastify.register(aiPredictionsRoutes);
   await fastify.register(profileSnapshotRoutes);
+  await fastify.register(adminAuthRoutes);
   await fastify.register(adminCatalogRoutes);
   await fastify.register(nextRoutes);
   await fastify.register(planRoutes);

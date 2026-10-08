@@ -1,13 +1,24 @@
-﻿import pg from 'pg';
+import pg from 'pg';
 import { env } from './env.js';
 
 const { Pool } = pg;
 
+/*
+ * Neon (serverless) friendly pool.
+ * - max: 10 balances Neon free tier (100 CU-hours) with burst tolerance
+ * - statement_timeout: kill slow queries before they burn compute
+ * - idle_in_transaction_session_timeout: prevent abandoned transactions
+ * - keepAlive: reuse TCP, avoid reconnecting on every request
+ */
 export const pool = new Pool({
   connectionString: env.DATABASE_URL,
   max: 10,
-  idleTimeoutMillis: 30_000,
-  connectionTimeoutMillis: 5_000,
+  idleTimeoutMillis: 20_000,
+  connectionTimeoutMillis: 10_000,
+  keepAlive: true,
+  application_name: 'flash-backend',
+  statement_timeout: 15_000,
+  idle_in_transaction_session_timeout: 30_000,
   ssl: env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 });
 
