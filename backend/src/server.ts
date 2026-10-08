@@ -16,6 +16,7 @@ import aiVoiceRoutes from './routes/ai-voice.js';
 import aiVariantsRoutes from './routes/ai-variants.js';
 import aiJournalRoutes from './routes/ai-journal.js';
 import aiPredictionsRoutes from './routes/ai-predictions.js';
+import profileSnapshotRoutes from './routes/profile-snapshot.js';
 import nextRoutes from './routes/next.js';
 import planRoutes from './routes/plan.js';
 
@@ -56,6 +57,7 @@ export async function buildServer() {
   await fastify.register(aiVariantsRoutes);
   await fastify.register(aiJournalRoutes);
   await fastify.register(aiPredictionsRoutes);
+  await fastify.register(profileSnapshotRoutes);
   await fastify.register(nextRoutes);
   await fastify.register(planRoutes);
 
