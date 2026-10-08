@@ -1,4 +1,4 @@
-﻿import 'dotenv/config';
+import 'dotenv/config';
 import { z } from 'zod';
 
 const EnvSchema = z.object({
@@ -16,6 +16,7 @@ const EnvSchema = z.object({
   GROQ_API_KEY: z.string().optional(),
   GROQ_MODEL_EN: z.string().default('openai/gpt-oss-120b'),
   GROQ_MODEL_AR: z.string().default('allam-2-7b'),
+  GROQ_MODEL_FAST: z.string().default('llama-3.1-8b-instant'),
 
   // Gemini (Arabic)
   GEMINI_API_KEY: z.string().optional(),
@@ -26,6 +27,10 @@ const EnvSchema = z.object({
 
   RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().optional(),
+
+  // Voice
+  VOICE_MODEL: z.string().default('whisper-large-v3-turbo'),
+  VOICE_MAX_BYTES: z.coerce.number().int().positive().default(10485760),
 
   CORS_ORIGIN: z.string().default('http://localhost:5173'),
 });

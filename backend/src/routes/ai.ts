@@ -5,6 +5,10 @@ import { generateContent } from '../services/ai/generate.js';
 import { listGenerativeGames } from '../services/ai/prompts.js';
 import { groq } from '../services/ai/groq-client.js';
 import { chat } from '../services/ai/coach.js';
+import { generateSessionRecap } from '../services/ai/recap.js';
+import { generateWeeklyInsights } from '../services/ai/insights.js';
+import { generateDailyPlan } from '../services/ai/daily-plan.js';
+import { getProviderStatus } from '../services/ai/router.js';
 import { getOrCreateDemoUser } from '../services/users.js';
 
 const GenerateBody = z.object({
@@ -21,6 +25,11 @@ const ChatBody = z.object({
   language: z.enum(['en', 'ar']).default('en'),
 });
 
+const RecapBody = z.object({
+  session_id: z.string().uuid(),
+  language: z.enum(['en', 'ar']).default('en'),
+});
+
 const aiRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.get('/ai/status', async () => {
     return {
@@ -28,6 +37,7 @@ const aiRoutes: FastifyPluginAsync = async (fastify) => {
       provider: 'groq',
       generative_games: listGenerativeGames(),
       coach_enabled: groq.isEnabled(),
+      recap_enabled: groq.isEnabled(),
     };
   });
 
@@ -77,6 +87,30 @@ const aiRoutes: FastifyPluginAsync = async (fastify) => {
     }
   });
 
+  /* ═══ Session Recap ═══ */
+  fastify.post('/ai/recap', async (request, reply) => {
+    const parsed = RecapBody.safeParse(request.body);
+    if (!parsed.success) {
+      return reply.code(400).send({ error: 'invalid_payload', issues: parsed.error.flatten().fieldErrors });
+    }
+    const userId = await getOrCreateDemoUser();
+    try {
+      const result = await generateSessionRecap(
+        parsed.data.session_id,
+        userId,
+        parsed.data.language
+      );
+      return reply.code(200).send(result);
+    } catch (err) {
+      const msg = (err as Error).message;
+      if (msg === 'session_not_found_or_not_owned') {
+        return reply.code(404).send({ error: 'session_not_found' });
+      }
+      request.log.error(err);
+      return reply.code(500).send({ error: 'recap_failed', message: msg });
+    }
+  });
+
   /* ═══ List conversations ═══ */
   fastify.get('/ai/conversations', async () => {
     const userId = await getOrCreateDemoUser();
@@ -102,6 +136,43 @@ const aiRoutes: FastifyPluginAsync = async (fastify) => {
       [request.params.id]
     );
     return { conversation: conv.rows[0], messages: msgs.rows };
+  });
+  /* ═══ Weekly Insights ═══ */
+  fastify.get<{ Querystring: { language?: string } }>('/ai/insights', async (request, reply) => {
+    const lang = request.query.language === 'ar' ? 'ar' : 'en';
+    const userId = await getOrCreateDemoUser();
+    try {
+      const result = await generateWeeklyInsights(userId, lang);
+      return reply.code(200).send(result);
+    } catch (err) {
+      request.log.error(err);
+      return reply.code(500).send({ error: 'insights_failed', message: (err as Error).message });
+    }
+  });
+  /* ═══ AI Daily Plan ═══ */
+  fastify.get<{ Querystring: { language?: string } }>('/ai/daily-plan', async (request, reply) => {
+    const lang = request.query.language === 'ar' ? 'ar' : 'en';
+    const userId = await getOrCreateDemoUser();
+    try {
+      const result = await generateDailyPlan(userId, lang);
+      return reply.code(200).send(result);
+    } catch (err) {
+      request.log.error(err);
+      return reply.code(500).send({ error: 'daily_plan_failed', message: (err as Error).message });
+    }
+  });
+  /* ═══ AI Provider Health ═══ */
+  fastify.get('/ai/health', async (_request, reply) => {
+    const status = getProviderStatus();
+    const anyEnabled = status.providers.some((p) => p.enabled);
+    // If no calls yet, treat as healthy (unknown != unhealthy)
+    const anyHealthy = status.health.length === 0
+      ? true
+      : status.health.some((h) => h.healthy);
+    return reply.code(anyEnabled ? 200 : 503).send({
+      ok: anyEnabled && anyHealthy,
+      ...status,
+    });
   });
 };
 

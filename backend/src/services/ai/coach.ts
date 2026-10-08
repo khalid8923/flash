@@ -5,7 +5,7 @@
    ═══════════════════════════════════════════════════════════ */
 
 import { pool } from '../../config/db.js';
-import { groq } from './groq-client.js';
+import { routeChat } from './router.js';
 import { buildUserContext, contextToPrompt } from './context.js';
 import { env } from '../../config/env.js';
 
@@ -126,16 +126,15 @@ export async function chat(input: ChatInput): Promise<ChatReply> {
       { role: 'user' as const, content: message },
     ];
 
-    const model = env.GROQ_MODEL_AR;
-    const gRes = await groq.chat(arMessages, {
+    const gRes = await routeChat(arMessages, {
       temperature: 0.7,
       max_tokens: 500,
-      model,
+      language: 'ar',
     });
     reply = gRes.content.trim();
     usage = gRes.usage;
     latency = gRes.latency_ms;
-    modelUsed = gRes.model;
+    modelUsed = gRes.model + ' (' + gRes.provider + ')';
   } else {
     // ─── English path ───
     const fullSys = SYSTEM_PROMPT_EN + '\n\n' + ctxBlock;
@@ -148,16 +147,15 @@ export async function chat(input: ChatInput): Promise<ChatReply> {
       { role: 'user' as const, content: message },
     ];
 
-    const model = env.GROQ_MODEL_EN;
-    const gRes = await groq.chat(messages, {
+    const gRes = await routeChat(messages, {
       temperature: 0.7,
       max_tokens: 600,
-      model,
+      language: 'en',
     });
     reply = gRes.content.trim();
     usage = gRes.usage;
     latency = gRes.latency_ms;
-    modelUsed = gRes.model;
+    modelUsed = gRes.model + ' (' + gRes.provider + ')';
   }
 
   // Save assistant reply

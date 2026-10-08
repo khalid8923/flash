@@ -32,7 +32,7 @@ export class GroqClient {
 
   constructor() {
     this.apiKey = env.GROQ_API_KEY ?? '';
-    this.defaultModel = env.GROQ_MODEL;
+    this.defaultModel = env.GROQ_MODEL_EN;
     if (!this.apiKey) {
       console.warn('[Groq] No GROQ_API_KEY configured — AI generation disabled');
     }
