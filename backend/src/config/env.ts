@@ -33,6 +33,7 @@ const EnvSchema = z.object({
   VOICE_MAX_BYTES: z.coerce.number().int().positive().default(10485760),
 
   CORS_ORIGIN: z.string().default('http://localhost:5173'),
+  ADMIN_TOKEN: z.string().optional(),
 });
 
 export type Env = z.infer<typeof EnvSchema>;

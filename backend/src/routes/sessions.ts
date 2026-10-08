@@ -5,6 +5,7 @@ import { deriveMetrics } from '../services/derive.js';
 import { getOrCreateDemoUser, getNextChangeSeq } from '../services/users.js';
 import { checkAndUpdatePB, getGameMetricInfo } from '../services/pb.js';
 import { checkAndUnlockBadges } from '../services/badges.js';
+import { updateUserGameStats, updateDomainScores } from '../services/stats.js';
 import {
   getOrInitAbility,
   decideNextLevel,
@@ -106,6 +107,14 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
       mode: session.mode,
       accuracy: metrics.accuracy,
     });
+
+    /* ═══ Update user_game_stats + domain_scores (non-fatal) ═══ */
+    try {
+      await updateUserGameStats(userId, session.game_id, session.mode);
+      await updateDomainScores(userId);
+    } catch (statsErr) {
+      request.log.warn({ err: statsErr }, 'Stats update failed (non-fatal)');
+    }
 
     /* ═══ Adaptive Difficulty Engine ═══ */
     let engineDecision = null;

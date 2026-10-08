@@ -71,7 +71,7 @@ function extractJson(text: string): { summary?: unknown; games?: unknown } | nul
   const candidates: string[] = [];
   candidates.push(text.trim());
   const fenceMatch = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  if (fenceMatch) candidates.push(fenceMatch[1].trim());
+  if (fenceMatch && fenceMatch[1]) candidates.push(fenceMatch[1].trim());
   const first = text.indexOf('{');
   const last = text.lastIndexOf('}');
   if (first !== -1 && last > first) {
@@ -100,6 +100,7 @@ function enrichReasons(
 
   for (let i = 0; i < plan.length; i++) {
     const item = plan[i];
+    if (!item) continue;
     const cand = candMap.get(item.game_id);
     let reason = item.reason.trim();
 
@@ -298,7 +299,7 @@ async function loadContext(userId: string): Promise<DailyPlanContext> {
        (SELECT MAX(ended_at) FROM sessions WHERE user_id = $1 AND status='accepted' AND deleted_at IS NULL) AS last_at`,
     [userId]
   );
-  const row = aggRes.rows[0];
+  const row = aggRes.rows[0] ?? null;
 
   /* Domain strengths/weaknesses */
   const domRes = await pool.query<{ domain_id: string; avg_acc: number }>(
@@ -330,18 +331,18 @@ async function loadContext(userId: string): Promise<DailyPlanContext> {
     if (r.reason_code === 'DEMOTE_STRUGGLE') demos += r.n;
   }
 
-  const lastAt = row.last_at ? new Date(row.last_at).getTime() : null;
+  const lastAt = row?.last_at ? new Date(row.last_at).getTime() : null;
   const daysSince = lastAt ? Math.floor((Date.now() - lastAt) / 86_400_000) : null;
 
-  const total = row.total ?? 0;
+  const total = row?.total ?? 0;
   const tier: DailyPlanContext['evidence_tier'] =
     total < 5 ? 'calibrating' : total < 20 ? 'provisional' : 'established';
 
   return {
     total_sessions: total,
-    sessions_last_7d: row.sessions_7d ?? 0,
-    sessions_today: row.sessions_today ?? 0,
-    avg_accuracy_last_7d: row.avg_acc_7d ?? 0,
+    sessions_last_7d: row?.sessions_7d ?? 0,
+    sessions_today: row?.sessions_today ?? 0,
+    avg_accuracy_last_7d: row?.avg_acc_7d ?? 0,
     days_since_last: daysSince,
     current_streak_days: 0,
     top_strengths: strengths,

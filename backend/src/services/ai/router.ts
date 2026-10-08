@@ -117,7 +117,7 @@ export async function routeJson<T>(
   let cleaned = result.content.trim();
   /* Strip markdown fences if any */
   const fenceMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)```/i);
-  if (fenceMatch) cleaned = fenceMatch[1].trim();
+  if (fenceMatch && fenceMatch[1]) cleaned = fenceMatch[1].trim();
   /* Fallback: find first {...last } */
   if (!cleaned.startsWith('{')) {
     const first = cleaned.indexOf('{');

@@ -45,7 +45,6 @@ export async function buildUserProfile(userId: string): Promise<UserProfile> {
     }
   }
 
-  // Domain scores = avg of game scores per domain
   const domainGames = await pool.query<{ game_id: string; domain_id: string; avg: number }>(
     `SELECT s.game_id, g.domain_id, AVG(s.primary_score)::float AS avg
      FROM sessions s
@@ -57,9 +56,13 @@ export async function buildUserProfile(userId: string): Promise<UserProfile> {
 
   const domainAgg: Record<string, { sum: number; count: number }> = {};
   for (const row of domainGames.rows) {
-    if (!domainAgg[row.domain_id]) domainAgg[row.domain_id] = { sum: 0, count: 0 };
-    domainAgg[row.domain_id].sum += row.avg;
-    domainAgg[row.domain_id].count += 1;
+    let agg = domainAgg[row.domain_id];
+    if (!agg) {
+      agg = { sum: 0, count: 0 };
+      domainAgg[row.domain_id] = agg;
+    }
+    agg.sum += row.avg;
+    agg.count += 1;
   }
   for (const [domainId, agg] of Object.entries(domainAgg)) {
     domainScores[domainId] = Math.round((agg.sum / agg.count) * 100) / 100;
@@ -83,7 +86,6 @@ export async function getRecommendations(userId: string, limit = 3): Promise<Rec
   const profile = await buildUserProfile(userId);
   const recs: Recommendation[] = [];
 
-  /* Rule 1: User has no sessions — recommend best "starter" games */
   if (profile.games_played.length === 0) {
     const starters = await pool.query<{ id: string; name: string; domain_id: string }>(
       `SELECT id, name, domain_id FROM games
@@ -102,18 +104,18 @@ export async function getRecommendations(userId: string, limit = 3): Promise<Rec
     }));
   }
 
-  /* Rule 2: If user hasn't played in 3+ days — recommend Daily mode */
   if (profile.days_since_last !== null && profile.days_since_last >= 3) {
     const dailyGame = profile.games_played[0] ?? 'seq-mem';
     const g = await pool.query<{ id: string; name: string; domain_id: string }>(
       'SELECT id, name, domain_id FROM games WHERE id = $1',
       [dailyGame]
     );
-    if (g.rowCount) {
+    const first = g.rows[0];
+    if (first) {
       recs.push({
-        game_id: g.rows[0].id,
-        game_name: g.rows[0].name,
-        domain_id: g.rows[0].domain_id,
+        game_id: first.id,
+        game_name: first.name,
+        domain_id: first.domain_id,
         reason: `You haven't played in ${profile.days_since_last} days — Daily mode gets you back on track`,
         priority: 95,
         suggested_mode: 'daily',
@@ -121,7 +123,6 @@ export async function getRecommendations(userId: string, limit = 3): Promise<Rec
     }
   }
 
-  /* Rule 3: Weak games — recommend more practice */
   const weakToRecommend = profile.games_weak
     .filter((id) => !recs.find((r) => r.game_id === id))
     .slice(0, 1);
@@ -130,11 +131,12 @@ export async function getRecommendations(userId: string, limit = 3): Promise<Rec
       'SELECT id, name, domain_id FROM games WHERE id = $1',
       [gameId]
     );
-    if (g.rowCount) {
+    const first = g.rows[0];
+    if (first) {
       recs.push({
-        game_id: g.rows[0].id,
-        game_name: g.rows[0].name,
-        domain_id: g.rows[0].domain_id,
+        game_id: first.id,
+        game_name: first.name,
+        domain_id: first.domain_id,
         reason: 'Your accuracy is below 60% — try Precision mode to build consistency',
         priority: 80,
         suggested_mode: 'precision',
@@ -142,7 +144,6 @@ export async function getRecommendations(userId: string, limit = 3): Promise<Rec
     }
   }
 
-  /* Rule 4: Weakest domain — recommend a game from it */
   const weakest = Object.entries(profile.domain_scores)
     .filter(([id, score]) => score > 0 && score < 70 && !recs.find((r) => r.domain_id === id))
     .sort((a, b) => a[1] - b[1])[0];
@@ -155,11 +156,12 @@ export async function getRecommendations(userId: string, limit = 3): Promise<Rec
        ORDER BY RANDOM() LIMIT 1`,
       [weakest[0], profile.games_played]
     );
-    if (g.rowCount) {
+    const first = g.rows[0];
+    if (first) {
       recs.push({
-        game_id: g.rows[0].id,
-        game_name: g.rows[0].name,
-        domain_id: g.rows[0].domain_id,
+        game_id: first.id,
+        game_name: first.name,
+        domain_id: first.domain_id,
         reason: `Your ${weakest[0]} domain needs attention (score: ${weakest[1]})`,
         priority: 75,
         suggested_mode: 'classic',
@@ -167,7 +169,6 @@ export async function getRecommendations(userId: string, limit = 3): Promise<Rec
     }
   }
 
-  /* Rule 5: Challenge a strength — push to next level */
   if (profile.games_strong.length > 0 && recs.length < limit) {
     const strongGame = profile.games_strong[0]!;
     const already = recs.find((r) => r.game_id === strongGame);
@@ -176,11 +177,12 @@ export async function getRecommendations(userId: string, limit = 3): Promise<Rec
         'SELECT id, name, domain_id FROM games WHERE id = $1',
         [strongGame]
       );
-      if (g.rowCount) {
+      const first = g.rows[0];
+      if (first) {
         recs.push({
-          game_id: g.rows[0].id,
-          game_name: g.rows[0].name,
-          domain_id: g.rows[0].domain_id,
+          game_id: first.id,
+          game_name: first.name,
+          domain_id: first.domain_id,
           reason: `You excel here — try Endless mode to test your limits`,
           priority: 70,
           suggested_mode: 'endless',
@@ -189,7 +191,6 @@ export async function getRecommendations(userId: string, limit = 3): Promise<Rec
     }
   }
 
-  /* Rule 6: Fill remaining slots with popular games user hasn't played */
   if (recs.length < limit) {
     const remaining = limit - recs.length;
     const existing = recs.map((r) => r.game_id);

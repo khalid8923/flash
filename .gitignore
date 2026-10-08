@@ -1,4 +1,4 @@
-﻿# Dependencies
+# Dependencies
 node_modules/
 package-lock.json
 
@@ -27,11 +27,15 @@ npm-debug.log*
 dist/
 build/
 
-# Temp / backups
+# Temp / backups / snapshots
 *.bak
+*.bak2
+*.bak3
 *.tmp
 *~
 backup_*/
+*SNAPSHOT*.txt
+*.sql.bak
 
-# مشروع FLASH
+# Legacy
 Flash-old/

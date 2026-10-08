@@ -87,7 +87,7 @@ async function loadRawStats(userId: string): Promise<RawStats> {
      WHERE user_id = $1 AND status='accepted' AND deleted_at IS NULL`,
     [userId]
   );
-  const s = statsRes.rows[0];
+  const s = statsRes.rows[0] ?? null;
 
   /* Domain breakdown */
   const domRes = await pool.query<{ domain_id: string; avg_acc: number; n: number }>(
@@ -130,13 +130,13 @@ async function loadRawStats(userId: string): Promise<RawStats> {
   }
 
   return {
-    sessions_count: s.total ?? 0,
-    avg_accuracy: s.avg_acc ?? 0,
-    median_rt_ms: s.median_rt ?? 0,
-    rt_std_ms: s.rt_std ?? 0,
+    sessions_count: s?.total ?? 0,
+    avg_accuracy: s?.avg_acc ?? 0,
+    median_rt_ms: s?.median_rt ?? 0,
+    rt_std_ms: s?.rt_std ?? 0,
     accuracy_slope: Math.round(slope * 100) / 100,
-    unique_games_played: s.unique_games ?? 0,
-    domains_touched: s.domains ?? 0,
+    unique_games_played: s?.unique_games ?? 0,
+    domains_touched: s?.domains ?? 0,
     top_domain: topDom?.domain_id ?? null,
     top_domain_accuracy: topDom?.avg_acc ?? null,
     weakest_domain: weakDom?.domain_id ?? null,
