@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FLASH — Not found</title>
+<script>
+try{
+  var t = localStorage.getItem('flash.theme');
+  if (t !== 'dark' && t !== 'light') t = 'light';
+  document.documentElement.dataset.theme = t;
+} catch(e){}
+</script>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<style>
+html,body{ height:100%; display:grid; place-items:center; padding:20px; }
+.wrap{
+  max-width: 480px;
+  text-align: center;
+}
+.n{
+  font-size: 96px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ac);
+  letter-spacing: -.02em;
+  font-variant-numeric: tabular-nums;
+}
+h1{ font-size: 22px; margin: 12px 0 8px; }
+p{ color: var(--tx-mu); font-size: 14px; margin-bottom: 24px; }
+a.btn{
+  display: inline-block;
+  padding: 12px 24px;
+  background: var(--ac);
+  color: var(--on-ac);
+  font-weight: 600;
+  border-radius: var(--r-2);
+  transition: filter 160ms ease;
+}
+a.btn:hover{ filter: brightness(1.06); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="n">404</div>
+  <h1 id="t">Page not found</h1>
+  <p id="s">The page you are looking for does not exist.</p>
+  <a class="btn" href="index.html" id="b">Back to dashboard</a>
+</div>
+<script>
+(function(){
+  var l = 'en';
+  try { l = localStorage.getItem('flash.lang') || 'en'; } catch(e){}
+  if (l === 'ar'){
+    document.documentElement.lang = 'ar';
+    document.documentElement.dir = 'rtl';
+    document.getElementById('t').textContent = 'الصفحة غير موجودة';
+    document.getElementById('s').textContent = 'الصفحة التي تبحث عنها غير موجودة.';
+    document.getElementById('b').textContent = 'رجوع إلى الرئيسية';
+  }
+})();
+</script>
+</body>
+</html>

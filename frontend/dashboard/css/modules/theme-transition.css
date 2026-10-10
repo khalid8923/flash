@@ -1,0 +1,18 @@
+/* ═══════════════════════════════════════════════════════════
+   MODULE — Theme Transition
+   Circular reveal from toggle button
+   ═══════════════════════════════════════════════════════════ */
+.theme-overlay{
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  will-change: clip-path;
+  /* background & clip-path set inline by JS */
+}
+
+/* Optional: disable all transitions during the reveal
+   so text doesn't fade in the middle of the circle */
+body.theme-transitioning *{
+  transition: none !important;
+}

@@ -60,6 +60,14 @@ import { riverCrossingConfig } from './games/river-crossing.js';
 import { gearLogicConfig } from './games/gear-logic.js';
 import { pathFinderConfig } from './games/path-finder.js';
 
+/* ─── Bonus (6) ─── */
+import { flashCardsConfig } from './games/flash-cards.js';
+import { truthTblConfig } from './games/truth-tbl.js';
+import { digitSpanConfig } from './games/digit-span.js';
+import { mentalMathConfig } from './games/mental-math.js';
+import { numChainsConfig } from './games/num-chains.js';
+import { speedCalcConfig } from './games/speed-calc.js';
+
 /* ─── Master list ─── */
 export const ALL_GAMES: GameConfig[] = [
   // Attention (4)
@@ -80,6 +88,9 @@ export const ALL_GAMES: GameConfig[] = [
   microExpressionsConfig, toneDetectorConfig, empathyEngineConfig, socialReadConfig,
   // Problem (4)
   hanoiConfig, riverCrossingConfig, gearLogicConfig, pathFinderConfig,
+  // Bonus (6)
+  flashCardsConfig, truthTblConfig, digitSpanConfig,
+  mentalMathConfig, numChainsConfig, speedCalcConfig,
 ];
 
 /* ─── Fast lookup ─── */

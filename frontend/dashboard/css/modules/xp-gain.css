@@ -1,0 +1,35 @@
+/* ═══════════════════════════════════════════════════════════
+   MODULE — XP Gain Animation
+   Count-up + linear particle spray (no gravity, no confetti).
+   Particles use the domain accent color only.
+   ═══════════════════════════════════════════════════════════ */
+.xp-particles{
+  position: fixed;
+  pointer-events: none;
+  z-index: 200;
+  overflow: visible;
+}
+.xp-particle{
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  border-radius: 50%;
+  background: var(--ac);
+  will-change: transform, opacity;
+  transform: translate(-50%, -50%);
+}
+
+/* Flash on bar leading edge */
+.xp-bar-flash{
+  animation: xp-flash 240ms cubic-bezier(0.16, 1, 0.3, 1) 1;
+}
+@keyframes xp-flash{
+  0%   { filter: brightness(1); }
+  40%  { filter: brightness(1.35); }
+  100% { filter: brightness(1); }
+}
+
+/* The XP number itself */
+.stat-xp b.counting{
+  transition: color 200ms ease;
+}

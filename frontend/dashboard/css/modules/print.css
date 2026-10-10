@@ -1,0 +1,123 @@
+/* =========================================================
+   MODULE - Print Styles
+   Clean printable version of the dashboard.
+   Trigger: Ctrl+P → "Save as PDF"
+   ========================================================= */
+@media print {
+  /* Remove UI chrome */
+  .tools,
+  #th,
+  #focus-btn,
+  #export-btn,
+  .bottom-nav,
+  .split-pane,
+  .nav-reveal,
+  .theme-overlay,
+  .cp-overlay,
+  .compare-overlay,
+  .cheat-overlay,
+  .session-hud,
+  .milestone-burst,
+  .export-toast,
+  #brain,
+  .xp-particles {
+    display: none !important;
+  }
+
+  /* Reset colors */
+  html, body{
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  /* Shell becomes print layout */
+  .shell{
+    max-width: none;
+    padding: 0;
+    min-height: 0;
+  }
+
+  /* Main → single column */
+  .main{
+    display: block !important;
+  }
+  .col{
+    display: block;
+    margin-bottom: 16px;
+    page-break-inside: avoid;
+  }
+
+  /* Panels */
+  .pn{
+    border: 1px solid #999 !important;
+    background: #fff !important;
+    page-break-inside: avoid;
+    margin-bottom: 12px;
+  }
+
+  /* Lanes — keep sparklines but no colors */
+  .lane{
+    border-top: 1px solid #ccc !important;
+    background: none !important;
+  }
+  .lane-plot svg path{
+    stroke: #000 !important;
+    opacity: .6 !important;
+  }
+  .lane-dot{
+    border: 1px solid #000 !important;
+    background: #fff !important;
+  }
+
+  /* Tables */
+  .tbl{
+    font-size: 10px;
+  }
+  .tbl th{
+    border-bottom: 1.5px solid #000;
+  }
+  .tbl td{
+    border-bottom: 1px solid #ccc;
+  }
+  .tbl .tr-dot{
+    display: none;
+  }
+
+  /* Footer */
+  .ft{
+    border-top: 1.5px solid #000;
+    padding-top: 12px;
+  }
+
+  /* Typography */
+  body{
+    font-size: 11pt;
+    line-height: 1.4;
+  }
+  h1, h2, h3{
+    color: #000;
+  }
+
+  /* Header prints the brand only */
+  .hdr{
+    border-bottom: 2px solid #000;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+  }
+  .wm{
+    font-size: 22pt;
+    color: #000;
+    letter-spacing: .1em;
+  }
+
+  /* SVG charts — reduce opacity for ink-saving */
+  svg{
+    opacity: .9;
+  }
+
+  /* Hide animations */
+  *, *::before, *::after{
+    animation: none !important;
+    transition: none !important;
+  }
+}

@@ -1,0 +1,114 @@
+/* ═══════════════════════════════════════════════════════════
+   MODULE — Interactions
+   Refined micro-animations for CTA, lane, and toggle.
+   Every duration/easing comes from tokens.css.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── CTA button ─── */
+.cta{
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform var(--t-fast) var(--e-out),
+    filter var(--t-fast) var(--e-std),
+    box-shadow var(--t-base) var(--e-out);
+}
+.cta:hover{
+  filter: brightness(1.06);
+  box-shadow: 0 6px 20px -8px var(--ac);
+}
+.cta:active{
+  transform: scale(0.985);
+  transition-duration: 90ms;
+}
+
+/* Specular sweep on hover (once) */
+.cta::after{
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40%;
+  left: -50%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255,255,255,.28),
+    transparent
+  );
+  transform: skewX(-20deg);
+  opacity: 0;
+  pointer-events: none;
+}
+.cta:hover::after{
+  animation: cta-shine 520ms cubic-bezier(0.16, 1, 0.3, 1) 1 forwards;
+}
+@keyframes cta-shine{
+  0%   { left: -50%; opacity: 0; }
+  20%  {            opacity: 1; }
+  100% { left: 120%; opacity: 0; }
+}
+
+/* ─── Lane hover: sparkline thickens ─── */
+.lane-plot .l-hist,
+.lane-plot .l-fore{
+  transition: stroke-width var(--t-fast) var(--e-out),
+              opacity     var(--t-fast) var(--e-std);
+}
+.lane:hover .l-hist,
+.lane:focus-visible .l-hist{
+  stroke-width: 2.4;
+}
+.lane:hover .l-fore,
+.lane:focus-visible .l-fore{
+  opacity: .7;
+}
+
+/* ─── Theme toggle: rotate on hover ─── */
+.th svg{
+  transition: transform var(--t-base) var(--e-out),
+              color     var(--t-fast) var(--e-std);
+}
+.th:hover svg{
+  transform: rotate(15deg);
+}
+
+/* ─── Language toggle: slide on hover ─── */
+.lg button{
+  position: relative;
+}
+.lg button::after{
+  content: "";
+  position: absolute;
+  inset-inline: 8px;
+  bottom: 4px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: var(--dir) center;
+  transition: transform var(--t-base) var(--e-out);
+}
+[dir=rtl] .lg button::after{
+  transform-origin: right center;
+}
+.lg button:hover::after{
+  transform: scaleX(1);
+}
+.lg button[aria-pressed=true]::after{
+  display: none;
+}
+
+/* ─── Reduced-motion: kill everything ─── */
+@media (prefers-reduced-motion: reduce){
+  .cta,
+  .cta:hover,
+  .cta:active{
+    transform: none;
+    box-shadow: none;
+  }
+  .cta:hover::after{ display: none; }
+  .lane-plot .l-hist,
+  .lane-plot .l-fore{ stroke-width: auto; }
+  .th:hover svg{ transform: none; }
+  .lg button::after{ display: none; }
+}

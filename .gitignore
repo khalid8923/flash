@@ -1,41 +1,54 @@
 # Dependencies
 node_modules/
-package-lock.json
+.pnpm-store/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Backups
+*.bak
+*.bak2
+*.bak3
+backups/
+_legacy/
+*.backup
+
+# Logs
+*.log
+npm-debug.log*
+yarn-error.log*
+dev.log
 
 # OS
+.DS_Store
 Thumbs.db
 desktop.ini
-.DS_Store
 
 # IDE
 .vscode/
 .idea/
 *.swp
 
-# Logs
-*.log
-npm-debug.log*
+# Test outputs
+coverage/
+.nyc_output/
 
-# Env & Secrets
-.env
-.env.local
-.env.*.local
-*.pem
-*.key
+# Local admin
+.admin-token
 
-# Build artifacts
-dist/
-build/
-
-# Temp / backups / snapshots
-*.bak
-*.bak2
-*.bak3
+# Temp
+tmp/
+temp/
 *.tmp
-*~
-backup_*/
-*SNAPSHOT*.txt
-*.sql.bak
 
-# Legacy
-Flash-old/
+# Original screenshot artifacts
+flash-sessions.csv

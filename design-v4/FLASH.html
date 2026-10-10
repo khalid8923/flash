@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FLASH</title>
+<link rel="stylesheet" href="flash.css">
+</head>
+<body>
+<header class="bar">
+<h1 class="mark">FLASH <span data-i="rec"></span> <time id="date"></time></h1>
+<div class="ctl"><button id="hc" type="button" aria-pressed="false" data-i="contrast"></button><button id="lg" type="button" data-i="otherLang"></button></div>
+</header>
+<main id="app"></main>
+<form id="note" class="noteline" autocomplete="off">
+<div id="log" aria-live="polite"></div>
+<div class="row"><label for="q" data-i="annotate"></label><input id="q" type="text" maxlength="400"><button type="submit" data-i="write"></button></div>
+</form>
+<script src="js/flash-data.js"></script>
+<script src="js/flash-core.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+/* =========================================================
+   MODULE - Data IO toast
+   ========================================================= */
+.dataio-toast{
+  position: fixed;
+  bottom: 20px;
+  inset-inline-start: 20px;
+  padding: 10px 16px;
+  background: var(--pn);
+  color: var(--tx);
+  border: 1px solid var(--ln-strong);
+  border-radius: var(--r-2);
+  font-size: 13px;
+  z-index: 9999;
+  box-shadow: 0 12px 32px -8px rgba(0,0,0,.35);
+  transform: translateY(12px);
+  opacity: 0;
+  transition: transform 320ms var(--e-out),
+              opacity  320ms var(--e-out);
+}
+.dataio-toast.on{ transform: translateY(0); opacity: 1; }

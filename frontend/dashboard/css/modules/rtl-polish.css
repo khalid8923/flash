@@ -1,0 +1,66 @@
+/* ═══════════════════════════════════════════════════════════
+   MODULE — RTL Polish
+   Handles all RTL edge cases that logical properties miss.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Numbers stay LTR in RTL context ─── */
+[dir=rtl] .nm,
+[dir=rtl] .k b,
+[dir=rtl] .stat b,
+[dir=rtl] .sp-mastery,
+[dir=rtl] .lane-pct,
+[dir=rtl] .tbl td.num,
+[dir=rtl] .sp-row .d{
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
+}
+
+/* ─── Chevron / arrow flip ─── */
+[dir=rtl] .lane-chev,
+[dir=rtl] .arr,
+[dir=rtl] .sp-back svg,
+[dir=rtl] .cta::after{
+  transform: scaleX(-1);
+}
+
+/* ─── Bar animations mirror ─── */
+[dir=rtl] .xp-bg,
+[dir=rtl] .xp-fill,
+[dir=rtl] .stat-xp svg{
+  transform: scaleX(-1);
+  transform-origin: right center;
+}
+
+/* ─── Fade-in rule for RTL transitions ─── */
+[dir=rtl] .lane-plot svg{ transform: scaleX(-1); }
+
+/* ─── Panel pinning: Back arrow direction ─── */
+[dir=rtl] .sp-back{ transform: scaleX(-1); }
+[dir=rtl] .sp-back:hover{ transform: scaleX(-1); }
+
+/* ─── Table alignment ─── */
+[dir=rtl] .tbl th,
+[dir=rtl] .tbl td{ text-align: start; }
+[dir=rtl] .tbl th.num,
+[dir=rtl] .tbl td.num{ text-align: end; }
+
+/* ─── Streak ring rotation origin ─── */
+[dir=rtl] .streak-ring-wrap svg{ transform: rotate(-90deg) scaleX(-1); }
+
+/* ─── Arabic typography tweaks ─── */
+[dir=rtl] body{
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+[dir=rtl] .ai{
+  font-family: var(--font-serif-ar);
+  font-style: normal;
+}
+[dir=rtl] .plan .pl-reason{ font-style: normal; }
+
+/* ─── Panel side border (already uses inset-inline) ─── */
+[dir=rtl] .split-pane{
+  border-inline-start: 0;
+  border-inline-end: 1px solid var(--ln);
+}

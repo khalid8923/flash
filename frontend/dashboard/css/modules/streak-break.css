@@ -1,0 +1,70 @@
+/* ═══════════════════════════════════════════════════════════
+   MODULE — Streak Break + XP Proximity
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Streak break ─── */
+.streak-wrap.breaking .streak-ring-num{
+  animation: streak-crack 600ms cubic-bezier(0.5, 0, 0.5, 1) forwards;
+  transform-origin: center;
+}
+@keyframes streak-crack{
+  0%   { filter: saturate(1); transform: scale(1); }
+  15%  { transform: translateX(-1px) scale(0.985); }
+  30%  { transform: translateX(1px)  scale(0.985); }
+  50%  { filter: saturate(0.4); }
+  100% { filter: saturate(0) brightness(0.7);
+         transform: scale(1); }
+}
+
+/* The splitting halves — created by JS */
+.streak-half{
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font: inherit;
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+/* New zero value fades in */
+.streak-wrap.breaking .streak-ring-fill{
+  transition: stroke-dashoffset 400ms cubic-bezier(0.5, 0, 0.5, 1),
+              opacity            400ms linear;
+  opacity: 0.15;
+}
+
+/* Freeze-heal — a cool flash on the ring */
+.streak-wrap.healing .streak-ring-fill{
+  animation: streak-heal 400ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes streak-heal{
+  0%   { stroke: var(--ac); opacity: 0.15; }
+  50%  { stroke: var(--dc); opacity: 1; }
+  100% { stroke: var(--ac); opacity: 1; }
+}
+
+/* ─── XP proximity glow ─── */
+[data-xp-near="true"] .stat-xp .xp-fill{
+  animation: xp-proximity 5s ease-in-out infinite;
+  filter: drop-shadow(0 0 4px var(--ac));
+}
+@keyframes xp-proximity{
+  0%, 100% { filter: drop-shadow(0 0 4px var(--ac)); }
+  50%      { filter: drop-shadow(0 0 10px var(--ac)); }
+}
+
+/* ─── Freeze token spark (subtle) ─── */
+.freeze-spark{
+  animation: freeze-spark 24s linear infinite;
+}
+@keyframes freeze-spark{
+  0%, 92%, 100% { opacity: 1; }
+  94%           { opacity: 0.4; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .streak-wrap.breaking .streak-ring-num{ animation: none; filter: saturate(0); }
+  .streak-wrap.breaking .streak-ring-fill{ opacity: 0.2; }
+  [data-xp-near="true"] .stat-xp .xp-fill{ animation: none; }
+}

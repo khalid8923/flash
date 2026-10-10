@@ -1,0 +1,55 @@
+/* =========================================================
+   MODULE - XP Milestone
+   Radial ring burst on level-up. No confetti.
+   ========================================================= */
+.milestone-burst{
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 900;
+  display: grid;
+  place-items: center;
+}
+.milestone-ring{
+  position: absolute;
+  border: 2px solid var(--ac);
+  border-radius: 50%;
+  opacity: 0;
+}
+.milestone-label{
+  position: absolute;
+  padding: 10px 20px;
+  background: var(--pn);
+  border: 1.5px solid var(--ac);
+  color: var(--ac);
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  border-radius: var(--r-2);
+  opacity: 0;
+  transform: scale(.85);
+  animation: milestone-label 1600ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes milestone-label{
+  0%   { opacity: 0; transform: scale(.85); }
+  15%  { opacity: 1; transform: scale(1); }
+  80%  { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.05); }
+}
+.milestone-ring.r1{ animation: milestone-ring 1400ms cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.milestone-ring.r2{ animation: milestone-ring 1400ms cubic-bezier(0.16, 1, 0.3, 1) 200ms forwards; }
+.milestone-ring.r3{ animation: milestone-ring 1400ms cubic-bezier(0.16, 1, 0.3, 1) 400ms forwards; }
+@keyframes milestone-ring{
+  0%   { width: 0; height: 0; opacity: 1; }
+  100% { width: 520px; height: 520px; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .milestone-ring{ display: none; }
+  .milestone-label{ animation: milestone-label-reduced 900ms linear forwards; }
+  @keyframes milestone-label-reduced{
+    0%, 100% { opacity: 0; }
+    50%      { opacity: 1; }
+  }
+}

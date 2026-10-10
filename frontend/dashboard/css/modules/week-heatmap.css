@@ -1,0 +1,70 @@
+/* ═══════════════════════════════════════════════════════════
+   MODULE — Week Heatmap Strip
+   A compact 7-day × 10-domain intensity grid. Lives at the
+   bottom of the footer. Answers "when do I train, and how
+   much?" in one glance.
+   ═══════════════════════════════════════════════════════════ */
+.week-heat{
+  grid-column: 1 / -1;
+  margin-top: var(--sp-2);
+  padding-top: var(--sp-3);
+  border-top: 1px solid var(--ln);
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  gap: var(--sp-3);
+  align-items: center;
+}
+.week-heat .lh{
+  font-size: 11px;
+  color: var(--tx-mu);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+.week-grid{
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+}
+.week-cell{
+  position: relative;
+  aspect-ratio: 1 / 1;
+  min-height: 18px;
+  border-radius: 2px;
+  background: var(--ln);
+  transition: transform var(--t-fast) var(--e-out),
+              background var(--t-base) var(--e-std);
+  cursor: default;
+}
+.week-cell:hover{
+  transform: scale(1.15);
+  z-index: 2;
+}
+.week-cell[data-level="1"]{ background: color-mix(in srgb, var(--ac) 20%, var(--ln)); }
+.week-cell[data-level="2"]{ background: color-mix(in srgb, var(--ac) 45%, var(--ln)); }
+.week-cell[data-level="3"]{ background: color-mix(in srgb, var(--ac) 70%, var(--ln)); }
+.week-cell[data-level="4"]{ background: var(--ac); }
+.week-cell.today{
+  outline: 1.5px solid var(--tx);
+  outline-offset: 1px;
+}
+.week-days{
+  grid-column: 2;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  margin-top: 2px;
+  font-size: 10px;
+  color: var(--tx-mu);
+  text-align: center;
+}
+
+@media (max-width: 760px){
+  .week-heat{
+    grid-template-columns: 1fr;
+  }
+  .week-heat .lh{ margin-bottom: 4px; }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .week-cell:hover{ transform: none; }
+}
