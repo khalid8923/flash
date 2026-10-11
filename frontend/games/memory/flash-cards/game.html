@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,10 +22,15 @@
         <span class="g-meta-value" id="level-display">1</span>
       </span>
       <span class="g-meta-item">
+        <span class="g-meta-label">TILES</span>
+        <span class="g-meta-value" id="tiles-display">0</span>
+      </span>
+      <span class="g-meta-item">
         <span class="g-meta-label">LIVES</span>
-        <span class="g-meta-value" id="lives-display">3</span>
+        <span class="g-meta-value" id="lives-display">—</span>
       </span>
     </div>
+    <button class="g-settings-btn" id="settings-btn" aria-label="Settings">⚙</button>
   </header>
 
   <main id="stage" class="stage" data-phase="idle">
@@ -35,10 +40,17 @@
   </main>
 
   <footer class="g-footer">
-    <div class="g-hint" id="hint-text">Press <kbd>Space</kbd> or click to continue</div>
+    <div class="hint-bar"><div class="hint-progress" id="hint-progress"></div></div>
   </footer>
 </div>
 
+<script src="../../../shared/i18n.js"></script>
+<script src="../../../shared/settings.js"></script>
+<script src="../../../shared/flash-stages.js"></script>
+<script src="flash-cards-stages.js"></script>
+<script src="flash-cards-helpers.js"></script>
+<script src="flash-cards-sounds.js"></script>
+<script src="flash-cards-extra-modes.js"></script>
 <script src="game.js"></script>
 </body>
 </html>

@@ -71,5 +71,111 @@ window.FLASH_DATA = {
   weeklyInsight: {
     text_en:"Your spatial accuracy trails. One focused week could close the gap.",
     text_ar:"دقة الإدراك المكاني متأخرة. أسبوع مركّز قد يقلّص الفجوة."
+  },
+  games: {
+    attention: [
+      { id:"flanker", n_en:"Flanker Test", n_ar:"اختبار فلانكر", ic:"🎯",
+        d_en:"Conflict resolution · Eriksen 1974", d_ar:"حل التعارض · إريكسن 1974", status:"ready" },
+      { id:"go-no-go", n_en:"Go / No-Go", n_ar:"انطلق / توقف", ic:"🚦",
+        d_en:"Response inhibition · Drewe 1975", d_ar:"كبح الاستجابة · درو 1975", status:"ready" },
+      { id:"task-switching", n_en:"Task Switching", n_ar:"تبديل المهام", ic:"🔀",
+        d_en:"Cognitive flexibility · Monsell 2003", d_ar:"المرونة المعرفية · مونسيل 2003", status:"ready" },
+      { id:"vigilance", n_en:"Vigilance", n_ar:"اليقظة", ic:"👁️",
+        d_en:"Sustained attention · Rosvold 1956", d_ar:"الانتباه المستمر · روزفولد 1956", status:"ready" }
+    ],
+    spatial: [
+      { id:"mental-rotation", n_en:"Mental Rotation", n_ar:"التدوير الذهني", ic:"🔄",
+        d_en:"3D rotation · Shepard 1971", d_ar:"تدوير ثلاثي الأبعاد · شبرد 1971", status:"ready" },
+      { id:"corsi-blocks", n_en:"Corsi Blocks", n_ar:"مكعبات كورسي", ic:"🧱",
+        d_en:"Visuospatial span · Corsi 1972", d_ar:"النطاق المكاني · كورسي 1972", status:"ready" },
+      { id:"map-memory", n_en:"Map Memory", n_ar:"ذاكرة الخريطة", ic:"🗺️",
+        d_en:"Topographical memory · Postma 1996", d_ar:"الذاكرة الطبوغرافية · بوستما 1996", status:"ready" },
+      { id:"block-counter", n_en:"Block Counter", n_ar:"عدّ الكتل", ic:"📦",
+        d_en:"Hidden blocks · KABC-II", d_ar:"الكتل المخفية · KABC-II", status:"ready" }
+    ],
+    speed: [
+      { id:"reaction", n_en:"Reaction", n_ar:"رد الفعل", ic:"⚡",
+        d_en:"Simple RT · Ball 2002", d_ar:"زمن رد الفعل البسيط · بول 2002", status:"ready" },
+      { id:"color-match", n_en:"Color Match", n_ar:"مطابقة الألوان", ic:"🎨",
+        d_en:"Stroop · 1935", d_ar:"سترُوب · 1935", status:"ready" },
+      { id:"symbol-sprint", n_en:"Symbol Sprint", n_ar:"سرعة الرموز", ic:"🔍",
+        d_en:"Visual search · Treisman 1980", d_ar:"البحث البصري · تريزمان 1980", status:"ready" },
+      { id:"rapid-fire", n_en:"Rapid Fire", n_ar:"النيران السريعة", ic:"🔥",
+        d_en:"Multi-rule switching · Monsell 2003", d_ar:"تبديل قواعد متعددة · مونسيل 2003", status:"ready" }
+    ],
+    memory: [
+      { id:"n-back", n_en:"N-Back", n_ar:"إن-باك", ic:"🧠",
+        d_en:"Working memory · Jaeggi 2008", d_ar:"الذاكرة العاملة · جيجي 2008", status:"ready" },
+      { id:"face-match", n_en:"Face Match", n_ar:"مطابقة الوجوه", ic:"👤",
+        d_en:"Associative memory · Naveh-Benjamin 2000", d_ar:"الذاكرة الترابطية · نافيه-بنيامين 2000", status:"ready" },
+      { id:"pattern-recall", n_en:"Pattern Recall", n_ar:"استرجاع الأنماط", ic:"🔷",
+        d_en:"Visuospatial span · Corsi 1972", d_ar:"النطاق البصري المكاني · كورسي 1972", status:"ready" },
+      { id:"seq-mem", n_en:"Sequence Memory", n_ar:"ذاكرة التسلسل", ic:"🔢",
+        d_en:"Digit span · Miller 1956", d_ar:"نطاق الأرقام · ميلر 1956", status:"ready" },
+      { id:"flash-cards", n_en:"Flash Cards", n_ar:"البطاقات الوميضية", ic:"🃏",
+        d_en:"Visual memory · Naveh-Benjamin 2000", d_ar:"الذاكرة البصرية · نافيه-بنيامين 2000", status:"ready" }
+    ],
+    logic: [
+      { id:"matrix-logic", n_en:"Matrix Logic", n_ar:"منطق المصفوفات", ic:"🔲",
+        d_en:"Raven matrices · 1938", d_ar:"مصفوفات رافن · 1938", status:"ready" },
+      { id:"syllogisms", n_en:"Syllogisms", n_ar:"القياس المنطقي", ic:"📐",
+        d_en:"Aristotelian deduction · Aristotle", d_ar:"الاستنباط الأرسطي · أرسطو", status:"ready" },
+      { id:"deduction", n_en:"Deduction", n_ar:"الاستنباط", ic:"🔍",
+        d_en:"Inference · Evans 2008", d_ar:"الاستدلال · إيفانز 2008", status:"ready" },
+      { id:"argument-analyzer", n_en:"Argument Analyzer", n_ar:"محلل الحجج", ic:"⚖️",
+        d_en:"Fallacy detection · Abrami 2015", d_ar:"كشف المغالطات · أبرامي 2015", status:"ready" },
+      { id:"truth-tbl", n_en:"Truth Tables", n_ar:"جداول الحقيقة", ic:"📋",
+        d_en:"Boolean logic · Wason 1966", d_ar:"منطق بولياني · واسون 1966", status:"ready" }
+    ],
+    language: [
+      { id:"lexical-decision", n_en:"Lexical Decision", n_ar:"القرار المعجمي", ic:"📖",
+        d_en:"Semantic priming · Meyer 1971", d_ar:"التجهيز الدلالي · ماير 1971", status:"ready" },
+      { id:"vocabulary-elite", n_en:"Vocabulary Elite", n_ar:"نخبة المفردات", ic:"📚",
+        d_en:"Synonym matching · WAIS-IV", d_ar:"مطابقة المرادفات · WAIS-IV", status:"ready" },
+      { id:"verbal-analogies", n_en:"Verbal Analogies", n_ar:"التناظر اللفظي", ic:"🔗",
+        d_en:"A→B :: C→? · Sternberg 1977", d_ar:"أ→ب :: ج→؟ · ستيرنبرغ 1977", status:"ready" },
+      { id:"word-scramble", n_en:"Word Scramble", n_ar:"ترتيب الحروف", ic:"🔤",
+        d_en:"Lexical access · WAIS-IV", d_ar:"الوصول المعجمي · WAIS-IV", status:"ready" }
+    ],
+    creativity: [
+      { id:"alternative-uses", n_en:"Alternative Uses", n_ar:"الاستخدامات البديلة", ic:"💡",
+        d_en:"Divergent thinking · Guilford 1967", d_ar:"التفكير التباعدي · جيلفورد 1967", status:"ready" },
+      { id:"creative-connect", n_en:"Creative Connect", n_ar:"الربط الإبداعي", ic:"🌐",
+        d_en:"Remote Associates · Mednick 1962", d_ar:"الروابط البعيدة · ميدنيك 1962", status:"ready" },
+      { id:"story-spark", n_en:"Story Spark", n_ar:"شرارة القصة", ic:"✨",
+        d_en:"Narrative creativity · Amabile 1982", d_ar:"الإبداع السردي · أمابيلا 1982", status:"ready" },
+      { id:"idea-flow", n_en:"Idea Flow", n_ar:"تدفق الأفكار", ic:"🌊",
+        d_en:"Ideational fluency · Guilford", d_ar:"طلاقة الأفكار · جيلفورد", status:"ready" }
+    ],
+    emotional: [
+      { id:"micro-expressions", n_en:"Micro Expressions", n_ar:"التعابير الدقيقة", ic:"😮",
+        d_en:"Facial emotion · Ekman 1969", d_ar:"تعابير الوجه · إكمان 1969", status:"ready" },
+      { id:"tone-detector", n_en:"Tone Detector", n_ar:"كاشف النبرة", ic:"🎵",
+        d_en:"Emotional tone · MSCEIT", d_ar:"النبرة العاطفية · MSCEIT", status:"ready" },
+      { id:"empathy-engine", n_en:"Empathy Engine", n_ar:"محرك التعاطف", ic:"🫂",
+        d_en:"Empathic accuracy · Ickes 1993", d_ar:"الدقة التعاطفية · إيكس 1993", status:"ready" },
+      { id:"social-read", n_en:"Social Read", n_ar:"القراءة الاجتماعية", ic:"👥",
+        d_en:"Group dynamics · Burgoon 1994", d_ar:"ديناميكيات المجموعة · بيرجون 1994", status:"ready" }
+    ],
+    problem: [
+      { id:"hanoi", n_en:"Tower of Hanoi", n_ar:"برج هانوي", ic:"🗼",
+        d_en:"Recursive planning · Simon 1975", d_ar:"التخطيط التكراري · سايمون 1975", status:"ready" },
+      { id:"river-crossing", n_en:"River Crossing", n_ar:"عبور النهر", ic:"🌊",
+        d_en:"Constraint satisfaction · Simon 1971", d_ar:"إرضاء القيود · سايمون 1971", status:"ready" },
+      { id:"gear-logic", n_en:"Gear Logic", n_ar:"منطق التروس", ic:"⚙️",
+        d_en:"Mechanical reasoning · Hegarty 2004", d_ar:"الاستدلال الميكانيكي · هيجارتي 2004", status:"ready" },
+      { id:"path-finder", n_en:"Path Finder", n_ar:"مكتشف المسار", ic:"🧭",
+        d_en:"Maze planning · Shallice 1982", d_ar:"تخطيط المتاهة · شاليس 1982", status:"ready" }
+    ],
+    numerical: [
+      { id:"digit-span", n_en:"Digit Span", n_ar:"مدى الأرقام", ic:"📊",
+        d_en:"Backward recall · WAIS-IV", d_ar:"استدعاء عكسي · WAIS-IV", status:"ready" },
+      { id:"mental-math", n_en:"Mental Math", n_ar:"الحساب الذهني", ic:"➕",
+        d_en:"Arithmetic chains · Dehaene 1999", d_ar:"سلاسل حسابية · ديهاين 1999", status:"ready" },
+      { id:"num-chains", n_en:"Number Chains", n_ar:"سلاسل الأرقام", ic:"🔗",
+        d_en:"Patterns · Kyllonen 1990", d_ar:"الأنماط الرقمية · كيلونين 1990", status:"ready" },
+      { id:"speed-calc", n_en:"Speed Calculus", n_ar:"الحساب السريع", ic:"⚡",
+        d_en:"Equation speed · Salthouse 1996", d_ar:"سرعة المعادلات · سولتهاوس 1996", status:"ready" }
+    ]
   }
 };

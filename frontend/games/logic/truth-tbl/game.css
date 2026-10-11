@@ -417,3 +417,107 @@ html, body {
   .g-meta-item:nth-child(2) { display: none; }
   .solution-step { font-size: 12px; }
 }
+/* ═══ Integration + Truth Table specific ═══ */
+.g-settings-btn { background:none; border:0; color:var(--t2); font-size:20px; cursor:pointer; padding:4px 8px; margin-left:12px; transition:color .2s; }
+.g-settings-btn:hover { color:var(--cyan); }
+
+.mode-ledger { display:flex; flex-direction:column; gap:8px; max-width:480px; margin:20px auto; width:100%; }
+.mode-notch { display:flex; align-items:center; gap:12px; padding:14px 18px; background:var(--bg-1); border:1px solid var(--bd); border-radius:12px; cursor:pointer; color:var(--t1); text-align:left; transition:all .2s; font-family:var(--f-d); }
+.mode-notch:hover:not([aria-disabled=true]) { border-color:var(--cyan); background:rgba(0,238,255,.08); transform:translateX(4px); }
+.mode-notch[aria-disabled=true] { opacity:.35; cursor:not-allowed; }
+.mode-notch b { font-size:15px; font-weight:600; min-width:90px; color:var(--t1); }
+.mode-notch small { color:var(--t2); font-size:13px; }
+
+.pb-row, .mission-row { display:flex; flex-wrap:wrap; gap:8px 20px; justify-content:center; font-family:var(--f-m); font-size:12px; color:var(--t2); margin-top:12px; }
+.pb-row span, .mission-row span { display:inline-block; padding:4px 10px; background:rgba(0,238,255,.06); border-radius:6px; }
+
+.stage-strip { display:flex; flex-wrap:wrap; gap:4px; justify-content:center; margin-top:16px; }
+.stage-strip .stg { padding:3px 8px 5px; border-top:2px solid rgba(0,238,255,.3); font-size:11px; color:var(--t3); font-family:var(--f-m); }
+.stage-strip .stg.on { border-top-color:var(--cyan); color:var(--cyan); }
+
+.pbm { color:var(--cyan); font-weight:600; margin-top:12px; font-family:var(--f-m); font-size:14px; letter-spacing:1px; }
+.stage-tag { color:var(--cyan); font-size:13px; margin-top:8px; font-family:var(--f-m); }
+[dir=rtl] .mode-notch:hover:not([aria-disabled=true]) { transform:translateX(-4px); }
+
+/* ═══ Expression display ═══ */
+.expr-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  margin: 20px auto 28px;
+  width: min(560px, 94vw);
+}
+.expr-vars {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.expr-var {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  background: var(--bg-1);
+  border: 2px solid var(--bd);
+  border-radius: 12px;
+  font-family: var(--f-m);
+  font-size: 15px;
+}
+.expr-var .k { color: var(--t2); font-weight: 600; }
+.expr-var .v { color: var(--cyan); font-weight: 700; }
+.expr-var[data-v="false"] .v { color: var(--pink); }
+
+.expr-body {
+  padding: 28px 32px;
+  background: var(--bg-1);
+  border: 2px solid var(--purple);
+  border-radius: 16px;
+  font-family: var(--f-m);
+  font-size: clamp(20px, 4vw, 30px);
+  letter-spacing: 2px;
+  font-weight: 600;
+  color: var(--t1);
+  text-align: center;
+  box-shadow: 0 0 40px rgba(157,78,221,.25);
+}
+.expr-body .op { color: var(--purple); margin: 0 8px; }
+.expr-body .var { color: var(--cyan); }
+.expr-body .paren { color: var(--t2); }
+
+.answer-row {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.answer-btn {
+  min-width: 140px;
+  padding: 18px 28px;
+  border-radius: 14px;
+  border: 2px solid var(--bd);
+  background: var(--bg-1);
+  color: var(--t1);
+  font-family: var(--f-d);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.answer-btn[data-answer="true"]:hover { border-color: var(--green); background: rgba(0,255,150,.08); color: var(--green); }
+.answer-btn[data-answer="false"]:hover { border-color: var(--pink); background: rgba(255,0,119,.08); color: var(--pink); }
+.answer-btn:active { transform: scale(.97); }
+.answer-btn.correct { background: var(--green); border-color: var(--green); color: #000; }
+.answer-btn.wrong { background: var(--pink); border-color: var(--pink); color: #fff; }
+
+.timer-display {
+  font-family: var(--f-m);
+  font-size: 14px;
+  color: var(--orange);
+  letter-spacing: 2px;
+  margin-top: 8px;
+}
+.timer-display.low { color: var(--pink); animation: pulse-low .5s ease-in-out infinite; }
+@keyframes pulse-low { 50% { opacity: .4; } }

@@ -1,0 +1,123 @@
+/* =========================================================
+   MODULE - Live Status
+   Header badge (Live / Demo / Connecting) + skeleton
+   loaders + status toast.
+   ========================================================= */
+
+/* ─── Header badge ─── */
+.live-badge{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .04em;
+  border: 1px solid var(--ln);
+  background: var(--pn);
+  color: var(--tx-mu);
+  cursor: pointer;
+  transition: color var(--t-fast) var(--e-std),
+              border-color var(--t-fast) var(--e-std),
+              background var(--t-fast) var(--e-std);
+  white-space: nowrap;
+}
+.live-badge:hover{
+  color: var(--tx);
+  border-color: var(--ln-strong);
+}
+.live-badge .dot{
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tx-mu);
+  transition: background 320ms var(--e-std),
+              box-shadow 320ms var(--e-std);
+}
+.live-badge[data-state="live"] .dot{
+  background: var(--ac);
+  box-shadow: 0 0 8px var(--ac);
+}
+.live-badge[data-state="live"]{
+  color: var(--tx);
+}
+.live-badge[data-state="connecting"] .dot{
+  background: var(--ac);
+  animation: live-pulse 1s ease-in-out infinite;
+}
+@keyframes live-pulse{
+  50% { opacity: 0.35; }
+}
+.live-badge[data-state="mock"] .dot{
+  background: var(--tx-mu);
+}
+
+@media (max-width: 560px){
+  .live-badge .label{ display: none; }
+}
+
+/* ─── Skeleton loaders ─── */
+.skel{
+  display: block;
+  height: 1em;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--ln) 0%,
+    color-mix(in srgb, var(--ln) 60%, var(--pn)) 50%,
+    var(--ln) 100%
+  );
+  background-size: 200% 100%;
+  animation: skel-shimmer 1.4s linear infinite;
+}
+@keyframes skel-shimmer{
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+.skel-line{ height: 12px; margin-bottom: 8px; }
+.skel-title{ height: 20px; width: 60%; margin-bottom: 12px; }
+.skel-chart{ height: 80px; margin: 12px 0; }
+
+/* Loading overlay on panels */
+.pn.is-loading{
+  position: relative;
+  pointer-events: none;
+}
+.pn.is-loading::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--pn) 60%, transparent);
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* ─── Source badge on panels ─── */
+.pn-source{
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  border: 1px solid var(--ln);
+  color: var(--tx-mu);
+  margin-inline-start: 8px;
+  font-weight: 500;
+}
+.pn-source[data-source="live"]{
+  color: var(--ac);
+  border-color: color-mix(in srgb, var(--ac) 40%, transparent);
+  background: color-mix(in srgb, var(--ac) 8%, transparent);
+}
+.pn-source[data-source="cache"]{
+  color: var(--tx);
+}
+
+@media (prefers-reduced-motion: reduce){
+  .skel{ animation: none; }
+  .live-badge[data-state="connecting"] .dot{ animation: none; }
+}

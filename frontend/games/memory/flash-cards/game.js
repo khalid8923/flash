@@ -1,394 +1,398 @@
 /* ═══════════════════════════════════════════════════════════
-   FLASH — Flash Cards Game (Memory Domain)
-   Grid-based visual memory task. User must reproduce the
-   pattern of lit cells.
+   FLASH — Flash Cards (fully integrated)
+   Grid-based visual memory task. Naveh-Benjamin 2000.
    ═══════════════════════════════════════════════════════════ */
-
 (function () {
-  'use strict';
+'use strict';
 
-  const CONFIG = {
-    gridSize: 4,           // 4x4 = 16 cells
-    startCells: 3,         // Level 1 starts with 3 lit cells
-    maxLevels: 10,
-    showDuration: 1400,    // ms cards stay lit
-    gapBetweenFlashes: 200,// ms between each flash
-    maxLives: 3
-  };
+const H = window.FlashCardsHelpers;
+const Snd = window.FlashCardsSounds;
+const ST = window.FlashCardsStages;
+const Modes = window.FlashCardsExtraModes;
+const FlashStages = window.FlashStages;
+const FS = window.FlashSettings;
 
-  const state = {
-    level: 1,
-    lives: 3,
-    phase: 'idle',
-    targetCells: [],       // indices of lit cells this round
-    selectedCells: [],     // indices user has clicked
-    results: [],           // {level, correct, wrong, time}
-    timeoutIds: [],
-    onComplete: null
-  };
+if (!H) { console.error('[FlashCards] Helpers not loaded'); return; }
 
-  let elStage, elLevel, elLives, elContent, elHint;
+const $ = id => document.getElementById(id);
+const T = k => H.T(k);
+const N = (x, d) => H.N(x, d);
 
-  const $ = (id) => document.getElementById(id);
+if (FlashStages && ST) {
+  FlashStages.init('flash-cards', ST.list, {
+    onStageComplete: (stage) => {
+      setTimeout(() => FlashStages.showToast(stage), 800);
+      if (Snd) Snd.badge();
+    }
+  });
+}
 
-  // ─── Utilities ───
-  function clearAllTimeouts() {
-    state.timeoutIds.forEach(clearTimeout);
-    state.timeoutIds = [];
+const CONFIG = {
+  id: 'flash-cards',
+  domain: 'memory',
+  gridSize: 4,
+  modes: {}
+};
+
+if (Modes) Modes.install({ CONFIG });
+
+const state = {
+  mode: 'classic',
+  level: 1,
+  maxLevel: 1,
+  maxTiles: 0,
+  lives: 0,
+  phase: 'idle',
+  targetCells: [],
+  selectedCells: [],
+  results: [],
+  streak: 0,
+  maxStreak: 0,
+  totalScore: 0,
+  timeoutIds: [],
+  seed: null,
+  ticket: null,
+  rng: null
+};
+
+let elStage, elLevel, elTiles, elLives, elContent, elHintBar;
+
+function clearAllTimeouts() { state.timeoutIds.forEach(clearTimeout); state.timeoutIds = []; }
+function wait(ms) { return new Promise(r => { const id = setTimeout(r, ms); state.timeoutIds.push(id); }); }
+function setPhase(p) { state.phase = p; if (elStage) elStage.dataset.phase = p; }
+function render(html) { if (elContent) elContent.innerHTML = html; }
+function setProgress(pct) { if (elHintBar) elHintBar.style.width = Math.max(0, Math.min(100, pct)) + '%'; }
+function snd(k) { try { if (Snd && Snd[k]) Snd[k](); } catch (e) {} }
+
+function applyI18n() {
+  const ar = H.isAr();
+  document.documentElement.lang = ar ? 'ar' : 'en';
+  document.documentElement.dir = ar ? 'rtl' : 'ltr';
+}
+
+function mkRng(seed) {
+  if (typeof window.seedrandom === 'function') return window.seedrandom(seed);
+  let a = 0; for (const c of seed) a = Math.imul(a ^ c.charCodeAt(0), 16777619) >>> 0;
+  return () => { a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+}
+
+function pickCells(count) {
+  const total = CONFIG.gridSize * CONFIG.gridSize;
+  const rand = state.rng || Math.random;
+  const pool = Array.from({ length: total }, (_, i) => i);
+  const picked = [];
+  for (let i = 0; i < count; i++) {
+    const idx = Math.floor(rand() * pool.length);
+    picked.push(pool[idx]);
+    pool.splice(idx, 1);
   }
+  return picked;
+}
 
-  function wait(ms) {
-    return new Promise(resolve => {
-      const id = setTimeout(resolve, ms);
-      state.timeoutIds.push(id);
+function tilesForLevel(level, m) {
+  return (m.startTiles || 3) + (level - 1) * (m.tilesPerLevel || 1);
+}
+
+function renderGrid(interactive) {
+  const total = CONFIG.gridSize * CONFIG.gridSize;
+  let cells = '';
+  for (let i = 0; i < total; i++) {
+    cells += `<div class="cell" data-idx="${i}"></div>`;
+  }
+  render(`<div class="grid-wrap">${cells}</div>`);
+  if (interactive) {
+    elContent.querySelectorAll('.cell').forEach(cell => cell.addEventListener('click', () => onCellClick(cell)));
+  }
+}
+
+/* ═══ IDLE ═══ */
+function showIdle() {
+  setPhase('idle');
+  applyI18n();
+  setProgress(0);
+
+  const modeIds = ['classic', 'speed', 'endless', 'precision', 'daily'];
+  const modeHTML = modeIds.map(id => {
+    const m = CONFIG.modes[id];
+    if (!m) return '';
+    const locked = m.locked && m.locked();
+    const name = H.isAr() ? (m.name_ar || m.name) : m.name;
+    const desc = H.isAr() ? (m.desc_ar || m.desc) : m.desc;
+    return `<button class="mode-notch" data-mode="${id}" ${locked ? 'aria-disabled="true"' : ''}>
+      <b>${name}</b><small>${locked ? T('done') : desc}</small>
+    </button>`;
+  }).join('');
+
+  render(`
+    <div class="phase-title">${T('cite')}</div>
+    <h1 class="phase-headline grd">${T('title')}</h1>
+    <p class="phase-sub">${T('rule')}</p>
+    <nav class="mode-ledger" id="mode-ledger">${modeHTML}</nav>
+    <p class="pb-row" id="pb-row"></p>
+    <p class="mission-row" id="mission-row"></p>
+    <div class="stage-strip" id="stage-strip"></div>
+  `);
+
+  H.pbRow($('pb-row'));
+  H.missionRow($('mission-row'));
+
+  const stagesEl = $('stage-strip');
+  if (FlashStages && stagesEl) {
+    try { FlashStages.renderStrip(stagesEl); } catch (e) { H.drawStrip(stagesEl); }
+  } else if (stagesEl) { H.drawStrip(stagesEl); }
+
+  const ledger = $('mode-ledger');
+  if (ledger) {
+    ledger.addEventListener('click', e => {
+      const b = e.target.closest('.mode-notch');
+      if (!b || b.getAttribute('aria-disabled') === 'true') return;
+      snd('click');
+      startGame(b.dataset.mode);
     });
   }
+}
 
-  function pickRandomCells(count) {
-    const total = CONFIG.gridSize * CONFIG.gridSize;
-    const pool = Array.from({ length: total }, (_, i) => i);
-    const picked = [];
-    for (let i = 0; i < count; i++) {
-      const idx = Math.floor(Math.random() * pool.length);
-      picked.push(pool[idx]);
-      pool.splice(idx, 1);
-    }
-    return picked;
+/* ═══ START ═══ */
+async function startGame(modeId) {
+  if (state.phase !== 'idle') return;
+  const m = CONFIG.modes[modeId];
+  if (!m || (m.locked && m.locked())) return;
+
+  snd('unlock');
+  state.mode = modeId;
+  state.level = 1;
+  state.maxLevel = 1;
+  state.maxTiles = 0;
+  state.lives = m.lives || 0;
+  state.results = [];
+  state.streak = 0;
+  state.maxStreak = 0;
+  state.totalScore = 0;
+
+  elLevel.textContent = '1';
+  elTiles.textContent = '0';
+  elLives.textContent = state.lives ? String(state.lives) : '—';
+
+  const t = await H.net('/plays', { game_id: CONFIG.id, mode: modeId });
+  state.seed = (t && t.seed) || (m.daily ? 'daily-' + H.today() : H.localSeed());
+  state.ticket = (t && t.ticket_id) || null;
+  state.rng = mkRng(state.seed);
+  if (state.ticket) await H.net('/plays/consume', { ticket_id: state.ticket });
+
+  startLevel();
+}
+
+async function startLevel() {
+  clearAllTimeouts();
+  setPhase('showing');
+
+  const m = CONFIG.modes[state.mode];
+  const count = tilesForLevel(state.level, m);
+  state.targetCells = pickCells(count);
+  state.selectedCells = [];
+
+  elLevel.textContent = String(state.level);
+  elTiles.textContent = String(count);
+  elLives.textContent = state.lives ? String(state.lives) : '—';
+
+  render(`
+    <div class="phase-title">${T('level')} ${state.level}</div>
+    <h2 class="phase-headline">${H.isAr() ? 'احفظ' : 'Memorize'} ${count} ${T('tiles')}</h2>
+    <p class="phase-sub" style="margin-bottom:20px;">${H.isAr() ? 'انتبه جيداً...' : 'Watch carefully...'}</p>
+    <div class="grid-wrap">
+      ${Array.from({ length: CONFIG.gridSize * CONFIG.gridSize }, (_, i) => `<div class="cell" data-idx="${i}"></div>`).join('')}
+    </div>
+  `);
+
+  await wait(600);
+
+  for (const idx of state.targetCells) {
+    const cell = elContent.querySelector(`.cell[data-idx="${idx}"]`);
+    if (cell) cell.classList.add('lit');
+    snd('tile');
+    await wait(m.gapMs || 200);
   }
 
-  function cellsForLevel(level) {
-    return CONFIG.startCells + (level - 1);
-  }
+  await wait(m.flashMs || 1400);
+  elContent.querySelectorAll('.cell.lit').forEach(c => c.classList.remove('lit'));
+  await wait(400);
 
-  function setPhase(p) {
-    state.phase = p;
-    elStage.dataset.phase = p;
-  }
+  startInputPhase();
+}
 
-  function render(html) {
-    elContent.innerHTML = html;
-  }
+function startInputPhase() {
+  setPhase('input');
+  const count = state.targetCells.length;
 
-  // ─── Render helpers ───
-  function renderGrid(interactive) {
-    const total = CONFIG.gridSize * CONFIG.gridSize;
-    let cells = '';
-    for (let i = 0; i < total; i++) {
-      const disabled = interactive ? '' : 'disabled';
-      cells += `<div class="cell ${disabled}" data-idx="${i}"></div>`;
-    }
-    render(`<div class="grid-wrap">${cells}</div>`);
+  render(`
+    <div class="phase-title">${T('level')} ${state.level}</div>
+    <h2 class="phase-headline">${H.isAr() ? 'اضغط على' : 'Click'} ${count} ${T('tiles')}</h2>
+    <p class="phase-sub" style="margin-bottom:20px;">${H.isAr() ? 'اختر البلاطات التي رأيتها' : 'Select the tiles you saw'}</p>
+    <div class="grid-wrap">
+      ${Array.from({ length: CONFIG.gridSize * CONFIG.gridSize }, (_, i) => `<div class="cell" data-idx="${i}"></div>`).join('')}
+    </div>
+  `);
 
-    if (interactive) {
-      elContent.querySelectorAll('.cell').forEach(cell => {
-        cell.addEventListener('click', () => onCellClick(cell));
-      });
-    }
-  }
+  elContent.querySelectorAll('.cell').forEach(cell => {
+    cell.addEventListener('click', () => onCellClick(cell));
+  });
+}
 
-  function renderLevelDots() {
-    let dots = '';
-    for (let i = 1; i <= CONFIG.maxLevels; i++) {
-      let cls = '';
-      const r = state.results.find(x => x.level === i);
-      if (r) cls = r.correct ? 'done' : 'fail';
-      dots += `<span class="level-dot ${cls}"></span>`;
-    }
-    return `<div class="level-dots">${dots}</div>`;
-  }
+function onCellClick(cell) {
+  if (state.phase !== 'input') return;
+  if (cell.classList.contains('correct') || cell.classList.contains('wrong')) return;
 
-  // ─── Game flow ───
-  function showIdle() {
-    setPhase('idle');
-    render(`
-      <div class="phase-title">Memory Domain · Visual Recall</div>
-      <h1 class="phase-headline grd">Flash Cards</h1>
-      <p class="phase-sub">
-        Watch the lit tiles carefully. When they fade,
-        <strong style="color:#00EEFF">click the tiles that were lit</strong>.
-        <br><br>
-        Each level adds one more tile. You have <strong>3 lives</strong>.
-      </p>
-      <button class="big-btn" id="start-btn">Start Test</button>
-      <p class="phase-hint" style="margin-top:16px;">Or press <kbd>Space</kbd></p>
-    `);
-    $('start-btn').addEventListener('click', (e) => { e.stopPropagation(); startLevel(); });
-  }
+  const idx = parseInt(cell.dataset.idx, 10);
+  const isCorrect = state.targetCells.includes(idx);
 
-  async function startLevel() {
-    clearAllTimeouts();
-    setPhase('showing');
-    const count = cellsForLevel(state.level);
-    state.targetCells = pickRandomCells(count);
-    state.selectedCells = [];
-
-    // Show empty grid briefly
-    render(`
-      ${renderLevelDots()}
-      <div class="phase-title">Level ${state.level}</div>
-      <h2 class="phase-headline">Memorize ${count} tiles</h2>
-      <p class="phase-sub" style="margin-bottom:20px;">Watch carefully...</p>
-      <div class="grid-wrap">
-        ${Array.from({length: CONFIG.gridSize * CONFIG.gridSize}, (_, i) => `<div class="cell" data-idx="${i}"></div>`).join('')}
-      </div>
-    `);
-
-    await wait(600);
-
-    // Flash cells one by one
-    for (const idx of state.targetCells) {
-      const cell = elContent.querySelector(`.cell[data-idx="${idx}"]`);
-      if (cell) cell.classList.add('lit');
-      await wait(CONFIG.gapBetweenFlashes);
-    }
-
-    // Hold all lit for showDuration
-    await wait(CONFIG.showDuration);
-
-    // Turn off all
-    elContent.querySelectorAll('.cell.lit').forEach(c => c.classList.remove('lit'));
-    await wait(400);
-
-    // Switch to input phase
-    startInputPhase();
-  }
-
-  function startInputPhase() {
-    setPhase('input');
-    const count = state.targetCells.length;
-    render(`
-      ${renderLevelDots()}
-      <div class="phase-title">Level ${state.level}</div>
-      <h2 class="phase-headline">Click ${count} tiles</h2>
-      <p class="phase-sub" style="margin-bottom:20px;">Select the tiles you saw</p>
-      <div class="grid-wrap">
-        ${Array.from({length: CONFIG.gridSize * CONFIG.gridSize}, (_, i) => `<div class="cell" data-idx="${i}"></div>`).join('')}
-      </div>
-    `);
-    elContent.querySelectorAll('.cell').forEach(cell => {
-      cell.addEventListener('click', () => onCellClick(cell));
-    });
-  }
-
-  function onCellClick(cell) {
-    if (state.phase !== 'input') return;
-    if (cell.classList.contains('correct') || cell.classList.contains('wrong')) return;
-    if (cell.classList.contains('disabled')) return;
-
-    const idx = parseInt(cell.dataset.idx, 10);
-    const isCorrect = state.targetCells.includes(idx);
-
-    if (isCorrect) {
-      cell.classList.add('correct');
-      state.selectedCells.push(idx);
-    } else {
-      cell.classList.add('wrong');
-      cell.classList.add('disabled');
-      state.selectedCells.push(idx);
-    }
-
-    // Check if all found
-    const found = state.selectedCells.filter(i => state.targetCells.includes(i)).length;
-    const wrongCount = state.selectedCells.length - found;
-
-    if (wrongCount > 0) {
-      endLevel(false);
-      return;
-    }
-
-    if (found === state.targetCells.length) {
-      endLevel(true);
-    }
-  }
-
-  function endLevel(passed) {
-    state.results.push({
-      level: state.level,
-      correct: passed,
-      target: state.targetCells.length,
-      wrong: state.selectedCells.length - state.targetCells.length
-    });
-
-    if (passed) {
-      setPhase('feedback');
-      render(`
-        ${renderLevelDots()}
-        <div class="feedback-icon good">✓</div>
-        <h2 class="phase-headline grd">Level ${state.level} Complete</h2>
-        <p class="phase-sub">You recalled ${state.targetCells.length} tiles correctly.</p>
-        <p class="phase-hint">${state.level < CONFIG.maxLevels ? 'Next level in 1.5s...' : 'You reached the top level!'}</p>
-      `);
-
-      setTimeout(() => {
-        if (state.level < CONFIG.maxLevels) {
-          state.level++;
-          elLevel.textContent = state.level;
-          startLevel();
-        } else {
-          completeGame();
-        }
-      }, 1500);
-    } else {
-      state.lives--;
-      elLives.textContent = state.lives;
-
-      setPhase('feedback');
-      render(`
-        ${renderLevelDots()}
-        <div class="feedback-icon bad">✕</div>
-        <h2 class="phase-headline" style="color:#FF0077">Missed One</h2>
-        <p class="phase-sub">
-          You had <strong>${state.lives}</strong> ${state.lives === 1 ? 'life' : 'lives'} left.
-        </p>
-        <p class="phase-hint">${state.lives > 0 ? 'Retrying level in 1.5s...' : 'Game over...'}</p>
-      `);
-
-      setTimeout(() => {
-        if (state.lives > 0) {
-          startLevel();
-        } else {
-          completeGame();
-        }
-      }, 1500);
-    }
-  }
-
-  function completeGame() {
-    setPhase('complete');
-    const maxLevel = state.level;
-    const passedLevels = state.results.filter(r => r.correct).length;
-    const accuracy = state.results.length
-      ? Math.round((passedLevels / state.results.length) * 100)
-      : 0;
-
-    render(`
-      <div class="phase-title">Test Complete</div>
-      <h1 class="phase-headline grd">Your Score</h1>
-      <div class="complete-stats">
-        <div class="complete-stat">
-          <div class="complete-stat-label">MAX LEVEL</div>
-          <div class="complete-stat-value">${maxLevel}</div>
-        </div>
-        <div class="complete-stat">
-          <div class="complete-stat-label">PASSED</div>
-          <div class="complete-stat-value">${passedLevels}</div>
-        </div>
-        <div class="complete-stat">
-          <div class="complete-stat-label">ACCURACY</div>
-          <div class="complete-stat-value">${accuracy}%</div>
-        </div>
-      </div>
-      <button class="big-btn" id="restart-btn">Try Again</button>
-    `);
-
-    $('restart-btn').addEventListener('click', (e) => { e.stopPropagation(); resetGame(); });
-
-    if (typeof state.onComplete === 'function') {
-      state.onComplete({
-        gameId: 'flash-cards',
-        domain: 'memory',
-        maxLevel,
-        passedLevels,
-        accuracy,
-        totalAttempts: state.results.length,
-        results: state.results.slice(),
-        score: maxLevel * 100 + accuracy
-      });
-    }
-  }
-
-  function resetGame() {
-    clearAllTimeouts();
-    state.level = 1;
-    state.lives = CONFIG.maxLives;
-    state.results = [];
-    state.targetCells = [];
-    state.selectedCells = [];
-
-    elLevel.textContent = '1';
-    elLives.textContent = String(CONFIG.maxLives);
-
-    showIdle();
-  }
-
-  // ─── Mount ───
-  function mount(container, options = {}) {
-    const root = typeof container === 'string'
-      ? document.querySelector(container)
-      : container;
-
-    if (!root) { console.error('[FlashCards] Container not found'); return; }
-
-    root.innerHTML = `
-      <div id="game-root">
-        <header class="g-header">
-          <div class="g-logo">
-            <span class="g-logo-icon">⚡</span>
-            <span class="g-logo-text">FLASH</span>
-          </div>
-          <div class="g-meta">
-            <span class="g-meta-item">
-              <span class="g-meta-label">LEVEL</span>
-              <span class="g-meta-value" id="level-display">1</span>
-            </span>
-            <span class="g-meta-item">
-              <span class="g-meta-label">LIVES</span>
-              <span class="g-meta-value" id="lives-display">3</span>
-            </span>
-          </div>
-        </header>
-        <main id="stage" class="stage" data-phase="idle">
-          <div class="stage-inner"><div id="phase-content"></div></div>
-        </main>
-        <footer class="g-footer">
-          <div class="g-hint">Press <kbd>Space</kbd> or click to continue</div>
-        </footer>
-      </div>
-    `;
-
-    elStage   = $('stage');
-    elLevel   = $('level-display');
-    elLives   = $('lives-display');
-    elContent = $('phase-content');
-
-    document.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && !e.repeat) {
-        e.preventDefault();
-        if (state.phase === 'idle') startLevel();
-        else if (state.phase === 'complete') resetGame();
-      }
-    });
-
-    if (typeof options.onComplete === 'function') state.onComplete = options.onComplete;
-
-    showIdle();
-  }
-
-  function autoInit() {
-    if (!document.getElementById('game-root')) return;
-    if (!document.getElementById('phase-content')) return;
-
-    elStage   = document.getElementById('stage');
-    elLevel   = document.getElementById('level-display');
-    elLives   = document.getElementById('lives-display');
-    elContent = document.getElementById('phase-content');
-
-    document.addEventListener('keydown', (e) => {
-      if (e.code === 'Space' && !e.repeat) {
-        e.preventDefault();
-        if (state.phase === 'idle') startLevel();
-        else if (state.phase === 'complete') resetGame();
-      }
-    });
-
-    showIdle();
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', autoInit);
+  if (isCorrect) {
+    cell.classList.add('correct');
+    state.selectedCells.push(idx);
+    snd('hit');
   } else {
-    autoInit();
+    cell.classList.add('wrong');
+    state.selectedCells.push(idx);
+    snd('miss');
   }
 
-  window.FlashCardsGame = { mount, reset: resetGame, state };
+  const found = state.selectedCells.filter(i => state.targetCells.includes(i)).length;
+  const wrong = state.selectedCells.length - found;
+
+  if (wrong > 0) { endLevel(false); return; }
+  if (found === state.targetCells.length) { endLevel(true); }
+}
+
+function endLevel(passed) {
+  const m = CONFIG.modes[state.mode];
+  state.results.push({
+    level: state.level,
+    correct: passed,
+    target: state.targetCells.length,
+    wrong: state.selectedCells.length - state.targetCells.length
+  });
+
+  if (passed) {
+    state.streak++;
+    state.maxStreak = Math.max(state.maxStreak, state.streak);
+    state.maxLevel = Math.max(state.maxLevel, state.level);
+    state.maxTiles = Math.max(state.maxTiles, state.targetCells.length);
+    state.totalScore += 100 + (state.streak - 1) * 40;
+    snd('level');
+    setPhase('feedback');
+
+    render(`
+      <div class="feedback-icon good">✓</div>
+      <h2 class="phase-headline grd">${H.isAr() ? 'صحيح' : 'Level'} ${state.level}</h2>
+      <p class="phase-sub">${state.targetCells.length} ${T('tiles')}</p>
+    `);
+
+    setTimeout(() => {
+      if (state.level < (m.maxLevels || 10)) {
+        state.level++;
+        startLevel();
+      } else {
+        completeGame('done');
+      }
+    }, 1400);
+  } else {
+    state.streak = 0;
+    if (m.lives) { state.lives--; elLives.textContent = String(state.lives); }
+    snd('miss');
+    setPhase('feedback');
+
+    render(`
+      <div class="feedback-icon bad">✕</div>
+      <h2 class="phase-headline" style="color:#FF0077">${H.isAr() ? 'خطأ' : 'Missed'}</h2>
+      <p class="phase-sub">${m.lives ? state.lives + ' ' + (H.isAr() ? 'فرص' : 'lives') : ''}</p>
+    `);
+
+    const dead = m.lives && state.lives <= 0;
+    setTimeout(() => { if (!dead) startLevel(); else completeGame('lives'); }, 1500);
+  }
+}
+
+function completeGame(reason) {
+  clearAllTimeouts();
+  setPhase('complete');
+  setProgress(0);
+
+  const m = CONFIG.modes[state.mode];
+  const passed = state.results.filter(r => r.correct).length;
+  const total = state.results.length || 1;
+  const accuracy = Math.round(passed / total * 100);
+
+  const prevPB = (H.pbAll()[state.mode] || {}).score || 0;
+  const isNewPB = H.pbCheck(state.mode, state.totalScore, state.maxLevel, accuracy);
+
+  const summary = {
+    mode: state.mode, n: state.results.length, maxLevel: state.maxLevel,
+    maxTiles: state.maxTiles, accuracy, totalScore: state.totalScore,
+    maxStreak: state.maxStreak, isNewPB, prevPB
+  };
+
+  H.addHistory({ t: Date.now(), mode: state.mode, level: state.maxLevel, acc: accuracy, score: state.totalScore });
+
+  const fresh = H.stageCheck(summary);
+  const badges = H.unlockBadges(summary);
+  H.updateMissions(summary);
+
+  const cs = H.FS('checkSession'), ts = H.FS('showToast');
+  try { if (cs) cs(summary); if (ts) fresh.forEach(id => ts(H.stageName(id))); } catch (e) {}
+
+  H.net('/sessions', { game_id: CONFIG.id, ticket_id: state.ticket, seed: state.seed, mode: state.mode, trials: state.results });
+
+  try {
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'flash:game-complete',
+        gameId: CONFIG.id, domain: CONFIG.domain, mode: state.mode,
+        maxLevel: state.maxLevel, accuracy, score: state.totalScore,
+        medianRT: 0, rtv: 0, rcs: 0, isNewPB,
+        maxTiles: state.maxTiles, passedLevels: passed
+      }, '*');
+    }
+  } catch (e) {}
+
+  if (isNewPB) snd('personalBest'); else snd('gameOver');
+  if (m.onEnd) m.onEnd(summary);
+
+  render(`
+    <div class="phase-title">${T('cite')}</div>
+    <h1 class="phase-headline grd">${T('maxlevel')}</h1>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">${T('maxlevel')}</div><div class="stat-value">${N(state.maxLevel)}</div></div>
+      <div class="stat-card"><div class="stat-label">${T('tiles')}</div><div class="stat-value">${N(state.maxTiles)}</div></div>
+      <div class="stat-card"><div class="stat-label">${T('accuracy')}</div><div class="stat-value">${N(accuracy)}%</div></div>
+    </div>
+    ${isNewPB ? `<p class="pbm">${T('newpb')}</p>` : ''}
+    ${fresh.length ? `<p class="stage-tag">${T('stage')}: ${fresh.map(id => H.stageName(id)).join(', ')}</p>` : ''}
+    <button class="big-btn" id="again-btn">${T('again')}</button>
+  `);
+
+  $('again-btn').addEventListener('click', () => showIdle());
+}
+
+function wireRefs() {
+  elStage = $('stage');
+  elLevel = $('level-display');
+  elTiles = $('tiles-display');
+  elLives = $('lives-display');
+  elContent = $('phase-content');
+  elHintBar = $('hint-progress');
+}
+
+function init() {
+  wireRefs();
+  const setBtn = $('settings-btn');
+  if (setBtn) setBtn.addEventListener('click', () => H.openPanel());
+  if (FS && FS.onChange) FS.onChange(() => { if (Snd) Snd.mute(H.settings().soundEnabled === false); if (state.phase === 'idle') showIdle(); });
+  if (Snd) Snd.mute(H.settings().soundEnabled === false);
+  showIdle();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else { init(); }
+
+window.FlashCardsGame = { reset: () => showIdle(), state, config: CONFIG };
 })();
