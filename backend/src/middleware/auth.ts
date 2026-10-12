@@ -4,7 +4,7 @@
    ═══════════════════════════════════════════════════════════ */
 
 import type { FastifyRequest, FastifyReply } from 'fastify';
-import { verifySession, getPlayer, type AuthedPlayer } from '../services/auth.js';
+import { verifySession, getPlayer, type AuthedPlayer } from '../services/auth/auth.js';
 
 declare module 'fastify' {
   interface FastifyRequest {

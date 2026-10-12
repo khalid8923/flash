@@ -5,7 +5,7 @@
    ═══════════════════════════════════════════════════════════ */
 
 import type { FastifyRequest, FastifyReply } from 'fastify';
-import { verifyAdminToken, logAdminAction, type Admin, type AdminRole } from '../services/admin-auth.js';
+import { verifyAdminToken, logAdminAction, type Admin, type AdminRole } from '../services/auth/admin-auth.js';
 
 declare module 'fastify' {
   interface FastifyRequest {
