@@ -1,0 +1,228 @@
+﻿Root:     D:\Flash
+Date:     2026-10-12 23:09:31
+PS:       5.1.26100.9444
+User:     hpc
+Machine:  DESKTOP-1KCL8NL
+
+Total files:  842
+Total dirs:   120
+Total size:   7.1 MB
+  ℹ️  Port 3000 : closed
+  ℹ️  Port 5500 : closed
+  ℹ️  Port 8000 : closed
+  ℹ️  Port 8080 : closed
+  ✅ Port 9999 : RUNNING (PID 8960 - node)
+  ℹ️  Port 5173 : closed
+  ℹ️  Port 3001 : closed
+  ℹ️  Port 4000 : closed
+  ℹ️  Port 5000 : closed
+
+▸ 2.1 Backend files
+  ✅ backend\src\server.ts [6871 bytes]
+  ✅ backend\src\migrate.ts [3451 bytes]
+  ✅ backend\src\seed.ts [13210 bytes]
+  ✅ backend\src\seed-atlas.ts [1361 bytes]
+  ✅ backend\package.json [1082 bytes]
+  ✅ backend\tsconfig.json [587 bytes]
+  ✅ backend\.env [2177 bytes]
+  ✅ backend\Dockerfile [1002 bytes]
+  ✅ backend\render.yaml [1513 bytes]
+
+▸ 2.2 Backend structure
+  ✅ backend/src/catalog (5 files)
+  ✅ backend/src/catalog\games (42 files)
+  ✅ backend/src/config (3 files)
+  ✅ backend/src/middleware (4 files)
+  ✅ backend/src/migrations (23 files)
+  ✅ backend/src/routes (40 files)
+  ✅ backend/src/schemas (1 files)
+  ✅ backend/src/scripts (1 files)
+  ✅ backend/src/services (29 files)
+  ✅ backend/src/services\ai (34 files)
+  ✅ backend/src/services\ai\providers (4 files)
+  ✅ backend/src/services\ai\director (4 files)
+  ✅ backend/src/services\ai\variants (4 files)
+  ✅ backend/src/services\ai\voice (2 files)
+  ✅ backend/src/services\difficulty (2 files)
+  ✅ backend/src/services\profile (2 files)
+  ✅ backend/src/lib (2 files)
+
+▸ 2.3 Migrations
+  Total migrations: 23
+  ℹ️  First: 001_identity.sql
+  ℹ️  Last:  023_privacy_requests.sql
+
+▸ 2.4 Catalog games
+  Total catalog games: 42
+  ✅ 42 catalog games ✅
+
+▸ 2.5 Routes
+  Total route files: 35
+
+▸ 2.6 AI services
+  Total AI service files: 34
+
+▸ 2.7 Backend TypeScript check
+  ✅ TypeScript: 0 errors
+
+▸ 3.1 Dashboard root files
+  ✅ index.html [8359 bytes]
+  ✅ domain.html [17716 bytes]
+  ✅ sessions.html [12094 bytes]
+  ✅ 404.html [1836 bytes]
+  ✅ auth.html [6080 bytes]
+  ✅ error.html [9515 bytes]
+  ✅ errors-demo.html [6974 bytes]
+  ✅ fingerprint.html [1664 bytes]
+  ✅ ai-lab.html [1525 bytes]
+  ✅ manifest.webmanifest [1035 bytes]
+  ℹ️  sw.js (not present)
+  ✅ favicon.svg [243 bytes]
+  ✅ favicon.ico [71 bytes]
+
+▸ 3.2 Dashboard CSS (root + panels)
+  ✅ css/tokens.css
+  ✅ css/base.css
+  ✅ css/layout.css
+  Panels: 3 files
+
+▸ 3.3 Dashboard CSS modules
+  Total CSS modules: 52
+
+▸ 3.4 Dashboard JS root
+  Root JS files: 10
+  ℹ️  api.js
+  ℹ️  config.js
+  ℹ️  core.js
+  ℹ️  data.js
+  ℹ️  domain-brain.js
+  ℹ️  i18n.js
+  ℹ️  inline-init.js
+  ℹ️  render.js
+  ℹ️  sw-cleanup.js
+  ℹ️  sw-killer.js
+
+▸ 3.5 Dashboard JS lib
+  Lib JS files: 2
+  ℹ️  errors.js
+  ℹ️  safe-fetch.js
+
+▸ 3.6 Dashboard JS modules
+  Total JS modules: 68
+
+▸ 3.7 Critical AI modules
+  ✅ ai-chat.js [15052 bytes]
+  ✅ ai-panels-live.js [8512 bytes]
+  ✅ session-recap.js [5217 bytes]
+  ✅ chat-extras.js [10611 bytes]
+  ✅ daily-plan.js [4900 bytes]
+  ✅ micro-lessons.js [3654 bytes]
+  ✅ fingerprint.js [5130 bytes]
+  ✅ ai-lab.js [4577 bytes]
+  ✅ variants.js [2949 bytes]
+  ✅ director.js [4908 bytes]
+  ✅ nudge.js [3222 bytes]
+
+▸ 3.8 index.html script analysis
+  Size: 8359 bytes
+  <script> tags: 75
+  </script> tags: 75
+  ✅ Balanced
+  ✅ No leaked inline code
+  ✅ No .js.js duplication
+  ✅ All script srcs exist
+
+▸ 3.9 index.html CSS analysis
+  ✅ All CSS links exist
+
+Total games found:     43
+Complete (8 files):    42
+Incomplete:            1
+
+Incomplete games:
+  ❌ attention/go-no-go.legacy — missing: go-no-go.legacy-helpers.js, go-no-go.legacy-sounds.js, go-no-go.legacy-stages.js, go-no-go.legacy-extra-modes.js
+  ✅ shared/i18n.js [15874 bytes]
+  ✅ shared/settings.js [15094 bytes]
+  ✅ shared/flash-stages.js [6320 bytes]
+  Templates: 7 files
+  ✅ DATABASE_URL set: postgresql://flashdb_owner:npg_b3usHCwqNn2A@ep-sparkling-vio...
+  ℹ️  CORS: http://localhost:5173,http://localhost:8080,http://localhost:5500,http://127.0.0.1:5500,http://127.0.0.1:9999,http://localhost:9999,http://localhost:3000
+  ✅ GROQ_API_KEY set
+  ✅ OPENROUTER_API_KEY set
+  ✅ GEMINI_API_KEY set
+  ✅ AI Coach Chat          → /ai/chat
+  ✅ Predictions            → /ai/predictions
+  ✅ Weekly Insights        → /ai/insights
+  ✅ Error Patterns         → /ai/error-patterns
+  ✅ Transfer Tracker       → /ai/transfer-tracker
+  ✅ Daily Plan             → /ai/daily-plan
+  ❌ Fingerprint            → /ai/fingerprint
+  ✅ Micro-Lessons          → /ai/lessons
+  ✅ Session Recap          → /ai/recap
+  ✅ AI Journal             → /ai/journal/entry
+  ✅ Voice                  → /ai/voice/chat
+  ✅ AI Lab                 → /ai/lab/start
+  ✅ Variants               → /ai/variants
+  ✅ Director               → /ai/director/start
+  ✅ Nudge                  → /ai/nudge
+  ✅ sw.js deleted
+  ✅ pwa.js is neutered (dev mode)
+  ✅ sw-killer.js exists
+  Doc folders: 8
+  ℹ️  01_ARCHITECTURE (3 files)
+  ℹ️  02_CONTRACTS (4 files)
+  ℹ️  03_BACKEND (7 files)
+  ℹ️  04_AI_SYSTEM (3 files)
+  ℹ️  05_FRONTEND (2 files)
+  ℹ️  06_PROJECT_HISTORY (5 files)
+  ℹ️  07_SESSIONS (2 files)
+  ℹ️  08_STATS_AND_TREES (8 files)
+  Root docs: 5
+  ✅ design-v4 (7 files)
+  ✅ motion-lab (4 files)
+  ✅ backend\scripts (7 files)
+  ✅ backend\deploy (1 files)
+  ✅ backend\test (0 files)
+  .js        :   311 files     3511.4 KB
+  .ts        :   184 files      955.2 KB
+  .css       :   103 files     1227.7 KB
+  .html      :    63 files      378.8 KB
+  .json      :    46 files       76.2 KB
+  .md        :    38 files      512.1 KB
+  .sql       :    23 files       33.6 KB
+  .ps1       :    12 files         40 KB
+  .txt       :     7 files      273.4 KB
+  .svg       :     3 files        2.2 KB
+  .bak-pre-error-sys :     3 files       14.5 KB
+  .bak-final :     2 files        9.4 KB
+  .gitignore :     2 files        1.1 KB
+  .yml       :     2 files        1.4 KB
+  .bat       :     2 files          3 KB
+     173.2 KB  docs\08_STATS_AND_TREES\05_TREE_SIMPLE.txt
+      68.5 KB  frontend\games\attention\flanker\game.js
+      53.5 KB  backend\package-lock.json
+      51.8 KB  PROJECT_TREE_COMPLETE.md
+      51.7 KB  docs\06_PROJECT_HISTORY\04_LEGACY_REFERENCE.md
+      49.2 KB  frontend\games\attention\go-no-go.legacy\game.js
+        47 KB  docs\08_STATS_AND_TREES\08_TOTAL_REFERENCE.md
+      46.7 KB  frontend\games\creativity\creative-connect\game.js
+      44.7 KB  frontend\games\language\word-scramble\game.js
+        43 KB  frontend\games\language\verbal-analogies\game.js
+      42.4 KB  frontend\games\logic\argument-analyzer\game.js
+      42.4 KB  frontend\games\emotional\social-read\game.js
+      41.7 KB  design-v4\flash-main-dashboard.html
+      41.5 KB  design-v4\flash-main-dashboard-NEW.html
+      39.8 KB  frontend\games\speed\rapid-fire\game.js
+      39.3 KB  frontend\games\creativity\alternative-uses\game.js
+      38.4 KB  frontend\games\memory\face-match\game.js
+      38.3 KB  frontend\games\emotional\empathy-engine\game.js
+      38.1 KB  frontend\games\language\lexical-decision\game.js
+        38 KB  frontend\games\logic\matrix-logic\game.js
+
+ISSUES (2):
+  1. Backend not running on port 3000
+  2. 1 games incomplete
+
+Report saved to: D:\Flash\PROJECT_SCAN_2026-10-12_23-09.txt
+Size: 0 bytes
+

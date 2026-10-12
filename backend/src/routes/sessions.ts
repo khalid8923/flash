@@ -32,7 +32,18 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
       });
     }
     const session = parsed.data;
-    const userId = request.player?.playerId ?? (await getOrCreateDemoUser());
+    /* Resolve player: authenticated > demo (opt-in only) > reject */
+    const demoFallbackEnabled = process.env.DEMO_MODE === 'true';
+    let userId = request.player?.playerId;
+    if (!userId && demoFallbackEnabled) {
+      userId = await getOrCreateDemoUser();
+    }
+    if (!userId) {
+      return reply.code(401).send({
+        error: 'auth_required',
+        message: 'Authentication required. Enable DEMO_MODE for demo access.',
+      });
+    }
 
     /* 2. Duration + ingestion checks (R07) */
     const dur = validateDuration(session.started_at, session.ended_at);
@@ -180,7 +191,7 @@ const sessionsRoutes: FastifyPluginAsync = async (fastify) => {
         mode: session.mode,
         durationMs: duration_ms,
         accuracy: metrics.accuracy,
-        medianRtMs: metrics.median_rt_ms,
+        medianRtMs: metrics.median_rt_ms ?? 0,
         trials: session.trials as any,
       });
       for (const flag of flags) {

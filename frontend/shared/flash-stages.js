@@ -7,6 +7,26 @@
 (function () {
   'use strict';
 
+
+  /* ═══ THEME SYNC ═══
+     Ensures game <html> reflects dashboard theme.
+     Runs on load + on every flash:settings-changed event. */
+  function syncTheme() {
+    try {
+      var s = (window.FlashSettings && window.FlashSettings.get && window.FlashSettings.get()) || {};
+      var theme = s.theme || 'light';
+      document.documentElement.setAttribute('data-theme', theme);
+      var lang = (window.FLASH_I18N && window.FLASH_I18N.getLang && window.FLASH_I18N.getLang()) || 'en';
+      document.documentElement.setAttribute('lang', lang);
+      document.documentElement.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    } catch (e) {}
+  }
+  syncTheme();
+  window.addEventListener('flash:settings-changed', syncTheme);
+  window.addEventListener('flash:lang-changed', syncTheme);
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', syncTheme);
+  }
   let GAME_ID = null;
   let STAGES = [];
   let STORAGE_KEY = null;

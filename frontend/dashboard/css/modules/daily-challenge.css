@@ -1,0 +1,138 @@
+/* ============================================================
+   FLASH - Daily Challenge Card
+   ============================================================ */
+
+.dc-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--ln);
+  border-radius: var(--r-2);
+  background: var(--pn-alt);
+}
+
+.dc-card .dc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.dc-card .dc-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font: 600 12px/1 var(--font-ui);
+  color: var(--tx);
+}
+
+.dc-card .dc-icon {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ac-soft);
+  color: var(--ac);
+  font-size: 11px;
+}
+
+.dc-card .dc-date {
+  font: 500 10px var(--font-mono);
+  color: var(--tx-mu);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.dc-card .dc-game {
+  font: 600 15px/1.2 var(--font-ui);
+  color: var(--tx);
+}
+
+.dc-card .dc-meta {
+  display: flex;
+  gap: 12px;
+  font-size: 11px;
+  color: var(--tx-mu);
+}
+
+.dc-card .dc-meta b {
+  color: var(--tx);
+  font-weight: 600;
+}
+
+.dc-card .dc-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.dc-card .dc-btn {
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: var(--r-2);
+  font: 600 11px/1 var(--font-ui);
+  text-align: center;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all var(--t-fast) var(--e-std);
+}
+
+.dc-card .dc-btn.primary {
+  background: var(--ac);
+  color: var(--on-ac);
+  border-color: var(--ac);
+}
+.dc-card .dc-btn.primary:hover {
+  background: var(--ac-hover);
+  border-color: var(--ac-hover);
+}
+
+.dc-card .dc-btn.secondary {
+  background: transparent;
+  color: var(--tx);
+  border-color: var(--ln-strong);
+}
+.dc-card .dc-btn.secondary:hover {
+  background: var(--pn-hover);
+}
+
+.dc-card .dc-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Leaderboard mini */
+.dc-leader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--ln);
+}
+
+.dc-leader .row {
+  display: grid;
+  grid-template-columns: 24px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  font-size: 11px;
+  color: var(--tx-mu);
+}
+
+.dc-leader .row.me {
+  color: var(--tx);
+  font-weight: 600;
+}
+
+.dc-leader .rank {
+  font: 600 10px var(--font-mono);
+  color: var(--tx-faint);
+}
+
+.dc-leader .score {
+  font-variant-numeric: tabular-nums;
+  color: var(--tx);
+}

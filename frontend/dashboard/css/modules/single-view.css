@@ -1,0 +1,102 @@
+/* ============================================================
+   FLASH - FINAL: single-viewport compact layout
+   Everything in one screen, no scrolling on body.
+   ============================================================ */
+html, body {
+  height: 100dvh !important;
+  max-height: 100dvh !important;
+  overflow: hidden !important;
+}
+
+.shell {
+  height: 100dvh !important;
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) auto auto !important;
+  gap: 8px !important;
+  padding: 8px clamp(12px, 1.6vw, 20px) !important;
+  overflow: hidden !important;
+}
+
+.hdr { padding: 6px 0 !important; min-height: 40px !important; }
+
+.main {
+  min-height: 0 !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  display: grid !important;
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr) minmax(280px, 380px) !important;
+  gap: 10px !important;
+}
+
+.main > .col {
+  min-height: 0 !important;
+  height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-inline-end: 2px !important;
+}
+
+.main > .col::-webkit-scrollbar { width: 3px; }
+.main > .col::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--tx) 15%, transparent);
+  border-radius: 2px;
+}
+
+.main > .col > .pn { margin: 0 !important; }
+
+/* Compact footer strip */
+.ft {
+  padding: 6px 12px !important;
+  gap: 4px 12px !important;
+  font-size: 12px !important;
+}
+
+.ft-k { font-size: 9px !important; }
+.ft-v { font-size: 11px !important; }
+
+/* Compact heatmap */
+[data-module="week-heatmap"],
+.week-heatmap,
+.heatmap,
+.wk-heat {
+  max-height: 70px !important;
+  margin: 0 !important;
+}
+
+/* Compact wide panels at bottom */
+.wide-panels {
+  display: grid !important;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  max-height: 140px !important;
+  overflow: hidden !important;
+}
+
+.wide-panel {
+  min-height: 0 !important;
+  max-height: 140px !important;
+  padding: 8px 10px !important;
+  overflow: hidden !important;
+}
+
+.wp-title { font-size: 9px !important; letter-spacing: .05em !important; margin-bottom: 2px !important; }
+.wp-question { display: none !important; }
+.wp-body { font-size: 10px !important; gap: 3px !important; }
+.wp-delta, .wp-error-row, .wp-log-row { padding: 2px 0 !important; font-size: 10px !important; }
+.wp-hour-strip { height: 34px !important; }
+
+/* Tablet fallback */
+@media (max-width: 1180px) {
+  .main { grid-template-columns: 1fr 1fr !important; }
+  .main > .col-main { grid-column: 1 / -1 !important; }
+  .wide-panels { grid-template-columns: repeat(3, 1fr) !important; }
+  html, body, .shell { overflow-y: auto !important; height: auto !important; }
+  .main > .col { overflow-y: visible !important; }
+}
+
+/* Mobile */
+@media (max-width: 760px) {
+  .main { grid-template-columns: 1fr !important; }
+  .wide-panels { grid-template-columns: 1fr !important; }
+}

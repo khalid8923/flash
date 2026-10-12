@@ -1,0 +1,308 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#EC4899">
+<title>FLASH — Domain</title>
+<script>try{var s=localStorage,t=s.getItem('flash.theme');if(t!=='dark'&&t!=='light'){t='light';s.setItem('flash.theme',t)}document.documentElement.dataset.theme=t}catch(e){}</script>
+<style>
+:root{--dir:ltr;--serif:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif}
+[dir=rtl]{--dir:rtl;--serif:'Iowan Old Style','Noto Naskh Arabic','Traditional Arabic',serif}
+[data-theme=light]{--bg:#FFF1F2;--pn:#fff;--hi:#FCE7F3;--tx:#1F2937;--mu:#9F1239;--ln:rgba(190,24,93,.1);--ac:#EC4899;--so:#FBCFE8;--on:#111827}
+[data-theme=dark]{--bg:#000;--pn:#0A0A0A;--hi:#141414;--tx:#F0FDF4;--mu:#86EFAC;--ln:rgba(74,222,128,.15);--ac:#39FF14;--so:rgba(57,255,20,.2);--on:#000;color-scheme:dark}
+*{box-sizing:border-box;margin:0}
+html,body{background:var(--bg);min-height:100vh}
+body{direction:var(--dir);color:var(--tx);font:14px/1.5 system-ui,-apple-system,'Segoe UI',sans-serif;font-variant-numeric:tabular-nums;padding:0 20px 32px;max-width:1280px;margin:auto}
+header{display:flex;align-items:center;justify-content:space-between;padding:12px 0}
+.back{display:flex;align-items:center;gap:8px;color:var(--mu);text-decoration:none;font-size:13px;padding:8px 12px;border:1px solid var(--ln);border-radius:2px}
+.back:hover{color:var(--tx)}
+.wm{font-size:18px;font-weight:700;letter-spacing:.06em}
+.tools{display:flex;gap:8px;align-items:center}
+.tools button{min-height:36px;padding:0 12px;color:var(--mu);border:1px solid var(--ln);font-size:12px}
+.tools button[aria-pressed=true]{color:var(--tx);border-color:var(--ac);background:var(--hi)}
+/* Hero */
+.hero{position:relative;height:min(56vh,520px);margin-bottom:12px;border:1px solid var(--ln);background:var(--pn);overflow:hidden;display:grid;place-items:center}
+.hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hero-info{position:relative;text-align:center;z-index:2;pointer-events:none}
+.hero-k{font-size:12px;color:var(--mu);letter-spacing:.08em;text-transform:uppercase}
+.hero-n{font-size:clamp(28px,5vw,44px);font-weight:600;line-height:1.1;margin:6px 0 8px;text-shadow:0 0 30px var(--pn),0 0 12px var(--pn)}
+.hero-m{font-size:15px;color:var(--mu)}
+.hero-m b{color:var(--tx);font-size:20px;font-weight:600;margin-inline-start:6px}
+.hero-legend{position:absolute;bottom:12px;inset-inline:12px;display:flex;gap:14px;justify-content:center;font-size:11px;color:var(--mu);flex-wrap:wrap}
+.hero-legend span{display:inline-flex;align-items:center;gap:5px}
+.hero-legend i{width:8px;height:8px;border-radius:50%;background:var(--dc);display:inline-block}
+/* Header strip */
+.strip{display:flex;flex-wrap:wrap;gap:12px 32px;padding:16px;border:1px solid var(--ln);background:var(--pn);margin-bottom:12px;align-items:flex-end}
+.stat{font-size:12px;color:var(--mu)}
+.stat b{display:block;font-size:20px;font-weight:600;color:var(--tx);line-height:1.2;margin-top:2px}
+/* Games */
+.games-h{display:flex;justify-content:space-between;align-items:baseline;margin:20px 0 10px}
+.games-h h2{font-size:16px;font-weight:600}
+.games-h .cnt{font-size:12px;color:var(--mu)}
+.games{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}
+.gc{border:1px solid var(--ln);background:var(--pn);padding:16px;display:flex;flex-direction:column;gap:10px;text-decoration:none;color:inherit;transition:all .2s;position:relative;overflow:hidden}
+.gc::before{content:"";position:absolute;inset-inline-start:0;top:0;bottom:0;width:3px;background:var(--dc);opacity:.7}
+.gc:hover{background:color-mix(in srgb,var(--dc) 6%,var(--pn));transform:translateY(-2px);box-shadow:0 4px 20px -8px var(--dc)}
+.gc-head{display:flex;align-items:center;gap:10px}
+.gc-i{font-size:26px}
+.gc-n{font-weight:600;font-size:15px}
+.gc-n .ar{font-size:12px;color:var(--mu);font-weight:400;margin-inline-start:6px}
+.gc-d{font-size:12px;color:var(--mu);line-height:1.5;min-height:36px}
+.gc-stats{display:flex;gap:14px;font-size:11px;color:var(--mu);padding-top:8px;border-top:1px solid var(--ln)}
+.gc-stats b{color:var(--tx);font-weight:600;font-size:14px;display:block;margin-top:2px}
+.gc-play{margin-top:auto;padding:10px;background:var(--dc);color:var(--on);font-weight:600;font-size:13px;text-align:center;letter-spacing:.03em}
+.gc:hover .gc-play{background:color-mix(in srgb,var(--dc) 85%,#000)}
+/* Game Overlay */
+.go{position:fixed;inset:0;background:#000;display:none;flex-direction:column;z-index:200}
+.go.on{display:flex}
+.go-h{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;background:var(--pn);border-bottom:1px solid var(--ln);color:var(--tx)}
+.go-t{font-weight:600;display:flex;align-items:center;gap:8px;font-size:14px}
+.go-x{padding:8px 16px;background:var(--ac);color:var(--on);font-weight:600;border:0;cursor:pointer;font:inherit}
+.go iframe{flex:1;width:100%;border:0;background:#04040A}
+@media (max-width:640px){.hero{height:44vh}.games{grid-template-columns:1fr}.strip{padding:12px;gap:10px 20px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<header>
+<a class="back" href="FLASH.html"><span id="bc-arrow">←</span><span id="bc-text">Back</span></a>
+<span class="wm">FLASH</span>
+<div class="tools">
+<button id="th" type="button">🌗</button>
+<div style="display:flex">
+<button id="lg-en" type="button" data-l="en">EN</button>
+<button id="lg-ar" type="button" data-l="ar">AR</button>
+</div>
+</div>
+</header>
+<main>
+<section class="hero">
+<canvas id="reef"></canvas>
+<div class="hero-info">
+<div class="hero-k" id="hero-k">Domain</div>
+<div class="hero-n" id="hero-n">—</div>
+<div class="hero-m"><span id="hero-m1">Mastery</span><b id="hero-mv">0%</b></div>
+</div>
+<div class="hero-legend" id="legend"></div>
+</section>
+<section class="strip" id="strip"></section>
+<div class="games-h"><h2 id="gh">Games</h2><span class="cnt" id="gc"></span></div>
+<section class="games" id="games"></section>
+</main>
+<div class="go" id="go"><div class="go-h"><span class="go-t" id="go-t"></span><button class="go-x" id="go-x">Close ×</button></div><iframe id="go-f" src="about:blank" allow="autoplay"></iframe></div>
+
+<script>
+const GAMES={
+attention:[
+{id:"flanker",n:"Flanker",ar:"فلانكر",ic:"🎯",d:"Conflict resolution · Eriksen 1974"},
+{id:"go-no-go",n:"Go / No-Go",ar:"انطلق/توقف",ic:"🚦",d:"Response inhibition · Drewe 1975"},
+{id:"task-switching",n:"Task Switching",ar:"تبديل المهام",ic:"🔀",d:"Cognitive flexibility · Monsell 2003"},
+{id:"vigilance",n:"Vigilance",ar:"اليقظة",ic:"👁️",d:"Sustained attention · Rosvold 1956"}],
+spatial:[
+{id:"mental-rotation",n:"Mental Rotation",ar:"التدوير الذهني",ic:"🔄",d:"3D rotation · Shepard 1971"},
+{id:"corsi-blocks",n:"Corsi Blocks",ar:"مكعبات كورسي",ic:"🧱",d:"Visuospatial span · Corsi 1972"},
+{id:"map-memory",n:"Map Memory",ar:"ذاكرة الخريطة",ic:"🗺️",d:"Topographical · Postma 1996"},
+{id:"block-counter",n:"Block Counter",ar:"عد المكعبات",ic:"📦",d:"Hidden blocks · KABC"}],
+speed:[
+{id:"reaction",n:"Reaction",ar:"رد الفعل",ic:"⚡",d:"Simple RT · Ball 2002"},
+{id:"color-match",n:"Color Match",ar:"مطابقة الألوان",ic:"🎨",d:"Stroop · 1935"},
+{id:"symbol-sprint",n:"Symbol Sprint",ar:"سرعة الرموز",ic:"🔍",d:"Visual search · Treisman 1980"},
+{id:"rapid-fire",n:"Rapid Fire",ar:"النيران السريعة",ic:"🔥",d:"Multi-rule · Monsell 2003"}],
+memory:[
+{id:"n-back",n:"N-Back",ar:"إن-باك",ic:"🧠",d:"Working memory · Jaeggi 2008"},
+{id:"face-match",n:"Face Match",ar:"مطابقة الوجوه",ic:"👤",d:"Associative · Naveh-Benjamin 2000"},
+{id:"pattern-recall",n:"Pattern Recall",ar:"استرجاع الأنماط",ic:"🔷",d:"Visuospatial · Corsi 1972"},
+{id:"seq-mem",n:"Sequence Memory",ar:"ذاكرة التسلسل",ic:"🔢",d:"Digit span · Miller 1956"},
+{id:"flash-cards",n:"Flash Cards",ar:"البطاقات الوميضية",ic:"🃏",d:"Visual memory · Naveh-Benjamin 2000"}],
+logic:[
+{id:"matrix-logic",n:"Matrix Logic",ar:"منطق المصفوفات",ic:"🔲",d:"Raven matrices · 1938"},
+{id:"syllogisms",n:"Syllogisms",ar:"القياس المنطقي",ic:"📐",d:"Deduction · Aristotle"},
+{id:"deduction",n:"Deduction",ar:"الاستنباط",ic:"🔍",d:"Inference · Evans 2008"},
+{id:"argument-analyzer",n:"Argument Analyzer",ar:"محلل الحجج",ic:"⚖️",d:"Fallacies · Abrami 2015"},
+{id:"truth-tbl",n:"Truth Tables",ar:"جداول الحقيقة",ic:"📋",d:"Boolean · Wason 1966"}],
+language:[
+{id:"lexical-decision",n:"Lexical Decision",ar:"القرار المعجمي",ic:"📖",d:"Priming · Meyer 1971"},
+{id:"vocabulary-elite",n:"Vocabulary Elite",ar:"نخبة المفردات",ic:"📚",d:"Synonyms · WAIS-IV"},
+{id:"verbal-analogies",n:"Verbal Analogies",ar:"التناظر اللفظي",ic:"🔗",d:"A→B :: C→? · Sternberg"},
+{id:"word-scramble",n:"Word Scramble",ar:"ترتيب الحروف",ic:"🔤",d:"Lexical access"}],
+creativity:[
+{id:"alternative-uses",n:"Alternative Uses",ar:"الاستخدامات البديلة",ic:"💡",d:"Divergent · Guilford 1967"},
+{id:"creative-connect",n:"Creative Connect",ar:"الربط الإبداعي",ic:"🌐",d:"Remote associates · Mednick"},
+{id:"story-spark",n:"Story Spark",ar:"شرارة القصة",ic:"✨",d:"Narrative · Amabile 1982"},
+{id:"idea-flow",n:"Idea Flow",ar:"تدفق الأفكار",ic:"🌊",d:"Fluency · Guilford"}],
+emotional:[
+{id:"micro-expressions",n:"Micro Expressions",ar:"التعابير الدقيقة",ic:"😮",d:"Facial emotion · Ekman 1969"},
+{id:"tone-detector",n:"Tone Detector",ar:"كاشف النبرة",ic:"🎵",d:"Emotional tone · MSCEIT"},
+{id:"empathy-engine",n:"Empathy Engine",ar:"محرك التعاطف",ic:"🫂",d:"Empathic accuracy · Ickes"},
+{id:"social-read",n:"Social Read",ar:"القراءة الاجتماعية",ic:"👥",d:"Group dynamics · Burgoon"}],
+problem:[
+{id:"hanoi",n:"Tower of Hanoi",ar:"برج هانوي",ic:"🗼",d:"Recursive · Simon 1975"},
+{id:"river-crossing",n:"River Crossing",ar:"عبور النهر",ic:"🌊",d:"Constraints · Simon 1971"},
+{id:"gear-logic",n:"Gear Logic",ar:"منطق التروس",ic:"⚙️",d:"Mechanical · Hegarty 2004"},
+{id:"path-finder",n:"Path Finder",ar:"مكتشف المسار",ic:"🧭",d:"Maze · Shallice 1982"}],
+numerical:[
+{id:"digit-span",n:"Digit Span",ar:"مدى الأرقام",ic:"📊",d:"Backward recall · WAIS-IV"},
+{id:"mental-math",n:"Mental Math",ar:"الحساب الذهني",ic:"➕",d:"Arithmetic · Dehaene 1999"},
+{id:"num-chains",n:"Number Chains",ar:"سلاسل الأرقام",ic:"🔗",d:"Patterns · Kyllonen 1990"},
+{id:"speed-calc",n:"Speed Calculus",ar:"الحساب السريع",ic:"⚡",d:"Speed · Salthouse 1996"}]};
+
+const DOMAINS={
+attention:{c:"#2dd4e0",en:"Attention",ar:"الانتباه",m:69},
+spatial:{c:"#3ddc97",en:"Spatial",ar:"الإدراك المكاني",m:58},
+speed:{c:"#ffd93d",en:"Speed",ar:"السرعة",m:71},
+memory:{c:"#9b7bff",en:"Memory",ar:"الذاكرة",m:76},
+logic:{c:"#4d8dff",en:"Logic",ar:"المنطق",m:74},
+language:{c:"#ff9f43",en:"Language",ar:"اللغة",m:72},
+creativity:{c:"#ff6ec7",en:"Creativity",ar:"الإبداع",m:63},
+emotional:{c:"#ff5a5f",en:"Emotional IQ",ar:"الذكاء العاطفي",m:66},
+problem:{c:"#5aa9ff",en:"Problem Solving",ar:"حل المشكلات",m:70},
+numerical:{c:"#b6f04a",en:"Numerical",ar:"الأرقام",m:65}};
+
+const T={
+en:{back:'Back',domain:'Domain',mastery:'Mastery',games:'Games',play:'Play',pb:'PB',lv:'Level',last:'Last',never:'Never',close:'Close'},
+ar:{back:'رجوع',domain:'المجال',mastery:'الإتقان',games:'الألعاب',play:'العب',pb:'الأفضل',lv:'المستوى',last:'آخر',never:'لم تُلعب',close:'إغلاق'}};
+
+const $=s=>document.querySelector(s),root=document.documentElement;
+const qs=new URLSearchParams(location.search);
+const domainId=qs.get('d')||'memory';
+const D=DOMAINS[domainId];
+let lang='en';
+try{lang=localStorage.getItem('flash.lang')==='ar'?'ar':'en'}catch(e){}
+let theme=root.dataset.theme;
+function t(k){return T[lang][k]}
+function n(x){return new Intl.NumberFormat(lang==='ar'?'ar-EG':'en').format(x)}
+
+/* ─── Reef canvas ─── */
+const cv=$('#reef'),cx=cv.getContext('2d');
+let W=0,H=0,raf=null,rot=0;
+const games=GAMES[domainId]||[];
+const RM=matchMedia('(prefers-reduced-motion:reduce)').matches;
+let nodes=games.map((g,i)=>({...g,i,phase:Math.random()*6.2832,radius:0.9+Math.random()*0.2}));
+
+function resize(){
+  const r=cv.getBoundingClientRect();
+  const k=Math.min(devicePixelRatio||1,2);
+  cv.width=r.width*k;cv.height=r.height*k;
+  cx.setTransform(k,0,0,k,0,0);
+  W=r.width;H=r.height;
+}
+function drawReef(ts){
+  if(!W)return;
+  cx.clearRect(0,0,W,H);
+  const rtl=lang==='ar';
+  const px=W/2,py=H/2;
+  const R=Math.min(W,H)*0.32;
+  const dc=D.c;
+  rot+=RM?0:0.0032;
+  // central core
+  const coreR=Math.min(W,H)*0.08;
+  const grd=cx.createRadialGradient(px,py,0,px,py,coreR*3);
+  grd.addColorStop(0,dc+'aa');
+  grd.addColorStop(0.4,dc+'33');
+  grd.addColorStop(1,dc+'00');
+  cx.fillStyle=grd;
+  cx.beginPath();cx.arc(px,py,coreR*3,0,6.2832);cx.fill();
+  cx.fillStyle=dc;
+  cx.beginPath();cx.arc(px,py,coreR*0.55,0,6.2832);cx.fill();
+  // orbit ring
+  cx.strokeStyle=dc+'55';cx.lineWidth=1;cx.setLineDash([4,6]);
+  cx.beginPath();cx.arc(px,py,R,0,6.2832);cx.stroke();
+  cx.setLineDash([]);
+  // spokes + nodes
+  const N=nodes.length;
+  nodes.forEach((g,i)=>{
+    const a=rot+(rtl?-1:1)*i/N*6.2832-1.5708;
+    const rr=R*(0.92+g.radius*0.08);
+    const gx=px+Math.cos(a)*rr;
+    const gy=py+Math.sin(a)*rr;
+    // spoke
+    cx.strokeStyle=dc+'33';cx.lineWidth=1;
+    cx.beginPath();cx.moveTo(px,py);cx.lineTo(gx,gy);cx.stroke();
+    // node halo
+    const nh=cx.createRadialGradient(gx,gy,0,gx,gy,26);
+    nh.addColorStop(0,dc+'99');nh.addColorStop(1,dc+'00');
+    cx.fillStyle=nh;
+    cx.beginPath();cx.arc(gx,gy,26,0,6.2832);cx.fill();
+    // node
+    cx.fillStyle=dc;
+    cx.beginPath();cx.arc(gx,gy,7,0,6.2832);cx.fill();
+    cx.fillStyle='#fff';
+    cx.beginPath();cx.arc(gx,gy,2.5,0,6.2832);cx.fill();
+  });
+  raf=requestAnimationFrame(drawReef);
+}
+
+function applyLang(){
+  root.lang=lang;root.dir=lang==='ar'?'rtl':'ltr';
+  document.querySelectorAll('.tools [data-l]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.l===lang?'true':'false'));
+  const dc=D;
+  $('#bc-arrow').textContent=lang==='ar'?'→':'←';
+  $('#bc-text').textContent=t('back');
+  $('#hero-k').textContent=t('domain');
+  $('#hero-n').textContent=lang==='ar'?dc.ar:dc.en;
+  $('#hero-m1').textContent=t('mastery');
+  $('#hero-mv').textContent=n(dc.m)+'%';
+  document.title='FLASH — '+(lang==='ar'?dc.ar:dc.en);
+  root.style.setProperty('--dc',dc.c);
+  // strip
+  $('#strip').innerHTML=`
+    <div class="stat"><span>${t('mastery')}</span><b>${n(dc.m)}%</b></div>
+    <div class="stat"><span>${t('games')}</span><b>${n(games.length)}</b></div>
+    <div class="stat"><span>${t('lv')}</span><b>${n(Math.round(dc.m/15*12))}/12</b></div>
+    <div class="stat"><span>${lang==='ar'?'مؤشر النشاط':'Activity'}</span><b>${n(dc.m>65?8:5)}/10</b></div>
+  `;
+  // legend
+  $('#legend').innerHTML=games.map(g=>`<span><i></i>${lang==='ar'?g.ar:g.n}</span>`).join('');
+  // games
+  $('#gh').textContent=t('games');
+  $('#gc').textContent=n(games.length)+' '+(lang==='ar'?'لعبة':'games');
+  $('#games').innerHTML=games.map((g,i)=>{
+    const pb=50+((i*7+13)%50);
+    const lv=3+((i*5+7)%10);
+    return `<a class="gc" href="#" data-game="${g.id}">
+      <div class="gc-head"><span class="gc-i">${g.ic}</span><div><div class="gc-n">${lang==='ar'?g.ar:g.n}</div></div></div>
+      <div class="gc-d">${g.d}</div>
+      <div class="gc-stats">
+        <div>${t('pb')}<b>${n(pb)}%</b></div>
+        <div>${t('lv')}<b>${n(lv)}/15</b></div>
+        <div>${t('last')}<b>${lang==='ar'?'اليوم':(i%3===0?'today':i%3===1?'yesterday':n(i)+'d ago')}</b></div>
+      </div>
+      <div class="gc-play">${t('play')} →</div>
+    </a>`;
+  }).join('');
+}
+function applyTheme(){
+  root.dataset.theme=theme;
+  try{localStorage.setItem('flash.theme',theme)}catch(e){}
+}
+
+/* ─── Events ─── */
+$('#th').onclick=()=>{theme=theme==='dark'?'light':'dark';applyTheme();};
+document.querySelectorAll('.tools [data-l]').forEach(b=>b.onclick=()=>{lang=b.dataset.l;try{localStorage.setItem('flash.lang',lang)}catch(e){}applyLang();});
+$('#games').addEventListener('click',e=>{
+  const a=e.target.closest('[data-game]');if(!a)return;
+  e.preventDefault();
+  const gid=a.dataset.game;
+  const g=games.find(x=>x.id===gid);
+  $('#go-t').innerHTML=`<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${D.c};margin-inline-end:8px"></span>${lang==='ar'?g.ar:g.n}`;
+  $('#go-f').src=`../games/${domainId}/${gid}/game.html`;
+  $('#go').classList.add('on');
+});
+$('#go-x').onclick=()=>{$('#go').classList.remove('on');$('#go-f').src='about:blank'};
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#go').classList.contains('on'))$('#go-x').click()});
+
+/* ─── Init ─── */
+applyTheme();
+applyLang();
+resize();
+window.addEventListener('resize',resize);
+if(!RM)raf=requestAnimationFrame(drawReef);else drawReef(0);
+</script>
+<script src="js/modules/domain-back.js"></script>
+<script src="js/modules/pwa.js"></script>
+<script src="js/modules/sound.js"></script>
+<script src="js/domain-brain.js"></script>
+</body>
+</html>

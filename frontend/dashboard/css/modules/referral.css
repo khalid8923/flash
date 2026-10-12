@@ -1,0 +1,156 @@
+/* ============================================================
+   FLASH - Referral Modal
+   ============================================================ */
+
+.ref-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--t-base) var(--e-std);
+}
+
+.ref-modal[data-open="1"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.ref-modal .ref-panel {
+  width: min(420px, 92vw);
+  background: var(--pn);
+  border: 1px solid var(--ln);
+  border-radius: var(--r-3);
+  padding: 24px;
+  box-shadow: var(--shadow-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transform: scale(0.96);
+  transition: transform var(--t-base) var(--e-spring);
+}
+
+.ref-modal[data-open="1"] .ref-panel {
+  transform: scale(1);
+}
+
+.ref-modal h2 {
+  font: 600 18px/1.2 var(--font-ui);
+  color: var(--tx);
+  margin: 0;
+}
+
+.ref-modal p {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--tx-mu);
+  margin: 0;
+}
+
+.ref-modal .ref-code-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  background: var(--pn-alt);
+  border: 1px dashed var(--ln-strong);
+  border-radius: var(--r-2);
+}
+
+.ref-modal .ref-code {
+  flex: 1;
+  font: 700 20px/1 var(--font-mono);
+  letter-spacing: 0.14em;
+  color: var(--ac);
+  text-align: center;
+  user-select: all;
+}
+
+.ref-modal .ref-copy {
+  padding: 8px 12px;
+  background: var(--ac);
+  color: var(--on-ac);
+  border-radius: var(--r-2);
+  font: 600 11px var(--font-ui);
+  cursor: pointer;
+  border: 0;
+  transition: background var(--t-fast) var(--e-std);
+}
+
+.ref-modal .ref-copy:hover { background: var(--ac-hover); }
+
+.ref-modal .ref-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.ref-modal .ref-stat {
+  padding: 12px;
+  background: var(--pn-alt);
+  border-radius: var(--r-2);
+  text-align: center;
+}
+
+.ref-modal .ref-stat .num {
+  font: 700 22px/1 var(--font-ui);
+  color: var(--tx);
+  display: block;
+}
+
+.ref-modal .ref-stat .lbl {
+  font-size: 10px;
+  color: var(--tx-mu);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-top: 4px;
+}
+
+.ref-modal .ref-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.ref-modal input {
+  flex: 1;
+  padding: 10px 12px;
+  background: var(--pn);
+  border: 1px solid var(--ln-strong);
+  border-radius: var(--r-2);
+  font: 14px var(--font-mono);
+  letter-spacing: 0.1em;
+  color: var(--tx);
+  text-transform: uppercase;
+}
+
+.ref-modal input:focus {
+  outline: none;
+  border-color: var(--ac);
+  box-shadow: 0 0 0 3px var(--ac-ring);
+}
+
+.ref-modal .ref-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--tx-mu);
+  cursor: pointer;
+  border: 0;
+  font-size: 18px;
+}
+
+.ref-modal .ref-close:hover {
+  background: var(--pn-hover);
+  color: var(--tx);
+}
+
+.ref-modal .ref-panel { position: relative; }

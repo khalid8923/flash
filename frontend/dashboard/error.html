@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FLASH — Error</title>
+<script>
+try {
+  var t = localStorage.getItem('flash.theme');
+  if (t !== 'dark' && t !== 'light') t = 'light';
+  document.documentElement.dataset.theme = t;
+  var l = localStorage.getItem('flash.lang');
+  if (l !== 'ar' && l !== 'en') l = 'en';
+  document.documentElement.lang = l;
+  document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+} catch(e){}
+</script>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/modules/error-page.css">
+</head>
+<body class="err-page">
+
+<main class="err-shell" role="main">
+
+  <!-- Ambient glow -->
+  <div class="err-glow" aria-hidden="true"></div>
+
+  <div class="err-card">
+
+    <!-- Icon -->
+    <div class="err-icon" data-kind="error" id="err-icon">
+      <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="24" cy="24" r="20"/>
+        <path d="M24 14v12"/>
+        <circle cx="24" cy="33" r="1.5" fill="currentColor"/>
+      </svg>
+    </div>
+
+    <!-- Code -->
+    <div class="err-code" id="err-code">404</div>
+
+    <!-- Title -->
+    <h1 class="err-title" id="err-title">Page not found</h1>
+
+    <!-- Message -->
+    <p class="err-msg" id="err-msg">
+      The page you are looking for doesn't exist or has been moved.
+    </p>
+
+    <!-- Request ID (small, copyable) -->
+    <div class="err-req" id="err-req" hidden>
+      <span class="err-req-label">Reference</span>
+      <code class="err-req-id" id="err-req-id">—</code>
+    </div>
+
+    <!-- Actions -->
+    <div class="err-actions">
+      <button type="button" class="err-btn primary" id="err-home">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 12l9-9 9 9M5 10v10h14V10"/>
+        </svg>
+        <span id="err-home-label">Go home</span>
+      </button>
+
+      <button type="button" class="err-btn secondary" id="err-retry" hidden>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 12a9 9 0 1 0 3-6.7M3 4v5h5"/>
+        </svg>
+        <span id="err-retry-label">Try again</span>
+      </button>
+
+      <button type="button" class="err-btn ghost" id="err-back">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M19 12H5M12 19l-7-7 7-7"/>
+        </svg>
+        <span id="err-back-label">Back</span>
+      </button>
+    </div>
+
+    <!-- Diagnostics (hidden by default; toggle with ?debug=1) -->
+    <details class="err-details" id="err-details" hidden>
+      <summary>Technical details</summary>
+      <dl class="err-dl">
+        <dt>Category</dt><dd id="err-cat">—</dd>
+        <dt>Code</dt><dd id="err-code2">—</dd>
+        <dt>Time</dt><dd id="err-time">—</dd>
+        <dt>Reference</dt><dd id="err-ref2">—</dd>
+      </dl>
+    </details>
+
+    <!-- Footer -->
+    <div class="err-foot">
+      <span>FLASH</span>
+      <span aria-hidden="true">·</span>
+      <span>Cognitive Training</span>
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+/* ============================================================
+   Error page runtime
+   Reads URL params: ?code=404&kind=error&ref=xxx&msg=...
+   Maps code → localized message
+   ============================================================ */
+(function () {
+  'use strict';
+
+  var params = new URLSearchParams(location.search || '');
+  var code = (params.get('code') || '404').trim();
+  var kind = (params.get('kind') || 'error').trim();
+  var ref = (params.get('ref') || '').trim();
+  var customMsg = (params.get('msg') || '').trim();
+  var debug = params.get('debug') === '1';
+  var lang = document.documentElement.lang || 'en';
+
+  /* ---------- MESSAGES ---------- */
+  var MESSAGES = {
+    en: {
+      400: { title: 'Bad request',        msg: 'The request could not be processed. Please check your input.' },
+      401: { title: 'Session ended',      msg: 'Please sign in again to continue.' },
+      403: { title: 'Access denied',      msg: "You don't have permission to view this." },
+      404: { title: 'Page not found',     msg: "The page you are looking for doesn't exist or has been moved." },
+      408: { title: 'Request timeout',    msg: 'The request took too long. Please try again.' },
+      409: { title: 'Conflict',           msg: 'A newer version of this data exists. Refresh and try again.' },
+      410: { title: 'No longer available', msg: 'This content has been permanently removed.' },
+      413: { title: 'Too large',          msg: 'The data you tried to send is too large.' },
+      422: { title: 'Invalid input',      msg: 'Some fields need your attention.' },
+      429: { title: 'Slow down',          msg: 'Too many requests. Please wait a moment and try again.' },
+      500: { title: 'Something went wrong', msg: 'An unexpected error occurred on our side. We are on it.' },
+      502: { title: 'Service issue',      msg: 'A service we depend on is having trouble. Try again soon.' },
+      503: { title: 'Temporarily unavailable', msg: 'The service is under maintenance. Please try again in a few minutes.' },
+      504: { title: 'Gateway timeout',    msg: 'The server took too long to respond. Try again.' }
+    },
+    ar: {
+      400: { title: 'طلب غير صحيح',       msg: 'تعذّر معالجة الطلب. تحقق من البيانات.' },
+      401: { title: 'انتهت الجلسة',       msg: 'سجّل دخولك من جديد للمتابعة.' },
+      403: { title: 'ممنوع الوصول',        msg: 'مالكش صلاحية تشوف الصفحة دي.' },
+      404: { title: 'الصفحة غير موجودة',   msg: 'الصفحة اللي بتدور عليها مش موجودة أو اتنقلت.' },
+      408: { title: 'انتهت المهلة',        msg: 'الطلب استغرق وقت طويل. حاول تاني.' },
+      409: { title: 'تعارض',              msg: 'فيه نسخة أحدث من البيانات. حدّث الصفحة وحاول تاني.' },
+      410: { title: 'مبقاش متاح',          msg: 'المحتوى ده اتشال نهائيًا.' },
+      413: { title: 'كبير أوي',            msg: 'البيانات اللي بتحاول تبعتھا كبيرة.' },
+      422: { title: 'بيانات غير صحيحة',   msg: 'فيه حقول محتاجة مراجعة.' },
+      429: { title: 'ببطء شوية',           msg: 'طلبات كتير. استنى لحظة وحاول تاني.' },
+      500: { title: 'حصلت مشكلة',          msg: 'خطأ غير متوقع من ناحيتنا. بنعالجه.' },
+      502: { title: 'مشكلة خدمة',          msg: 'فيه خدمة معتمدة عليها بتعاني. حاول بعد شوية.' },
+      503: { title: 'مش متاح مؤقتًا',      msg: 'الخدمة تحت الصيانة. حاول بعد دقايق.' },
+      504: { title: 'انتهت مهلة الخدمة',  msg: 'السيرفر خد وقت طويل. حاول تاني.' }
+    }
+  };
+
+  var dict = MESSAGES[lang] || MESSAGES.en;
+  var entry = dict[code] || dict[500];
+
+  /* ---------- FILL PAGE ---------- */
+  var setText = function (id, text) {
+    var el = document.getElementById(id);
+    if (el) el.textContent = text;
+  };
+
+  setText('err-code', code);
+  setText('err-title', entry.title);
+  setText('err-msg', customMsg || entry.msg);
+
+  var icon = document.getElementById('err-icon');
+  if (icon) icon.setAttribute('data-kind', kind);
+
+  /* ---------- REQUEST ID ---------- */
+  if (ref) {
+    var req = document.getElementById('err-req');
+    var reqId = document.getElementById('err-req-id');
+    if (req) req.hidden = false;
+    if (reqId) reqId.textContent = ref;
+  }
+
+  /* ---------- ACTIONS ---------- */
+  var btnHome = document.getElementById('err-home');
+  var btnRetry = document.getElementById('err-retry');
+  var btnBack = document.getElementById('err-back');
+
+  if (btnHome) {
+    btnHome.addEventListener('click', function () {
+      window.location.href = 'index.html';
+    });
+  }
+
+  /* Show "Retry" only for retryable kinds */
+  var retryable = code === '408' || code === '429' || (parseInt(code, 10) >= 500);
+  if (retryable && btnRetry) {
+    btnRetry.hidden = false;
+    btnRetry.addEventListener('click', function () {
+      window.location.reload();
+    });
+  }
+
+  if (btnBack) {
+    btnBack.addEventListener('click', function () {
+      if (window.history.length > 1) window.history.back();
+      else window.location.href = 'index.html';
+    });
+  }
+
+  /* ---------- DEBUG DETAILS ---------- */
+  if (debug) {
+    var details = document.getElementById('err-details');
+    if (details) {
+      details.hidden = false;
+      setText('err-cat', kind.toUpperCase());
+      setText('err-code2', code);
+      setText('err-time', new Date().toISOString());
+      setText('err-ref2', ref || 'n/a');
+    }
+  }
+
+  /* ---------- TITLE ---------- */
+  document.title = 'FLASH — ' + entry.title;
+})();
+</script>
+
+</body>
+</html>

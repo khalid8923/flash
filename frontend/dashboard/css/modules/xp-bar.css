@@ -1,0 +1,73 @@
+/* ============================================================
+   FLASH - XP Bar
+   Compact XP indicator for the header
+   ============================================================ */
+
+.xp-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border: 1px solid var(--ln);
+  border-radius: var(--r-2);
+  background: var(--pn);
+  font: 500 11px/1 var(--font-ui);
+  font-variant-numeric: tabular-nums;
+  color: var(--tx);
+  transition: background var(--t-fast) var(--e-std),
+              border-color var(--t-fast) var(--e-std);
+  user-select: none;
+}
+
+.xp-bar:hover { background: var(--pn-hover); }
+
+.xp-bar .lv {
+  font-weight: 700;
+  color: var(--ac);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+.xp-bar .progress {
+  position: relative;
+  width: 60px;
+  height: 4px;
+  background: var(--ln-strong);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.xp-bar .progress .fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  background: var(--ac);
+  border-radius: 2px;
+  transition: width 480ms var(--e-out);
+}
+
+.xp-bar .nums {
+  font-size: 10px;
+  color: var(--tx-mu);
+}
+
+.xp-bar .nums b {
+  color: var(--tx);
+  font-weight: 600;
+}
+
+/* Level-up pulse */
+@keyframes xp-levelup {
+  0%   { transform: scale(1);    box-shadow: 0 0 0 0 var(--ac-ring); }
+  50%  { transform: scale(1.05); box-shadow: 0 0 0 8px transparent; }
+  100% { transform: scale(1);    box-shadow: 0 0 0 0 transparent; }
+}
+
+.xp-bar.levelup {
+  animation: xp-levelup 600ms var(--e-out);
+}
+
+/* Mobile: hide numbers */
+@media (max-width: 760px) {
+  .xp-bar .nums { display: none; }
+  .xp-bar .progress { width: 40px; }
+}

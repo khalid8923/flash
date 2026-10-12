@@ -1,22 +1,25 @@
 /* ═══════════════════════════════════════════════════════════
-   FLASH — Design Tokens
-   Colors, typography, spacing, motion. All themes.
+   FLASH — Design Tokens v2 (Balanced)
+   ═══════════════════════════════════════════════════════════
+   Principle: Neutral surfaces + Brand accent ONLY on active/interactive.
+   No "one color everywhere" — no eye fatigue.
    ═══════════════════════════════════════════════════════════ */
-:root{
-  /* Type */
-  --font-ui: system-ui,-apple-system,'Segoe UI',sans-serif;
-  --font-serif:'Iowan Old Style','Palatino Linotype',Palatino,Georgia,serif;
-  --font-serif-ar:'Iowan Old Style','Noto Naskh Arabic','Traditional Arabic',serif;
-  --font-mono: ui-monospace,'SF Mono',Consolas,monospace;
 
-  /* Spacing scale */
-  --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
-  --sp-5: 20px; --sp-6: 24px; --sp-8: 32px; --sp-10: 40px;
+:root {
+  /* ─── Typography ─── */
+  --font-ui: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-serif: 'Iowan Old Style', 'Palatino Linotype', Palatino, Georgia, serif;
+  --font-serif-ar: 'Iowan Old Style', 'Noto Naskh Arabic', 'Traditional Arabic', serif;
+  --font-mono: ui-monospace, 'SF Mono', Consolas, monospace;
 
-  /* Radius */
-  --r-0: 0; --r-1: 2px; --r-2: 4px; --r-3: 8px;
+  /* ─── Spacing ─── */
+  --sp-1: 4px;   --sp-2: 8px;   --sp-3: 12px;  --sp-4: 16px;
+  --sp-5: 20px;  --sp-6: 24px;  --sp-8: 32px;  --sp-10: 40px;
 
-  /* Motion tokens */
+  /* ─── Radius ─── */
+  --r-0: 0;  --r-1: 2px;  --r-2: 6px;  --r-3: 12px;
+
+  /* ─── Motion ─── */
   --t-fast: 160ms;
   --t-base: 240ms;
   --t-mid:  320ms;
@@ -29,66 +32,114 @@
   --e-cine:   cubic-bezier(0.76, 0, 0.24, 1);
   --e-std:    cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Domain colors */
-  --d-attention:  #2dd4e0;
-  --d-spatial:    #3ddc97;
-  --d-speed:      #ffd93d;
-  --d-memory:     #9b7bff;
-  --d-logic:      #4d8dff;
-  --d-language:   #ff9f43;
-  --d-creativity: #ff6ec7;
-  --d-emotional:  #ff5a5f;
-  --d-problem:    #5aa9ff;
-  --d-numerical:  #b6f04a;
+  /* ─── Semantic colors (shared by both themes) ─── */
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger:  #ef4444;
+  --info:    #3b82f6;
 
-  /* Current domain — set per context */
+  /* ─── Domain colors ─── */
+  --d-attention:  #06b6d4;
+  --d-spatial:    #10b981;
+  --d-speed:      #f59e0b;
+  --d-memory:     #8b5cf6;
+  --d-logic:      #3b82f6;
+  --d-language:   #f97316;
+  --d-creativity: #ec4899;
+  --d-emotional:  #ef4444;
+  --d-problem:    #0ea5e9;
+  --d-numerical:  #84cc16;
+
   --dc: var(--d-memory);
 
-  /* Direction */
   --dir: 1;
 }
-[dir=rtl]{ --dir: -1; }
 
-/* ═══ LIGHT THEME — "Rose" ═══ */
-[data-theme=light]{
-  --bg:        #FFF1F2;
-  --bg-alt:    #FCE7F3;
+[dir=rtl] { --dir: -1; }
+
+/* ═══════════════════════════════════════════════════════════
+   LIGHT THEME — "Cloud + Rose"
+   Neutral off-white base + rose accent on interactive only.
+   ═══════════════════════════════════════════════════════════ */
+[data-theme=light] {
+  /* Surfaces — neutral, no color tint */
+  --bg:        #F7F7F8;
+  --bg-alt:    #EFEFF1;
   --pn:        #FFFFFF;
-  --pn-alt:    #FFF8F9;
-  --tx:        #1F2937;
-  --tx-mu:     #9F1239;
-  --tx-faint:  rgba(31,41,55,.55);
-  --ln:        rgba(190,24,93,.10);
-  --ln-strong: rgba(190,24,93,.22);
-  --ac:        #EC4899;
-  --ac-soft:   #FBCFE8;
-  --on-ac:     #111827;
-  --shadow:    0 1px 3px rgba(190,24,93,.08);
+  --pn-alt:    #FAFAFB;
+  --pn-hover:  #F4F4F6;
+
+  /* Text — true neutrals */
+  --tx:        #18181B;                    /* near-black, not purple */
+  --tx-mu:     #71717A;                    /* neutral gray-500 */
+  --tx-faint:  #A1A1AA;                    /* neutral gray-400 */
+  --tx-inv:    #FAFAFA;
+
+  /* Borders — very subtle neutral */
+  --ln:        rgba(24, 24, 27, 0.08);
+  --ln-strong: rgba(24, 24, 27, 0.16);
+  --ln-focus:  var(--ac);
+
+  /* Accent — Rose (only on active) */
+  --ac:        #DB2777;                    /* deep rose, not neon */
+  --ac-hover:  #BE185D;
+  --ac-soft:   rgba(219, 39, 119, 0.08);
+  --ac-ring:   rgba(219, 39, 119, 0.20);
+  --on-ac:     #FFFFFF;
+
+  /* Shadows */
+  --shadow:    0 1px 2px rgba(24, 24, 27, 0.04), 0 1px 3px rgba(24, 24, 27, 0.06);
+  --shadow-lg: 0 4px 12px rgba(24, 24, 27, 0.08);
+
+  /* Data viz — subtle palette */
+  --grid-line: rgba(24, 24, 27, 0.06);
+  --now-line:  #DB2777;
+
   color-scheme: light;
 }
 
-/* ═══ DARK THEME — "Neon" ═══ */
-[data-theme=dark]{
-  --bg:        #000000;
-  --bg-alt:    #0A0A0A;
-  --pn:        #0A0A0A;
-  --pn-alt:    #141414;
-  --tx:        #F0FDF4;
-  --tx-mu:     #86EFAC;
-  --tx-faint:  rgba(240,253,244,.55);
-  --ln:        rgba(74,222,128,.15);
-  --ln-strong: rgba(74,222,128,.35);
-  --ac:        #39FF14;
-  --ac-soft:   rgba(57,255,20,.2);
-  --on-ac:     #000000;
-  --shadow:    0 0 20px -8px var(--ac);
+/* ═══════════════════════════════════════════════════════════
+   DARK THEME — "Obsidian + Emerald"
+   Near-black base + emerald accent on interactive only.
+   NOT neon-green-everywhere.
+   ═══════════════════════════════════════════════════════════ */
+[data-theme=dark] {
+  /* Surfaces — deep neutral, no green tint */
+  --bg:        #0A0A0B;
+  --bg-alt:    #111113;
+  --pn:        #131316;
+  --pn-alt:    #17171A;
+  --pn-hover:  #1C1C20;
+
+  /* Text — true neutrals */
+  --tx:        #EDEDEE;                    /* off-white, not green */
+  --tx-mu:     #9A9AA0;                    /* neutral gray-400 */
+  --tx-faint:  #5A5A60;                    /* neutral gray-600 */
+  --tx-inv:    #18181B;
+
+  /* Borders — very subtle neutral */
+  --ln:        rgba(255, 255, 255, 0.07);
+  --ln-strong: rgba(255, 255, 255, 0.14);
+  --ln-focus:  var(--ac);
+
+  /* Accent — Emerald (only on active) */
+  --ac:        #10B981;                    /* emerald - calm, not neon */
+  --ac-hover:  #34D399;
+  --ac-soft:   rgba(16, 185, 129, 0.12);
+  --ac-ring:   rgba(16, 185, 129, 0.30);
+  --on-ac:     #0A0A0B;
+
+  /* Shadows */
+  --shadow:    0 1px 3px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+
+  /* Data viz */
+  --grid-line: rgba(255, 255, 255, 0.05);
+  --now-line:  #10B981;
+
   color-scheme: dark;
 }
 
-/* ═══ RTL typography ═══ */
-[dir=rtl] body{
-  font-family: var(--font-serif-ar);
-}
-[dir=rtl] .ai{
-  font-style: normal;
-}
+/* ─── RTL typography ─── */
+[dir=rtl] body { font-family: var(--font-serif-ar); }
+[dir=rtl] .ai { font-style: normal; }

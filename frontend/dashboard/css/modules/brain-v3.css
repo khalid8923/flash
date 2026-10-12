@@ -1,0 +1,62 @@
+/* ============================================================
+   FLASH — Brain v3 (Neural Network)
+   Container for the canvas + ambient wrapper
+   ============================================================ */
+
+.brain-v3 {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 0.92;
+  max-height: 300px;
+  margin-inline: auto;
+  overflow: hidden;
+}
+
+.brain-v3 canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: manipulation;
+}
+
+/* Ambient backdrop — subtle radial glow that matches theme */
+.brain-v3::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 45%,
+      color-mix(in srgb, var(--ac) 10%, transparent) 0%,
+      transparent 55%);
+  opacity: 0.7;
+  transition: opacity 320ms ease;
+}
+
+[data-theme="dark"] .brain-v3::before {
+  opacity: 1;
+  background:
+    radial-gradient(circle at 50% 45%,
+      color-mix(in srgb, var(--ac) 14%, transparent) 0%,
+      transparent 58%);
+}
+
+/* Reduced motion — no ambient drift */
+@media (prefers-reduced-motion: reduce) {
+  .brain-v3::before {
+    animation: none;
+  }
+}
+
+/* Small viewports */
+@media (max-width: 760px) {
+  .brain-v3 {
+    max-height: 220px;
+  }
+}
+
+/* When embedded in domain hero (larger) */
+.brain-v3.brain-v3--hero {
+  max-height: 380px;
+  aspect-ratio: 1 / 1;
+}

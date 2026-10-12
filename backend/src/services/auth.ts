@@ -1,20 +1,34 @@
 /* ═══════════════════════════════════════════════════════════
-   FLASH - Player Auth Service (R03b)
+   FLASH - Player Auth Service (R03b — Hardened)
+   ═══════════════════════════════════════════════════════════
    Email OTP + opaque session tokens.
+   Hardening: HMAC-SHA-256 with AUTH_SECRET (pepper).
    Player identity is permanent; auth_identities maps providers.
    ═══════════════════════════════════════════════════════════ */
 
 import { pool } from '../config/db.js';
-import { createHash, randomBytes, randomInt, timingSafeEqual } from 'node:crypto';
+import { env } from '../config/env.js';
+import { createHmac, randomBytes, randomInt, timingSafeEqual } from 'node:crypto';
 
-const OTP_TTL_MS = 10 * 60 * 1000;      // 10 min
+const OTP_TTL_MS = 10 * 60 * 1000;             // 10 min
 const OTP_MAX_ATTEMPTS = 5;
-const SESSION_IDLE_MS = 15 * 24 * 3600_000; // 15 days
-const SESSION_ABS_MS  = 90 * 24 * 3600_000; // 90 days
+const SESSION_IDLE_MS = 15 * 24 * 3600_000;    // 15 days
+const SESSION_ABS_MS  = 90 * 24 * 3600_000;    // 90 days
 
-/* ═══ Hash helpers ═══ */
+/* ═══════════════════════════════════════════════════════════
+   HMAC helpers — pepper with AUTH_SECRET
+   Never hash sensitive values with plain SHA-256.
+   ═══════════════════════════════════════════════════════════ */
+
+export function hmacHex(input: string, scope = 'generic'): string {
+  return createHmac('sha256', env.AUTH_SECRET)
+    .update(scope + ':' + input)
+    .digest('hex');
+}
+
+/* Hash helper for admin compat (used elsewhere) */
 export function hashHex(input: string): string {
-  return createHash('sha256').update(input).digest('hex');
+  return createHmac('sha256', env.AUTH_SECRET).update(input).digest('hex');
 }
 
 export function generateSessionToken(): string {
@@ -22,7 +36,7 @@ export function generateSessionToken(): string {
 }
 
 export function generateOTP(): string {
-  return String(randomInt(100000, 999999)); // 6 digits
+  return String(randomInt(100000, 999999));
 }
 
 /* ═══ Player resolution ═══ */
@@ -65,7 +79,7 @@ export async function requestOTP(email: string): Promise<{ ok: true; dev_code?: 
   }
 
   const code = generateOTP();
-  const codeHash = hashHex(code);
+  const codeHash = hmacHex(code, 'otp');   /* HMAC instead of plain SHA */
   const expiresAt = new Date(Date.now() + OTP_TTL_MS);
 
   await pool.query(
@@ -74,8 +88,7 @@ export async function requestOTP(email: string): Promise<{ ok: true; dev_code?: 
     [norm, codeHash, expiresAt]
   );
 
-  /* In dev: return the code so you can test without email */
-  const isDev = process.env.NODE_ENV !== 'production';
+  const isDev = env.NODE_ENV !== 'production';
   return { ok: true, ...(isDev ? { dev_code: code } : {}) };
 }
 
@@ -85,7 +98,7 @@ export async function verifyOTP(
   meta: { device_id?: string; user_agent?: string; ip?: string }
 ): Promise<{ sessionToken: string; playerId: string; expiresAt: string }> {
   const norm = email.trim().toLowerCase();
-  const codeHash = hashHex(code.trim());
+  const codeHash = hmacHex(code.trim(), 'otp');
 
   const r = await pool.query<{
     id: string;
@@ -124,12 +137,11 @@ export async function verifyOTP(
     [row.id]
   );
 
-  /* Resolve player + session */
   const playerId = await getOrCreatePlayerByEmail(norm);
   await linkIdentity(playerId, 'email_otp', norm);
 
   const token = generateSessionToken();
-  const tokenHash = hashHex(token);
+  const tokenHash = hmacHex(token, 'session');   /* HMAC instead of plain SHA */
   const idleExp = new Date(Date.now() + SESSION_IDLE_MS);
   const absExp  = new Date(Date.now() + SESSION_ABS_MS);
 
@@ -152,7 +164,7 @@ export interface AuthedPlayer { playerId: string; sessionId: string; }
 
 export async function verifySession(token: string): Promise<AuthedPlayer | null> {
   if (!token || !token.startsWith('ses_')) return null;
-  const hash = hashHex(token);
+  const hash = hmacHex(token, 'session');
   const r = await pool.query<{ id: string; player_id: string }>(
     `SELECT id, player_id FROM auth_sessions
       WHERE token_hash = $1
@@ -164,7 +176,6 @@ export async function verifySession(token: string): Promise<AuthedPlayer | null>
   const row = r.rows[0];
   if (!row) return null;
 
-  /* Touch idle window (cheap) */
   await pool.query(
     `UPDATE auth_sessions
         SET last_seen_at = now(),
@@ -189,7 +200,6 @@ export async function revokeAllForPlayer(playerId: string): Promise<number> {
   return r.rowCount ?? 0;
 }
 
-/* ═══ Current user info ═══ */
 export async function getPlayer(playerId: string) {
   const r = await pool.query<{
     id: string; email: string | null; display_name: string;

@@ -2,16 +2,16 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, develop]
   pull_request:
     branches: [main]
   workflow_dispatch:
 
 jobs:
   backend:
-    name: Backend - Typecheck + Verify
+    name: Backend - Typecheck + Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: backend
@@ -32,6 +32,9 @@ jobs:
       - name: TypeScript check
         run: npx tsc --noEmit
 
+      - name: Run tests
+        run: npm run test:run
+
       - name: Verify catalog
         run: npx tsx scripts/verify-catalog.ts
         continue-on-error: true
@@ -48,3 +51,23 @@ jobs:
         uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  frontend-check:
+    name: Frontend - HTML/CSS/JS sanity
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for forbidden frameworks
+        run: |
+          ! grep -r "react\\|vue\\|svelte\\|tailwind" frontend/ --include="*.js" --include="*.json" -l | head -5
+
+      - name: Verify 8-file pattern
+        run: |
+          for dir in frontend/games/*/*/; do
+            count=$(ls "$dir"/*.js 2>/dev/null | wc -l)
+            if [ "$count" -lt 4 ]; then
+              echo "WARN: $dir has fewer than 4 JS files"
+            fi
+          done

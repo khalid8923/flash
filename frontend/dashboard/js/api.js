@@ -1,171 +1,182 @@
-/* =========================================================
-   MODULE - API Client
-   Unified fetch wrapper with:
-     - Timeout via AbortController
-     - Retry with backoff
-     - In-memory cache with TTL
-     - Graceful failure (returns null on error)
-   Public: FLASH_API.get(path), .post(path, body), .isLive()
-   ========================================================= */
-(function(){
-'use strict';
-const C = window.FLASH_CONFIG;
+/* ============================================================
+   FLASH - API Client (v3 - config-aligned)
+   Uses FLASH_SAFE_FETCH for all network calls
+   Auto auth header, classified errors, no secret leaks
+   ============================================================ */
+(function () {
+  'use strict';
 
-const state = {
-  baseUrl: null,
-  live: false,
-  lastCheck: 0,
-  failures: 0,
-  cache: new Map()   // path -> { value, expiresAt }
-};
+  const ERR = window.FLASH_ERRORS;
+  const SF  = window.FLASH_SAFE_FETCH;
+  const CFG = window.FLASH_CONFIG || {};
 
-/* ─── Base URL detection ─── */
-function detectBaseUrl(){
-  const protocol = location.protocol;
-  if (protocol === 'file:'){
-    /* Try dev URL even from file:// — may work if CORS allows */
-    return C.BACKEND_URL.dev;
+  if (!ERR || !SF) {
+    console.error('[api] requires errors.js + safe-fetch.js');
+    return;
   }
-  const host = location.hostname;
-  if (host === 'localhost' || host === '127.0.0.1'){
-    return C.BACKEND_URL.dev;
+
+  /* ─── Aligned with config.js ─── */
+  const isProd = location.hostname !== 'localhost' && location.hostname !== '127.0.0.1';
+  const API_BASE = isProd
+    ? (CFG.BACKEND_URL && CFG.BACKEND_URL.prod) || 'https://flash-backend.onrender.com'
+    : (CFG.BACKEND_URL && CFG.BACKEND_URL.dev) || 'http://localhost:3000';
+
+  /* ─── Auth token ─── */
+  function getToken() {
+    try { return localStorage.getItem('flash.session'); } catch (_) { return null; }
   }
-  return C.BACKEND_URL.prod;
-}
 
-state.baseUrl = detectBaseUrl();
-
-/* ─── Low-level fetch with timeout ─── */
-async function fetchWithTimeout(url, opts, timeoutMs){
-  const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
-  try {
-    const res = await fetch(url, Object.assign({}, opts, { signal: ctrl.signal }));
-    clearTimeout(timer);
-    return res;
-  } catch (e){
-    clearTimeout(timer);
-    throw e;
+  function authHeader() {
+    const t = getToken();
+    return t ? { Authorization: 'Bearer ' + t } : {};
   }
-}
 
-/* ─── Retry wrapper ─── */
-async function fetchWithRetry(url, opts){
-  const { timeoutMs, retryCount, retryDelayMs } = C.REQUEST;
-  let lastErr = null;
+  /* ─── Core request ─── */
+  async function request(path, opts) {
+    opts = opts || {};
+    const url = /^https?:\/\//.test(path) ? path : API_BASE + path;
 
-  for (let attempt = 0; attempt <= retryCount; attempt++){
+    const headers = Object.assign(
+      { 'Content-Type': 'application/json' },
+      authHeader(),
+      opts.headers || {}
+    );
+
     try {
-      const res = await fetchWithTimeout(url, opts, timeoutMs);
-      if (!res.ok){
-        /* Don't retry 4xx — client errors */
-        if (res.status >= 400 && res.status < 500){
-          return { ok: false, status: res.status, error: 'client_error', data: null };
-        }
-        /* 5xx gets retried */
-        lastErr = 'server_error_' + res.status;
-      } else {
-        const data = await res.json().catch(() => null);
-        return { ok: true, status: res.status, data };
+      const res = await SF(url, Object.assign({}, opts, {
+        headers,
+        idempotencyKey: opts.idempotencyKey
+      }));
+      return await parseBody(res);
+    } catch (err) {
+      throw enrichError(err, opts);
+    }
+  }
+
+  async function parseBody(res) {
+    if (res.status === 204) return null;
+    const ct = res.headers.get('content-type') || '';
+    if (ct.indexOf('application/json') >= 0) {
+      try { return await res.json(); }
+      catch (e) {
+        ERR.log('INTEGRATION', {
+          message: 'Invalid JSON in response',
+          operation: res.url,
+          status: res.status
+        });
+        return null;
       }
-    } catch (e){
-      lastErr = e.name === 'AbortError' ? 'timeout' : 'network';
     }
-    if (attempt < retryCount){
-      await new Promise(r => setTimeout(r, retryDelayMs * (attempt + 1)));
+    return res.text();
+  }
+
+  function enrichError(err, opts) {
+    const cls = ERR.classify(err);
+    err.category = cls.category;
+    err.retryable = cls.retryable;
+    err.aborted = cls.aborted;
+
+    if (!opts.silent && !cls.aborted) {
+      const UI = window.FLASH_UI;
+      if (UI && UI.showToast) {
+        UI.showToast({
+          kind: 'error',
+          category: cls.category,
+          title: opts.errorTitle || null
+        });
+      }
     }
+    return err;
   }
 
-  return { ok: false, status: 0, error: lastErr || 'unknown', data: null };
-}
+  /* ─── Public API ─── */
+  const API = {
+    request,
+    baseUrl: API_BASE,
 
-/* ─── Cache helpers ─── */
-function cacheGet(path){
-  if (!C.FLAGS.cacheEnabled) return null;
-  const hit = state.cache.get(path);
-  if (!hit) return null;
-  if (hit.expiresAt < Date.now()){
-    state.cache.delete(path);
-    return null;
-  }
-  return hit.value;
-}
-function cacheSet(path, value, ttlKey){
-  if (!C.FLAGS.cacheEnabled) return;
-  const ttl = C.CACHE_TTL[ttlKey] || 30_000;
-  state.cache.set(path, { value, expiresAt: Date.now() + ttl });
-}
-function cacheClear(){
-  state.cache.clear();
-}
+    get: (path, opts) => request(path, Object.assign({}, opts, { method: 'GET' })),
 
-/* ─── Public API ─── */
-async function get(path, opts){
-  opts = opts || {};
-  const ttlKey = opts.cache;
+    post: (path, body, opts) => request(path, Object.assign({}, opts, {
+      method: 'POST',
+      body: body == null ? undefined : (typeof body === 'string' ? body : JSON.stringify(body))
+    })),
 
-  /* Cache hit */
-  const cached = cacheGet(path);
-  if (cached){
-    return { ok: true, data: cached, fromCache: true };
-  }
+    put: (path, body, opts) => request(path, Object.assign({}, opts, {
+      method: 'PUT',
+      body: body == null ? undefined : (typeof body === 'string' ? body : JSON.stringify(body))
+    })),
 
-  const url = state.baseUrl + path;
-  const res = await fetchWithRetry(url, {
-    method: 'GET',
-    credentials: 'include',
-    headers: { 'Accept': 'application/json' }
-  });
+    del: (path, opts) => request(path, Object.assign({}, opts, { method: 'DELETE' })),
 
-  if (res.ok){
-    state.failures = 0;
-    state.live = true;
-    state.lastCheck = Date.now();
-    if (ttlKey) cacheSet(path, res.data, ttlKey);
-    return { ok: true, data: res.data, fromCache: false };
-  }
+    /* Core */
+    health: () => API.get('/health', { silent: true }),
+    domains: () => API.get('/domains'),
+    games: () => API.get('/games'),
+    profile: () => API.get('/profile'),
+    sessions: (limit) => API.get('/sessions' + (limit ? '?limit=' + limit : '')),
+    plan: () => API.get('/plan'),
+    ability: () => API.get('/ability'),
+    nextLevel: (gameId) => API.get('/next/' + encodeURIComponent(gameId)),
+    decisions: () => API.get('/decisions'),
 
-  state.failures++;
-  if (state.failures >= 3){
-    state.live = false;
-  }
-  return { ok: false, error: res.error, data: null };
-}
+    /* AI */
+    aiChat: (message, opts) => API.post('/ai/chat', Object.assign({ message }, opts || {})),
+    aiInsights: (lang) => API.get('/ai/insights' + (lang ? '?language=' + lang : '')),
+    aiDailyPlan: (lang) => API.get('/ai/daily-plan' + (lang ? '?language=' + lang : '')),
+    aiFingerprint: (lang) => API.get('/ai/fingerprint' + (lang ? '?language=' + lang : '')),
+    aiNudge: (payload) => API.post('/ai/nudge', payload),
+    aiRecap: (sessionId, lang) => API.post('/ai/recap', {
+      session_id: sessionId,
+      language: lang || 'en'
+    }),
 
-async function post(path, body){
-  const url = state.baseUrl + path;
-  const res = await fetchWithRetry(url, {
-    method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: body ? JSON.stringify(body) : undefined
-  });
-  return res;
-}
+    /* Auth */
+    authRequestOtp: (email) => API.post('/auth/otp/request', { email }, { silent: true }),
+    authVerifyOtp: (email, code) => API.post('/auth/otp/verify', { email, code }, { silent: true }),
+    authMe: () => API.get('/auth/me', { silent: true }),
+    authLogout: () => API.post('/auth/logout', null, { silent: true }),
 
-/* ─── Health check ─── */
-async function checkLive(){
-  const res = await get('/health', { cache: 'health' });
-  state.live = res.ok;
-  state.lastCheck = Date.now();
-  return state.live;
-}
+    /* Sessions */
+    submitSession: (session, opts) => API.post('/sessions', session, Object.assign({
+      idempotencyKey: session.client_session_id
+    }, opts || {})),
 
-/* ─── Status accessor ─── */
-function status(){
-  return {
-    live: state.live,
-    baseUrl: state.baseUrl,
-    lastCheck: state.lastCheck,
-    failures: state.failures
+    /* Privacy */
+    meExport: () => API.get('/me/export'),
+    meErase: (confirm) => API.post('/me/erase', { confirm })
   };
-}
 
-window.FLASH_API = {
-  get, post, checkLive, status, cacheClear,
-  isLive: () => state.live
-};
+  /* ─── Status ─── */
+  let _lastStatus = { live: false, mode: 'mock', checkedAt: null };
+
+  API.status = () => Object.assign({}, _lastStatus);
+
+  API.checkLive = async () => {
+    try {
+      const res = await SF(API_BASE + '/health', {
+        method: 'GET',
+        silent: true,
+        timeoutMs: 3000
+      });
+      _lastStatus = {
+        live: !!(res && res.ok),
+        mode: res && res.ok ? 'live' : 'mock',
+        checkedAt: Date.now()
+      };
+    } catch (_) {
+      _lastStatus = { live: false, mode: 'mock', checkedAt: Date.now() };
+    }
+    try {
+      window.dispatchEvent(new CustomEvent('flash:api-status', { detail: _lastStatus }));
+    } catch (_) {}
+    return _lastStatus;
+  };
+
+  setTimeout(() => { API.checkLive().catch(() => {}); }, 500);
+  setInterval(() => { API.checkLive().catch(() => {}); }, 30000);
+
+  window.FLASH_API = API;
+  window.api = API;
+
+  console.info('[FLASH_API] v3 ready — base:', API_BASE, '(mode:', isProd ? 'prod' : 'dev', ')');
 })();

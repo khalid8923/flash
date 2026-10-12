@@ -6,6 +6,8 @@ import multipart from '@fastify/multipart';
 import compress from '@fastify/compress';
 import { env } from './config/env.js';
 import { ipKey } from './config/rate-limit.js';
+import { registerErrorHandler } from './lib/error-handler.js';
+import { idempotencyHook } from './middleware/idempotency.js';
 
 import healthRoutes from './routes/health.js';
 import authRoutes from './routes/auth.js';
@@ -42,6 +44,8 @@ import adminConsoleRoutes from './routes/admin-console.js';
 import adminPlatformRoutes from './routes/admin-platform.js';
 import nextRoutes from './routes/next.js';
 import planRoutes from './routes/plan.js';
+import engagementRoutes from './routes/engagement.js';
+import engagement2Routes from './routes/engagement-2.js';
 
 export async function buildServer() {
   const fastify = Fastify({
@@ -122,6 +126,12 @@ export async function buildServer() {
     },
   });
 
+  /* ═══ Idempotency (mutations only) ═══ */
+  fastify.addHook('onRequest', idempotencyHook);
+
+    /* ═══ Central Error Handler ═══ */
+  await registerErrorHandler(fastify);
+
   /* ═══ Routes ═══ */
   await fastify.register(healthRoutes);
   await fastify.register(authRoutes);
@@ -158,6 +168,8 @@ export async function buildServer() {
   await fastify.register(adminCatalogRoutes);
   await fastify.register(nextRoutes);
   await fastify.register(planRoutes);
+  await fastify.register(engagementRoutes);
+  await fastify.register(engagement2Routes);
 
   return fastify;
 }

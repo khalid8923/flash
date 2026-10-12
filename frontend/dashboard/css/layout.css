@@ -1,90 +1,104 @@
 /* ═══════════════════════════════════════════════════════════
-   FLASH — Layout
-   Fixed viewport · Three columns · Zero scroll on desktop
+   FLASH — Layout v2
+   Fixed viewport · Three columns · Balanced theme
    ═══════════════════════════════════════════════════════════ */
 
-/* Shell */
-.shell{
+html, body {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.shell {
   display: grid;
   grid-template-rows: auto auto 1fr auto;
   min-height: 100dvh;
-  max-width: 1440px;
+  width: 100%;
+  max-width: none;
   margin: 0 auto;
-  padding: 0 var(--sp-4) var(--sp-3);
+  padding: 12px clamp(16px, 2vw, 40px) 24px;
   gap: var(--sp-3);
 }
 
-/* Header */
-.hdr{
+/* ─── Header ─── */
+.hdr {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--sp-3);
   padding: var(--sp-2) 0;
   min-height: 52px;
+  width: 100%;
 }
-.wm{
+.wm {
   font-size: 20px;
   font-weight: 700;
-  letter-spacing: .04em;
+  letter-spacing: .02em;
+  color: var(--tx);
 }
-.tools{
+.tools {
   display: flex;
   align-items: center;
   gap: var(--sp-2);
 }
 
-/* Language toggle */
-.lg{
+/* ─── Language toggle ─── */
+.lg {
   direction: ltr;
   display: flex;
   align-items: center;
   gap: 2px;
   color: var(--tx-mu);
 }
-.lg button{
+.lg button {
   min-height: 36px;
   padding: 0 var(--sp-2);
   color: var(--tx-mu);
   border-bottom: 2px solid transparent;
   transition: color var(--t-fast) var(--e-std), border-color var(--t-fast) var(--e-std);
 }
-.lg button:hover{ color: var(--tx); }
-.lg button[aria-pressed=true]{
+.lg button:hover { color: var(--tx); }
+.lg button[aria-pressed=true] {
   color: var(--tx);
   border-color: var(--ac);
 }
 
-/* Theme toggle */
-.th{
+/* ─── Theme toggle ─── */
+.th {
   width: 36px;
   height: 36px;
   display: grid;
   place-items: center;
   border-radius: var(--r-2);
-  transition: background var(--t-fast) var(--e-std);
+  color: var(--tx-mu);
+  transition: background var(--t-fast) var(--e-std), color var(--t-fast) var(--e-std);
 }
-.th:hover{ background: var(--bg-alt); }
-.th svg{
-  width: 18px;height:18px;
-  fill:none;
+.th:hover { background: var(--pn-hover); color: var(--tx); }
+.th svg {
+  width: 18px; height: 18px;
+  fill: none;
   stroke: currentColor;
   stroke-width: 1.7;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
-[data-theme=light] .th .mn{ display:none; }
-[data-theme=dark]  .th .sn{ display:none; }
+[data-theme=light] .th .mn { display: none; }
+[data-theme=dark]  .th .sn { display: none; }
 
-/* Main — Three columns */
-.main{
+/* ─── Main: Three columns ─── */
+.main {
   display: grid;
-  grid-template-columns: minmax(320px, 340px) minmax(0, 1fr) minmax(320px, 380px);
-  gap: var(--sp-3);
+  grid-template-columns: minmax(320px, 360px) minmax(0, 1fr) minmax(340px, 480px);
+  gap: clamp(12px, 1.2vw, 20px);
   min-height: 0;
+  width: 100%;
+  max-width: none;
+  margin: 0;
 }
 
-.col{
+.col {
   display: flex;
   flex-direction: column;
   gap: var(--sp-3);
@@ -92,8 +106,8 @@
   min-height: 0;
 }
 
-/* Panel */
-.pn{
+/* ─── Panel — neutral background, subtle border ─── */
+.pn {
   background: var(--pn);
   border: 1px solid var(--ln);
   padding: var(--sp-4);
@@ -102,14 +116,25 @@
   min-height: 0;
   overflow: hidden;
 }
-
-.pn.pn-scroll{
+.pn.pn-scroll {
   overflow-y: auto;
   overscroll-behavior: contain;
 }
 
-/* Footer */
-.ft{
+/* ─── Tables ─── */
+.pn table {
+  width: 100%;
+  table-layout: fixed;
+}
+.pn table th,
+.pn table td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ─── Footer ─── */
+.ft {
   border: 1px solid var(--ln);
   background: var(--pn);
   padding: var(--sp-3) var(--sp-4);
@@ -118,24 +143,44 @@
   gap: var(--sp-2) var(--sp-4);
   align-items: baseline;
   border-radius: var(--r-2);
+  width: 100%;
+  max-width: none;
 }
 
-/* Responsive — Tablet */
-@media (max-width: 1180px){
-  .main{
+/* ─── Buttons — accent only on primary ─── */
+button:not(.th):not(.lg button):not(.ai-chat-fab) {
+  /* Let components style themselves */
+}
+
+/* ─── Ultra-wide ─── */
+@media (min-width: 1600px) {
+  .main {
+    grid-template-columns: minmax(340px, 380px) minmax(0, 1fr) minmax(380px, 520px);
+    gap: 24px;
+  }
+}
+
+@media (min-width: 1920px) {
+  .main {
+    grid-template-columns: 400px minmax(0, 1fr) 560px;
+    gap: 28px;
+  }
+}
+
+/* ─── Tablet ─── */
+@media (max-width: 1180px) {
+  .main {
     grid-template-columns: 1fr 1fr;
   }
-  .main > .col:nth-child(3){
+  .main > .col:nth-child(3) {
     grid-column: 1 / -1;
   }
 }
 
-/* Responsive — Mobile */
-@media (max-width: 760px){
-  .shell{ padding: 0 var(--sp-3) var(--sp-3); }
-  .main{
-    grid-template-columns: 1fr;
-  }
-  .hdr{ min-height: 48px; }
-  .wm{ font-size: 17px; }
+/* ─── Mobile ─── */
+@media (max-width: 760px) {
+  .shell { padding: 0 var(--sp-3) var(--sp-3); }
+  .main { grid-template-columns: 1fr; }
+  .hdr { min-height: 48px; }
+  .wm { font-size: 17px; }
 }

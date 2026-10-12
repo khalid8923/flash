@@ -1,0 +1,186 @@
+﻿
+══════════════════════════════════════════════════════════════════════
+  0. INVENTORY — معلومات النظام
+══════════════════════════════════════════════════════════════════════
+Date: 2026-10-12 12:01:18
+PS Version: 5.1.26100.9444
+User: hpc
+Machine: DESKTOP-1KCL8NL
+
+══════════════════════════════════════════════════════════════════════
+  1. PROCESSES — العمليات الشغالة
+══════════════════════════════════════════════════════════════════════
+
+--- Node.js processes ---
+  مفيش Node شغال
+
+--- Chrome processes count ---
+  Chrome processes: 14
+
+--- Code (VS Code) processes ---
+  VS Code processes: 18
+
+══════════════════════════════════════════════════════════════════════
+  2. PORTS — المنافذ المستخدمة
+══════════════════════════════════════════════════════════════════════
+
+--- Listening ports (3000, 5500, 8080, 8000) ---
+  Port 3000 : CLOSED
+  Port 5500 : LISTENING (PID 21524 - powershell)
+  Port 8080 : CLOSED
+  Port 8000 : CLOSED
+  Port 3001 : CLOSED
+  Port 5173 : CLOSED
+
+══════════════════════════════════════════════════════════════════════
+  3. SERVER RESPONSE TEST — ما يرجعه السيرفر فعلاً
+══════════════════════════════════════════════════════════════════════
+
+--- 3.A - Port 5500 (Live Server) ---
+  [5500/index] http://127.0.0.1:5500/frontend/dashboard/index.html
+    Status: 200 | Time: 66ms | Size: 8768 bytes
+    Content-Type: text/html; charset=UTF-8
+    Preview: <!doctype html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="mobile-web-app-capable" cont
+  [5500/recent.js] http://127.0.0.1:5500/frontend/dashboard/js/modules/recent.js
+    Status: 200 | Time: 27ms | Size: 1980 bytes
+    Content-Type: application/javascript; charset=UTF-8
+    Preview: (function(){
+'use strict';
+var F = window.FLASH;
+var M = F.M;
+function render(){
+  var t = F.t, n = F.N, DF = F.DF, pc = F.pc;
+  var sess = Array.isArray(M && M.recentSessions) ? M.recentSessions : []
+
+--- 3.B - Port 8080 (npx serve) ---
+  [8080/index] http://127.0.0.1:8080/frontend/dashboard/index.html
+    ERROR: Unable to connect to the remote server
+  [8080/recent.js] http://127.0.0.1:8080/frontend/dashboard/js/modules/recent.js
+    ERROR: Unable to connect to the remote server
+
+--- 3.C - Backend :3000 ---
+  [backend/health] http://127.0.0.1:3000/health
+    ERROR: Unable to connect to the remote server
+  [backend/ai/health] http://127.0.0.1:3000/ai/health
+    ERROR: Unable to connect to the remote server
+
+══════════════════════════════════════════════════════════════════════
+  4. DISK vs SERVER — مقارنة
+══════════════════════════════════════════════════════════════════════
+
+--- index.html ---
+  [5500]
+    Disk size: 7275 bytes | Disk hash: D0AE4190E6B65AD3DB8DD72CD0F274D7
+    Server size: 8768 bytes
+    ❌ SIZE MISMATCH — السيرفر بيرجع ملف مختلف!
+       الفرق: 1493 bytes
+  [8080]
+    Disk size: 7275 bytes | Disk hash: D0AE4190E6B65AD3DB8DD72CD0F274D7
+
+--- recent.js ---
+  [5500]
+    Disk size: 1980 bytes | Disk hash: 2BFE95645A9395FD827C5EC84DE497D0
+    Server size: 1980 bytes
+    ✅ SAME SIZE
+  [8080]
+    Disk size: 1980 bytes | Disk hash: 2BFE95645A9395FD827C5EC84DE497D0
+
+══════════════════════════════════════════════════════════════════════
+  5. INDEX.HTML — تحليل الملف على الديسك
+══════════════════════════════════════════════════════════════════════
+
+--- 5.A - معلومات أساسية ---
+  Path: D:\Flash\frontend\dashboard\index.html
+  Size: 7275 bytes
+  Lines: 158
+  LastWrite: 10/12/2026 01:50:39
+
+--- 5.B - Script tags ---
+  <script>:  64
+  </script>: 64
+  ✅ متوازن
+
+--- 5.C - الكود المسرّب ---
+  'Wire up theme' occurrences: 0
+  ✅ نظيف
+
+--- 5.D - .js.js مكرر ---
+  '.js.js' occurrences: 0
+  ✅ نظيف
+
+--- 5.E - كل script src موجود؟ ---
+  Scripts: 63 موجود | 0 ناقص
+
+--- 5.F - كل link href موجود؟ ---
+  Links ناقصة: 0
+
+══════════════════════════════════════════════════════════════════════
+  6. FILES SEARCH — بحث شامل
+══════════════════════════════════════════════════════════════════════
+
+--- 6.A - كل ملفات index.html في المشروع ---
+  D:\Flash\frontend\dashboard\index.html [7275 bytes]
+
+--- 6.B - كل ملفات recent.js ---
+  D:\Flash\frontend\dashboard\js\modules\recent.js [1980 bytes]
+
+--- 6.C - ملفات فيها 'Wire up theme' ---
+
+--- 6.D - ملفات فيها 'FLASH.html' (ref قديم) ---
+
+══════════════════════════════════════════════════════════════════════
+  7. SERVICE WORKERS & CACHE FOLDERS
+══════════════════════════════════════════════════════════════════════
+
+--- 7.A - Service Worker files ---
+  D:\Flash\frontend\dashboard\sw.js [2736 bytes]
+
+--- 7.B - Cache folders ---
+  ✅ مش موجود: .vite
+  ✅ مش موجود: .cache
+  ✅ مش موجود: .parcel-cache
+  ✅ مش موجود: dist
+  ✅ مش موجود: build
+
+══════════════════════════════════════════════════════════════════════
+  8. CRITICAL FILES — الملفات الأساسية
+══════════════════════════════════════════════════════════════════════
+  ✅ frontend\dashboard\index.html [7275 bytes]
+  ✅ frontend\dashboard\js\config.js [1156 bytes]
+  ✅ frontend\dashboard\js\api.js [6823 bytes]
+  ✅ frontend\dashboard\js\data.js [14914 bytes]
+  ✅ frontend\dashboard\js\i18n.js [1787 bytes]
+  ✅ frontend\dashboard\js\core.js [2690 bytes]
+  ✅ frontend\dashboard\js\render.js [2672 bytes]
+  ✅ frontend\dashboard\js\inline-init.js [1075 bytes]
+  ✅ frontend\dashboard\js\lib\errors.js [6416 bytes]
+  ✅ frontend\dashboard\js\lib\safe-fetch.js [4166 bytes]
+  ✅ frontend\dashboard\js\modules\error-ui.js [12999 bytes]
+  ✅ frontend\dashboard\js\modules\ai-chat.js [15052 bytes]
+  ✅ frontend\dashboard\js\modules\brain-v3.js [17266 bytes]
+  ✅ frontend\dashboard\js\modules\neural-network-panel.js [2535 bytes]
+  ✅ frontend\dashboard\js\modules\recent.js [1980 bytes]
+  ✅ frontend\dashboard\js\modules\today.js [2563 bytes]
+  ✅ frontend\dashboard\js\modules\season.js [2992 bytes]
+  ✅ frontend\dashboard\css\modules\ai-chat.css [10667 bytes]
+  ✅ frontend\dashboard\css\modules\error-ui.css [13271 bytes]
+  ✅ frontend\dashboard\css\modules\full-width.css [2472 bytes]
+  ✅ frontend\dashboard\css\layout.css [7025 bytes]
+
+══════════════════════════════════════════════════════════════════════
+  9. CORS CHECK — إعدادات CORS في الـ Backend
+══════════════════════════════════════════════════════════════════════
+  CORS_ORIGIN=http://localhost:5173,http://localhost:8080,http://localhost:5500,http://127.0.0.1:5500,http://localhost:3000
+  ✅ 5500 مسموح
+  ✅ 8080 مسموح
+
+══════════════════════════════════════════════════════════════════════
+  10. SUMMARY — الحالة النهائية
+══════════════════════════════════════════════════════════════════════
+  ⚠️ المشاكل المكتشفة:
+    - مفيش Node شغال (backend مش شغال)

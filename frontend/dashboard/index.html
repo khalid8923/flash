@@ -3,9 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="manifest" href="manifest.webmanifest">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#EC4899">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="manifest" href="manifest.webmanifest">
 <title>FLASH</title>
 <script>
 try{
@@ -16,18 +17,35 @@ try{
   if (l !== 'ar' && l !== 'en') l = 'en';
   document.documentElement.lang = l;
   document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
-} catch(e){}
+}catch(e){}
 </script>
 <link rel="stylesheet" href="css/tokens.css">
 <link rel="stylesheet" href="css/base.css">
 <link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/modules/error-ui.css">
+<link rel="stylesheet" href="css/modules/provider-status.css">
+<link rel="stylesheet" href="css/modules/auth-guard.css">
+<link rel="stylesheet" href="css/modules/a11y.css">
+<link rel="stylesheet" href="css/modules/ai-chat.css">
+<link rel="stylesheet" href="css/modules/session-recap.css">
+<link rel="stylesheet" href="css/modules/chat-extras.css">
+<link rel="stylesheet" href="css/modules/nudge.css">
+<link rel="stylesheet" href="css/modules/director.css">
+<link rel="stylesheet" href="css/modules/variants.css">
 <link rel="stylesheet" href="css/panels/today.css">
 <link rel="stylesheet" href="css/panels/season.css">
 <link rel="stylesheet" href="css/panels/recent.css">
 <link rel="stylesheet" href="css/modules/theme-transition.css">
 <link rel="stylesheet" href="css/modules/ambient.css">
+<link rel="stylesheet" href="css/modules/ambient-pack-v2.css">
 <link rel="stylesheet" href="css/modules/streak-ring.css">
 <link rel="stylesheet" href="css/modules/brain.css">
+<link rel="stylesheet" href="css/modules/brain-v3.css">
+<link rel="stylesheet" href="css/modules/brain-alt.css">
+<link rel="stylesheet" href="css/modules/wide-panels.css">
+<link rel="stylesheet" href="css/modules/ai-panels-live.css">
+<link rel="stylesheet" href="css/modules/micro-lessons.css">
+<link rel="stylesheet" href="css/modules/daily-plan.css">
 <link rel="stylesheet" href="css/modules/interactions.css">
 <link rel="stylesheet" href="css/modules/split-pane.css">
 <link rel="stylesheet" href="css/modules/xp-gain.css">
@@ -52,11 +70,22 @@ try{
 <link rel="stylesheet" href="css/modules/session-detail.css">
 <link rel="stylesheet" href="css/modules/domain-games.css">
 <link rel="stylesheet" href="css/modules/live-status.css">
+
+<script src="js/lib/errors.js"></script>
+<script src="js/lib/safe-fetch.js"></script>
+<link rel="stylesheet" href="css/modules/xp-bar.css">
+<link rel="stylesheet" href="css/modules/daily-challenge.css">
+<link rel="stylesheet" href="css/modules/referral.css">
+<link rel="stylesheet" href="css/modules/settings-v2.css">
+<link rel="stylesheet" href="css/modules/command-palette-v2.css">
+<link rel="stylesheet" href="css/modules/toast.css">
+<link rel="stylesheet" href="css/modules/skeleton.css">
+<link rel="stylesheet" href="css/modules/a11y-v2.css">
+<link rel="stylesheet" href="css/modules/single-view.css">
 </head>
 <body>
 
 <div class="shell">
-
   <header class="hdr">
     <span class="wm">FLASH</span>
     <div class="tools">
@@ -76,19 +105,31 @@ try{
       </div>
     </div>
   </header>
-
   <main class="main" id="app"></main>
-
   <footer class="ft" id="foot"></footer>
-
 </div>
 
 <script src="js/config.js"></script>
 <script src="js/api.js"></script>
+<script src="js/api-engagement.js"></script>
 <script src="js/data.js"></script>
 <script src="js/i18n.js"></script>
 <script src="js/core.js"></script>
-<script src="js/modules/today.js"></script>
+<script src="js/modules/error-ui.js"></script>
+<script src="js/modules/audio-unlock.js"></script>
+<script src="js/modules/network-monitor.js"></script>
+<script src="js/modules/save-queue.js"></script>
+<script src="js/modules/game-complete-bridge.js"></script>
+<script src="js/modules/timer-guard.js"></script>
+<script src="js/modules/achievement-guard.js"></script>
+<script src="js/modules/provider-status.js"></script>
+<script src="js/modules/save-pill.js"></script>
+<script src="js/modules/component-boundaries.js"></script>
+<script src="js/modules/multi-tab-sync.js"></script>
+<script src="js/modules/a11y.js"></script>
+<script src="js/modules/session-restore.js"></script>
+<script src="js/modules/tag-panels.js"></script>
+  <script src="js/modules/today.js"></script>
 <script src="js/modules/season.js"></script>
 <script src="js/modules/recent.js"></script>
 <script src="js/modules/theme-transition.js"></script>
@@ -99,7 +140,6 @@ try{
 <script src="js/modules/lang-flip.js"></script>
 <script src="js/modules/xp-gain.js"></script>
 <script src="js/render.js"></script>
-
 <script src="js/modules/navigation.js"></script>
 <script src="js/modules/streak-break.js"></script>
 <script src="js/modules/brain-state.js"></script>
@@ -107,7 +147,6 @@ try{
 <script src="js/modules/command-palette.js"></script>
 <script src="js/modules/session-progress.js"></script>
 <script src="js/modules/week-heatmap.js"></script>
-<script>
 <script src="js/modules/focus-mode.js"></script>
 <script src="js/modules/sound.js"></script>
 <script src="js/modules/export-snapshot.js"></script>
@@ -122,38 +161,35 @@ try{
 <script src="js/modules/session-detail.js"></script>
 <script src="js/modules/domain-games.js"></script>
 <script src="js/modules/live-data.js"></script>
-<script src="js/modules/live-status.js"></script>/* Wire up theme + lang buttons after core is ready */
-document.addEventListener('DOMContentLoaded', function(){
-  var F = window.FLASH;
-  var th = document.getElementById('th');
-  if (th) th.addEventListener('click', function(){
-    var next = F.state.theme === 'dark' ? 'light' : 'dark';
-    var TT = window.FLASH_MODULES && window.FLASH_MODULES.themeTransition;
-    if (TT){
-      TT.transition(next, th, function(){
-        F.setTheme(next);
-        window.dispatchEvent(new Event('flash:render'));
-      });
-    } else {
-      F.toggleTheme();
-      window.dispatchEvent(new Event('flash:render'));
-    }
-  });
-
-  document.querySelectorAll('.lg button').forEach(function(b){
-    b.addEventListener('click', function(){
-      var next = b.dataset.l;
-      var LF = window.FLASH_MODULES && window.FLASH_MODULES.langFlip;
-      if (LF){
-        LF.flip(next, function(){ F.setLang(next); });
-      } else {
-        F.setLang(next);
-        window.dispatchEvent(new Event('flash:render'));
-      }
-    });
-  });
-});
-</script>
+<script src="js/modules/live-status.js"></script>
+<script src="js/modules/brain-v3.js"></script>
+<script src="js/modules/neural-network-panel.js"></script>
+<script src="js/modules/auth-guard.js"></script>
+<script src="js/modules/game-catalog-patch.js"></script>
+<script src="js/modules/ambient-pack-v2.js"></script>
+<script src="js/modules/brain-alt.js"></script>
+<script src="js/modules/brain-alt-panel.js"></script>
+<script src="js/modules/wide-panels.js"></script>
+<script src="js/modules/ai-chat.js"></script>
+  <script src="js/modules/session-recap.js"></script>
+  <script src="js/modules/chat-extras.js"></script>
+  <script src="js/toast-dedupe.js"></script>
+  <script src="js/modules/nudge.js"></script>
+  <script src="js/modules/director.js"></script>
+  <script src="js/modules/variants.js"></script>
+  <script src="js/modules/ai-panels-live.js"></script>
+  <script src="js/modules/micro-lessons.js"></script>
+  <script src="js/modules/daily-plan.js"></script>
+<script src="js/modules/xp-bar.js"></script>
+<script src="js/modules/daily-challenge.js"></script>
+<script src="js/modules/referral.js"></script>
+<script src="js/modules/theme-manager.js"></script>
+<script src="js/modules/toast.js"></script>
+<script src="js/modules/settings-v2.js"></script>
+<script src="js/modules/command-palette-v2.js"></script>
+<script src="js/modules/keyboard-help.js"></script>
+<script src="js/modules/data-export.js"></script>
+<script src="js/inline-init.js"></script>
 
 </body>
 </html>

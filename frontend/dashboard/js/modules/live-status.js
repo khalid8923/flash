@@ -95,7 +95,7 @@ F.onReady(() => {
   setTimeout(() => {
     build();
     /* Initial state based on API client */
-    const s = A.status();
+    const s = (A && typeof A.status === "function" ? A.status() : null) || { live: false, mode: "mock" };
     setState(s.live ? 'live' : 'mock');
   }, 400);
 
