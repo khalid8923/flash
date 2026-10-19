@@ -1,0 +1,54 @@
+/* ============================================================
+   FLASH - AI Provider Status Badge
+   Tiny pill in header: shows which AI provider is live
+   ============================================================ */
+
+.provider-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 24px;
+  padding: 0 8px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tx) 6%, transparent);
+  color: var(--tx-mu);
+  transition: background 200ms ease, color 200ms ease;
+  cursor: default;
+}
+
+.provider-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.provider-status[data-state="live"]     { color: #10b981; }
+.provider-status[data-state="fallback"] { color: #f59e0b; }
+.provider-status[data-state="down"]     { color: #ef4444; }
+.provider-status[data-state="unknown"]  { color: var(--tx-mu); }
+
+.provider-status[data-state="live"] .provider-status-dot {
+  animation: provider-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes provider-pulse {
+  0%, 100% { opacity: 0.5; }
+  50%      { opacity: 1; }
+}
+
+@media (max-width: 760px) {
+  .provider-status {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .provider-status[data-state="live"] .provider-status-dot {
+    animation: none;
+  }
+}

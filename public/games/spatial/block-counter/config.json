@@ -1,0 +1,25 @@
+{
+  "id": "block-counter",
+  "name": "Block Counter",
+  "domain": "spatial",
+  "icon": "📦",
+  "description": "Hidden-block counting — KABC Block Counting",
+  "difficulty": 4,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "medianRT", "rtv", "rcs", "maxStreak", "hiddenAccuracy"],
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "features": [
+    "shared-stages",
+    "shared-settings",
+    "shared-i18n",
+    "missions",
+    "badges",
+    "insights",
+    "history-chart",
+    "personal-best",
+    "postmessage",
+    "back-button",
+    "accessibility",
+    "isometric-3d-rendering"
+  ]
+}

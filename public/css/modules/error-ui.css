@@ -1,0 +1,468 @@
+/* ============================================================
+   FLASH - Unified Error / Loading / Empty UI
+   Rose/Neon themes · RTL-aware · Reduced motion honored
+   ============================================================ */
+
+/* ═══════════════════════════════════════════════════════════
+   Connection Banner (top of page)
+   ═══════════════════════════════════════════════════════════ */
+.flash-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #fff;
+  transform: translateY(-100%);
+  transition: transform 320ms cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+
+.flash-banner[data-visible="1"] {
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.flash-banner[data-kind="offline"] {
+  background: linear-gradient(90deg, #78350f, #b45309);
+}
+
+.flash-banner[data-kind="error"] {
+  background: linear-gradient(90deg, #7f1d1d, #b91c1c);
+}
+
+.flash-banner[data-kind="info"] {
+  background: linear-gradient(90deg, #1e3a8a, #1d4ed8);
+}
+
+.flash-banner[data-kind="success"] {
+  background: linear-gradient(90deg, #064e3b, #047857);
+}
+
+.flash-banner-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #fff;
+  animation: flash-banner-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes flash-banner-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%      { opacity: 1; }
+}
+
+.flash-banner-action {
+  margin-inline-start: 8px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: rgba(255,255,255,.18);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 160ms ease;
+}
+
+.flash-banner-action:hover { background: rgba(255,255,255,.28); }
+
+/* ═══════════════════════════════════════════════════════════
+   Toasts (bottom-right / bottom-left in RTL)
+   ═══════════════════════════════════════════════════════════ */
+.flash-toast-stack {
+  position: fixed;
+  inset-block-end: 20px;
+  inset-inline-end: 20px;
+  z-index: 8000;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 360px;
+  pointer-events: none;
+}
+
+.flash-toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--pn);
+  color: var(--tx);
+  border: 1px solid var(--ln);
+  border-inline-start: 3px solid var(--ac);
+  border-radius: 10px;
+  box-shadow: 0 12px 32px -10px rgba(0,0,0,.25);
+  animation: flash-toast-in 260ms cubic-bezier(0.16, 1, 0.3, 1);
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+[data-theme="dark"] .flash-toast {
+  box-shadow: 0 12px 32px -10px rgba(0,0,0,.8);
+}
+
+.flash-toast[data-kind="error"]   { border-inline-start-color: #ef4444; }
+.flash-toast[data-kind="warning"] { border-inline-start-color: #f59e0b; }
+.flash-toast[data-kind="success"] { border-inline-start-color: #10b981; }
+.flash-toast[data-kind="info"]    { border-inline-start-color: #3b82f6; }
+
+.flash-toast-icon {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin-top: 1px;
+}
+
+.flash-toast-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.flash-toast-body { flex: 1; min-width: 0; }
+
+.flash-toast-title {
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.flash-toast-msg {
+  color: var(--tx-mu);
+  font-size: 12px;
+  word-break: break-word;
+}
+
+.flash-toast-close {
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  display: grid;
+  place-items: center;
+  color: var(--tx-mu);
+  cursor: pointer;
+  transition: color 160ms ease;
+}
+
+.flash-toast-close:hover { color: var(--tx); }
+
+.flash-toast[data-leaving="1"] {
+  animation: flash-toast-out 220ms ease forwards;
+}
+
+@keyframes flash-toast-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes flash-toast-out {
+  to { opacity: 0; transform: translateX(8px); }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Modal (blocking error dialog)
+   ═══════════════════════════════════════════════════════════ */
+.flash-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9500;
+  background: color-mix(in srgb, #000 45%, transparent);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  animation: flash-modal-in 200ms ease;
+}
+
+@keyframes flash-modal-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.flash-modal {
+  width: 100%;
+  max-width: 460px;
+  background: var(--pn);
+  color: var(--tx);
+  border: 1px solid var(--ln);
+  border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 24px 64px -16px rgba(0,0,0,.4);
+  animation: flash-modal-pop 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes flash-modal-pop {
+  from { opacity: 0; transform: scale(.96) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.flash-modal-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.flash-modal-body {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--tx-mu);
+  margin-bottom: 20px;
+}
+
+.flash-modal-error-id {
+  font-family: ui-monospace, "SFMono-Regular", Consolas, monospace;
+  font-size: 11px;
+  color: var(--tx-mu);
+  background: color-mix(in srgb, var(--tx) 5%, transparent);
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-block;
+  margin-bottom: 16px;
+  user-select: all;
+}
+
+.flash-modal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.flash-modal-btn {
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 160ms ease, transform 90ms ease;
+}
+
+.flash-modal-btn:active { transform: scale(0.98); }
+
+.flash-modal-btn.primary {
+  background: var(--ac);
+  color: #fff;
+}
+
+.flash-modal-btn.primary:hover {
+  filter: brightness(1.06);
+}
+
+.flash-modal-btn.secondary {
+  background: transparent;
+  color: var(--tx);
+  border: 1px solid var(--ln);
+}
+
+.flash-modal-btn.secondary:hover {
+  background: color-mix(in srgb, var(--tx) 6%, transparent);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Empty State
+   ═══════════════════════════════════════════════════════════ */
+.flash-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--tx-mu);
+}
+
+.flash-empty-icon {
+  width: 40px;
+  height: 40px;
+  opacity: 0.35;
+  margin-bottom: 4px;
+}
+
+.flash-empty-icon svg {
+  width: 100%;
+  height: 100%;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.flash-empty-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--tx);
+}
+
+.flash-empty-msg {
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 340px;
+}
+
+.flash-empty-action {
+  margin-top: 6px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--tx);
+  background: color-mix(in srgb, var(--tx) 6%, transparent);
+  border: 1px solid var(--ln);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 160ms ease;
+}
+
+.flash-empty-action:hover {
+  background: color-mix(in srgb, var(--tx) 12%, transparent);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Skeleton
+   ═══════════════════════════════════════════════════════════ */
+.flash-skeleton {
+  background: linear-gradient(90deg,
+    color-mix(in srgb, var(--tx) 6%, transparent) 0%,
+    color-mix(in srgb, var(--tx) 12%, transparent) 50%,
+    color-mix(in srgb, var(--tx) 6%, transparent) 100%);
+  background-size: 200% 100%;
+  border-radius: 6px;
+  animation: flash-skeleton-shimmer 1.6s linear infinite;
+}
+
+.flash-skeleton-line { height: 12px; margin: 6px 0; }
+.flash-skeleton-line.short { width: 60%; }
+.flash-skeleton-line.tall  { height: 20px; }
+.flash-skeleton-block { height: 60px; margin: 8px 0; }
+
+@keyframes flash-skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Inline Error (form field)
+   ═══════════════════════════════════════════════════════════ */
+.flash-inline-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: #ef4444;
+}
+
+[data-theme="dark"] .flash-inline-error { color: #fca5a5; }
+
+.flash-inline-error::before {
+  content: "";
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Component Error Boundary
+   ═══════════════════════════════════════════════════════════ */
+.flash-boundary-fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 24px 16px;
+  background: color-mix(in srgb, var(--tx) 4%, transparent);
+  border: 1px dashed var(--ln);
+  border-radius: 10px;
+  text-align: center;
+  color: var(--tx-mu);
+  font-size: 13px;
+}
+
+.flash-boundary-fallback button {
+  margin-top: 4px;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: var(--tx);
+  background: transparent;
+  border: 1px solid var(--ln);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.flash-boundary-fallback button:hover {
+  background: color-mix(in srgb, var(--tx) 6%, transparent);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Save Status Pill
+   ═══════════════════════════════════════════════════════════ */
+.flash-save-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tx) 6%, transparent);
+  color: var(--tx-mu);
+  transition: background 200ms ease, color 200ms ease;
+}
+
+.flash-save-status[data-state="saved"]   { color: #10b981; }
+.flash-save-status[data-state="pending"] { color: #f59e0b; }
+.flash-save-status[data-state="failed"]  { color: #ef4444; }
+
+.flash-save-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.flash-save-status[data-state="pending"] .flash-save-dot {
+  animation: flash-banner-pulse 1.4s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Reduced motion
+   ═══════════════════════════════════════════════════════════ */
+@media (prefers-reduced-motion: reduce) {
+  .flash-banner,
+  .flash-toast,
+  .flash-modal-backdrop,
+  .flash-modal,
+  .flash-skeleton {
+    animation: none !important;
+    transition-duration: 0.001ms !important;
+  }
+  .flash-banner-dot,
+  .flash-save-dot {
+    animation: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   RTL fixes (logical properties handle most; icon flips)
+   ═══════════════════════════════════════════════════════════ */
+[dir="rtl"] .flash-toast {
+  text-align: right;
+}
+
+[dir="rtl"] .flash-toast-close svg {
+  transform: scaleX(-1);
+}

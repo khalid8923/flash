@@ -1,0 +1,17 @@
+{
+  "id": "reaction",
+  "name": "Reaction",
+  "domain": "speed",
+  "icon": "⚡",
+  "description": "Simple reaction time · click on green",
+  "difficulty": 1,
+  "maxLevel": 5,
+  "metrics": [
+    "medianRT",
+    "fastestRT",
+    "slowestRT",
+    "rtv",
+    "rcs",
+    "accuracy"
+  ]
+}

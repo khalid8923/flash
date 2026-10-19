@@ -1,0 +1,107 @@
+/* ============================================================
+   FLASH - Brain Alternative Metaphors
+   3 engines: Cognitive Lattice / Fibonacci Sphere / Scan Slices
+   + Switcher UI to toggle between them
+   ============================================================ */
+
+/* ═══ Container ═══ */
+.brain-alt {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 0.92;
+  max-height: 320px;
+  margin-inline: auto;
+  overflow: hidden;
+}
+
+.brain-alt canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: manipulation;
+}
+
+/* ═══ Switcher — small tabs above canvas ═══ */
+.brain-switch {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+  padding: 6px 0 10px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tx-mu);
+}
+
+.brain-switch button {
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: inherit;
+  border: 1px solid transparent;
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.brain-switch button:hover {
+  color: var(--tx);
+  background: color-mix(in srgb, var(--tx) 5%, transparent);
+}
+
+.brain-switch button[aria-pressed="true"] {
+  color: var(--tx);
+  border-color: var(--ac);
+  background: color-mix(in srgb, var(--ac) 8%, transparent);
+}
+
+/* ═══ Cluster label overlay (for lattice mode) ═══ */
+.brain-labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  color: var(--tx-mu);
+  text-transform: uppercase;
+}
+
+.brain-labels span {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+  opacity: 0.8;
+  transition: opacity 220ms ease;
+}
+
+/* ═══ Ambient glow behind (theme-aware) ═══ */
+.brain-alt::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 45%,
+    color-mix(in srgb, var(--ac) 8%, transparent) 0%,
+    transparent 55%);
+  opacity: 0.7;
+}
+
+[data-theme="dark"] .brain-alt::before {
+  opacity: 1;
+  background: radial-gradient(circle at 50% 45%,
+    color-mix(in srgb, var(--ac) 12%, transparent) 0%,
+    transparent 58%);
+}
+
+/* ═══ Small viewports ═══ */
+@media (max-width: 760px) {
+  .brain-alt { max-height: 220px; }
+  .brain-switch { font-size: 10px; }
+  .brain-switch button { padding: 3px 8px; }
+}
+
+/* ═══ Reduced motion ═══ */
+@media (prefers-reduced-motion: reduce) {
+  .brain-alt::before { animation: none; }
+}

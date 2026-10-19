@@ -1,0 +1,272 @@
+/* ============================================================
+   FLASH - Settings Drawer v2
+   Accent picker + Auto theme + Density modes
+   ============================================================ */
+
+.settings-v2-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9100;
+  background: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--t-base) var(--e-std);
+}
+.settings-v2-overlay[data-open="1"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.settings-v2 {
+  position: fixed;
+  top: 0;
+  inset-inline-end: 0;
+  width: min(400px, 92vw);
+  height: 100dvh;
+  z-index: 9101;
+  background: var(--pn);
+  border-inline-start: 1px solid var(--ln);
+  box-shadow: var(--shadow-lg);
+  transform: translateX(calc(100% * var(--dir, 1)));
+  transition: transform var(--t-slow) var(--e-out);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.settings-v2[data-open="1"] {
+  transform: translateX(0);
+}
+[dir=rtl] .settings-v2 {
+  transform: translateX(calc(-100%));
+}
+[dir=rtl] .settings-v2[data-open="1"] {
+  transform: translateX(0);
+}
+
+.settings-v2 .sv2-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--ln);
+}
+.settings-v2 .sv2-head h2 {
+  font: 600 15px/1.2 var(--font-ui);
+  color: var(--tx);
+  margin: 0;
+}
+.settings-v2 .sv2-close {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-2);
+  color: var(--tx-mu);
+  cursor: pointer;
+  transition: all var(--t-fast) var(--e-std);
+}
+.settings-v2 .sv2-close:hover {
+  background: var(--pn-hover);
+  color: var(--tx);
+}
+
+.settings-v2 .sv2-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 20px 24px;
+}
+
+.settings-v2 .sv2-section {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--ln);
+}
+.settings-v2 .sv2-section:last-child {
+  border-bottom: 0;
+}
+.settings-v2 .sv2-section h3 {
+  font: 600 11px/1 var(--font-ui);
+  color: var(--tx-mu);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0 0 12px;
+}
+
+/* ─── Accent Picker ─── */
+.sv2-accents {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+}
+.sv2-accent {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all var(--t-fast) var(--e-std);
+}
+.sv2-accent:hover {
+  transform: scale(1.08);
+}
+.sv2-accent[aria-pressed="true"] {
+  border-color: var(--tx);
+  box-shadow: 0 0 0 3px var(--ac-soft);
+}
+.sv2-accent[aria-pressed="true"]::after {
+  content: '✓';
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* ─── Theme mode (3 buttons) ─── */
+.sv2-modes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 4px;
+  background: var(--pn-alt);
+  border-radius: var(--r-2);
+}
+.sv2-mode {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 8px;
+  border-radius: var(--r-2);
+  background: transparent;
+  color: var(--tx-mu);
+  font: 500 10px/1 var(--font-ui);
+  cursor: pointer;
+  transition: all var(--t-fast) var(--e-std);
+  border: 0;
+}
+.sv2-mode:hover {
+  background: var(--pn-hover);
+  color: var(--tx);
+}
+.sv2-mode[aria-pressed="true"] {
+  background: var(--pn);
+  color: var(--ac);
+  box-shadow: var(--shadow);
+}
+.sv2-mode svg {
+  width: 16px;
+  height: 16px;
+  stroke-width: 1.8;
+}
+
+/* ─── Density (3 buttons) ─── */
+.sv2-density {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.sv2-density button {
+  padding: 10px;
+  background: var(--pn-alt);
+  border: 1px solid transparent;
+  border-radius: var(--r-2);
+  color: var(--tx-mu);
+  font: 500 11px/1 var(--font-ui);
+  cursor: pointer;
+  transition: all var(--t-fast) var(--e-std);
+}
+.sv2-density button:hover {
+  background: var(--pn-hover);
+  color: var(--tx);
+}
+.sv2-density button[aria-pressed="true"] {
+  background: var(--ac-soft);
+  color: var(--ac);
+  border-color: var(--ac);
+}
+
+/* ─── Toggle rows ─── */
+.sv2-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  color: var(--tx);
+  font-size: 13px;
+}
+.sv2-row input[type="checkbox"] {
+  width: 36px;
+  height: 20px;
+  appearance: none;
+  background: var(--ln-strong);
+  border-radius: 10px;
+  position: relative;
+  cursor: pointer;
+  transition: background var(--t-fast) var(--e-std);
+}
+.sv2-row input[type="checkbox"]::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  transition: transform var(--t-fast) var(--e-spring);
+}
+.sv2-row input[type="checkbox"]:checked {
+  background: var(--ac);
+}
+.sv2-row input[type="checkbox"]:checked::after {
+  transform: translateX(16px);
+}
+[dir=rtl] .sv2-row input[type="checkbox"]::after {
+  left: auto;
+  right: 2px;
+}
+[dir=rtl] .sv2-row input[type="checkbox"]:checked::after {
+  transform: translateX(-16px);
+}
+
+/* ─── Density variants (applied to body) ─── */
+body[data-density="compact"] {
+  --sp-3: 8px;
+  --sp-4: 12px;
+  --sp-5: 16px;
+  --sp-6: 20px;
+}
+body[data-density="compact"] .pn {
+  padding: var(--sp-3);
+}
+body[data-density="compact"] .hdr {
+  min-height: 44px;
+  padding: 6px 0;
+}
+
+body[data-density="roomy"] {
+  --sp-3: 16px;
+  --sp-4: 22px;
+  --sp-5: 28px;
+  --sp-6: 34px;
+}
+body[data-density="roomy"] .pn {
+  padding: var(--sp-5);
+}
+body[data-density="roomy"] .hdr {
+  min-height: 60px;
+  padding: 12px 0;
+}
+
+/* Mobile — always compact */
+@media (max-width: 760px) {
+  .settings-v2 {
+    width: 100vw;
+  }
+  .sv2-accents {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

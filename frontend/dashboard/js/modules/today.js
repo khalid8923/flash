@@ -1,68 +1,54 @@
-/* ═══════════════════════════════════════════════════════════
-   MODULE — Today Panel
-   KPIs (Level/XP/Streak/Freeze) + Today's Plan
-   ═══════════════════════════════════════════════════════════ */
 (function(){
 'use strict';
-const F = window.FLASH;
-const M = F.M;
+var F = window.FLASH;
+var M = F.M;
 
 function render(){
-  const t = F.t, n = F.N, ai = F.ai;
-  const u = M.user;
-  const xpPct = (u.xp / u.xpNext * 100).toFixed(1);
-
-  const planHTML = M.todayPlan.map((p, i) => {
-    const d = M.domains.find(x => x.id === p.domain);
-    const kind = p['kind_' + F.state.lang] || p.kind_en;
-    const game = p['game_' + F.state.lang] || p.game_en;
-    const reason = p['reason_' + F.state.lang] || p.reason_en;
-    return `
-      <li style="--dc:${d.c}">
-        <span class="pl-k">${n(i+1)} · ${kind} · ${n(p.minutes)} ${t('min')}</span>
-        <b class="pl-name">${game}</b>
-        <span class="pl-dom">
-          <span class="lane-dot" style="--dc:${d.c}"></span>
-          ${d['name_' + F.state.lang] || d.name_en}
-        </span>
-        <em class="pl-reason">${ai(reason)}</em>
-      </li>
-    `;
+  var t = F.t, n = F.N, pc = F.pc;
+  var user = M.user;
+  var xpPct = (user.xp / user.xpNext) * 100;
+  
+  var planRows = M.todayPlan.map(function(p){
+    return '<div class="plan-row">' +
+      '<div class="plan-kind">' + t(p['kind_' + F.state.lang] || p.kind_en) + '</div>' +
+      '<div class="plan-game">' + (p['game_' + F.state.lang] || p.game_en) + '</div>' +
+      '<div class="plan-mins">' + n(p.minutes) + 'm</div>' +
+    '</div>';
   }).join('');
 
-  return `
-    <div class="brain-wrap" aria-hidden="true"></div>
-    <div class="today-stats">
-      <div class="stat">
-        <span class="k">${t('lv')}</span>
-        <b>${n(u.level)}<small>+${n(u.levelDelta)}</small></b>
-      </div>
-      <div class="stat stat-xp">
-        <span class="k">${t('xp')}</span>
-        <b>${n(u.xp)}<small>/ ${n(u.xpNext)}</small></b>
-        <svg viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
-          <rect class="xp-bg"   width="100"  height="6" rx="1"/>
-          <rect class="xp-fill" width="${xpPct}" height="6" rx="1"/>
-        </svg>
-      </div>
-      <div class="stat"></div>
-      <div class="stat">
-        <span class="k">${t('st')}</span>
-        <div class="streak-wrap">
-          <b>${n(u.streak)}</b>
-          <small>${t('d')} +${n(u.streakDelta)}</small>
-        </div>
-      </div>
-      <div class="stat">
-        <span class="k">${t('fz')}</span>
-        <b>${n(u.freezeTokens)}</b>
-      </div>
-    </div>
-    <ol class="plan">${planHTML}</ol>
-    <a class="cta" href="#" data-action="begin">${t('cta')} ${n(1)} ${t('of')} ${n(M.todayPlan.length)}</a>
-  `;
+  var missionsHtml = (window.FLASH_MODULES && window.FLASH_MODULES.missions) 
+    ? window.FLASH_MODULES.missions.render() 
+    : '';
+
+  return '<div class="today-h">' +
+      '<h2>' + t('today') + '</h2>' +
+      '<span class="date">' + F.DF(new Date()) + '</span>' +
+    '</div>' +
+    
+    // XP BAR
+    '<div class="xp-block">' +
+      '<div class="xp-head"><span>Level ' + n(user.level) + '</span><span>' + n(user.xp) + ' / ' + n(user.xpNext) + ' XP</span></div>' +
+      '<div class="xp-track"><div class="xp-fill" style="width:' + xpPct + '%"></div></div>' +
+    '</div>' +
+
+    // STREAK
+    '<div class="streak-block">' +
+      '<div class="streak-fire">🔥</div>' +
+      '<div class="streak-info"><span class="streak-num">' + n(user.streak) + '</span> Day Streak</div>' +
+    '</div>' +
+
+    // PLAN
+    '<div class="plan-block">' +
+      '<h3>' + t('plan') + '</h3>' +
+      planRows +
+      '<button class="cta" data-action="begin">' + t('begin') + '</button>' +
+    '</div>' +
+
+    // MISSIONS
+    missionsHtml;
 }
 
 window.FLASH_MODULES = window.FLASH_MODULES || {};
-window.FLASH_MODULES.today = { render };
+window.FLASH_MODULES.today = { render: render };
+console.info('[today] UPGRADED v5 loaded');
 })();

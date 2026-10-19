@@ -1,0 +1,10 @@
+{
+  "id": "num-chains",
+  "name": "Number Chains",
+  "domain": "numerical",
+  "icon": "🔗",
+  "description": "Navigate linked numerical sequences by identifying patterns",
+  "difficulty": 3,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "avgResponseTime", "maxStreak"]
+}

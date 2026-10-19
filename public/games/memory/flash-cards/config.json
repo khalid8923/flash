@@ -1,0 +1,9 @@
+{
+  "id": "flash-cards",
+  "name": "Flash Cards",
+  "domain": "memory",
+  "icon": "🃏",
+  "description": "Rapid visual memory encoding and recall",
+  "difficulty": 3,
+  "metrics": ["levelsPassed", "maxLevel", "accuracy", "avgReactionTime"]
+}

@@ -1,0 +1,25 @@
+.auth-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center; z-index: 9999;
+}
+.auth-modal {
+  background: var(--pn); padding: 40px; border-radius: 12px;
+  width: 100%; max-width: 400px; text-align: center;
+  border: 1px solid var(--ln); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+.auth-header h2 { font-size: 24px; margin-bottom: 8px; color: var(--tx); }
+.auth-header p { font-size: 14px; color: var(--tx-mu); margin-bottom: 24px; }
+.auth-step input {
+  width: 100%; padding: 14px; background: var(--bg-alt); border: 1px solid var(--ln);
+  border-radius: 8px; color: var(--tx); font-size: 16px; margin-bottom: 16px;
+  text-align: center; outline: none;
+}
+.auth-step input:focus { border-color: var(--ac); }
+.btn-primary {
+  width: 100%; padding: 14px; background: var(--ac); color: var(--on-ac);
+  border: none; border-radius: 8px; font-size: 16px; font-weight: 600;
+  cursor: pointer; transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.9; }
+.auth-error { color: #ef4444; font-size: 13px; margin-top: 12px; min-height: 20px; }
+.hidden { display: none; }

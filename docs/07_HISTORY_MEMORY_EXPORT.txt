@@ -1,0 +1,2656 @@
+Project Name: FLASH (Cognitive Training Platform)
+
+Project Purpose: A browser-based cognitive training platform that serves as a free, science-backed alternative to Lumosity / Peak / BrainHQ.
+
+Core Problem Being Solved:
+
+Existing brain-training platforms are paid and overclaim scientifically
+
+Content is static (users memorize answers over time)
+
+One-size-fits-all experience
+
+No deep performance analysis
+
+Minimal or no Arabic support
+
+Target Users:
+
+Adults 25-45 seeking measurable cognitive progress
+
+Students wanting a sense of advancement
+
+Skeptical users who distrust "brain games" claims (need a serious, non-childish tool)
+
+Target Platform: Web browser (offline-capable via file:// + PWA)
+
+Business/Product Concept: Free + open source (MIT license)
+
+Main Value Proposition:
+
+AI-generated infinite content (no two sessions identical)
+
+AI adaptive difficulty (real-time personalization)
+
+AI Coach (conversational, knows user data)
+
+Full EN + AR support with RTL from day one
+
+$0 monthly cost (all infrastructure on free tiers)
+
+Main Differentiators vs. Competitors:
+
+Feature	Lumosity	Peak	BrainHQ	FLASH
+Price	$11.99/mo	$9.99/mo	$14/mo	Free
+Scientific papers	✗	✗	✓	✓
+AI Adaptive	Limited	Limited	Limited	Advanced
+AI Generative Content	✗	✗	✗	Infinite
+AI Coach	✗	✗	✗	Custom
+Open Source	✗	✗	✗	100%
+Arabic Support	✗	✗	✗	Full
+Offline Play	Limited	Limited	✗	Full
+Core User Experience: User opens dashboard → sees cognitive profile → plays a session → sees analysis → gets next recommendation → returns daily. Tone: Instrument, not game. Serious, editorial, scientific.
+
+Long-Term Vision: Investor-ready demo → 50-100 early users → seed funding → 50K users with live AI Coach.
+
+Current Development Stage: Backend Phase A complete (v4.1), Dashboard v2 built with 15 AI features integrated, integration in progress.
+
+Total Monthly Cost: $0 (all infrastructure on free tiers).
+
+2. COMPLETE DEVELOPMENT HISTORY
+Chronological Timeline
+Date	Event
+Pre-2026-10-04	31 games in legacy frontend (8 files each, localStorage, postMessage)
+2026-10-04	5 new games added (seq-mem, argument-analyzer, vocabulary-elite, verbal-analogies, word-scramble) + handoff v6.0
+2026-10-06	4 contracts frozen; Backend foundation (Fastify + Neon + 23 tables)
+2026-10-06	Difficulty Atlas: 3 games → expanded to 36 games × 15 levels = 540 rows
+2026-10-06	AI content generation expanded to all 36 games
+2026-10-07	Session Planner + AI Coach Chat (AR/EN with model routing)
+2026-10-07	Antigravity frontend redesign explored, paused
+2026-10-07 → 08	Sprint 1 (AI Features): Recap, Insights, Validator
+2026-10-07 → 08	Sprint 1.5: Multi-Provider Router
+2026-10-08	12 AI Features built
+2026-10-08	Catalog System + Admin API + Stats Fix + Soft Delete
+2026-10-08	Verifier System (verify.ps1)
+2026-10-09	Sprint 0-17 executed sequentially (backend completion, v4.0)
+2026-10-09	Frontend v4 design exploration (Claude Recorder, Cortex Reef, Antigravity)
+2026-10-10 → 11	Dashboard v2 modular rebuild (Phases 1.1 → 13) + backend bonus games + 42-game wiring + frontend↔backend integration started
+2026-10-12 → 13	Error System implementation (complete) + AI feature integration (15 features) + grid/layout debugging
+Major Architectural Changes
+Change 1: 41 games → 36 games (originally) → 42 games (current)
+
+Before: 41 games across 10 domains with 4 files each
+
+Change: Reduced to 36 core games × 9 domains, expanded to 8 files each
+
+Later: 6 bonus games added (digit-span, flash-cards, truth-tbl, mental-math, num-chains, speed-calc) → total 42
+
+Why: Reduction was for focus, expansion to 8-file pattern was for separation of concerns
+
+Change 2: Monolithic dashboard → Modular dashboard v2
+
+Before: frontend/dashboard/FLASH.html (monolithic, ~29 KB, 900+ lines)
+
+Change: Split into 30+ modules with tokens.css, base.css, layout.css, panels, modules
+
+Why: Extending monolith required editing single 900-line file
+
+Old file preserved as _legacy/FLASH.html
+
+Change 3: localStorage-only → Backend + localStorage hybrid
+
+Before: Each game stored PB/history/daily/badges in localStorage
+
+Change: Backend provides /sessions ingestion, PB, badges; localStorage becomes queue/offline buffer
+
+Why: Multi-device sync, real cognitive profile, AI analysis
+
+Change 4: Single AI provider (Groq) → Multi-provider router
+
+Before: Groq only
+
+Change: Groq → OpenRouter → Gemini → Rule fallback with circuit breaker
+
+Why: Reliability, cost fallback
+
+Change 5: Demo user only → Player Auth (OTP)
+
+Before: getOrCreateDemoUser() on every request
+
+Change: Email OTP + session tokens + optionalPlayer middleware
+
+Why: Real users for investor demo
+
+Change 6: Design v1 (Cyan/Pink) → Cortex Reef → Rose/Neon (current)
+
+v1 (v6.0 docs): Cyan #00EEFF + Pink #FF0077 on dark #04040A
+
+Cortex Reef (experimental, 2026-10-09): Vellum #EFE7D3 + Ink #1E2230 + Rubric red #B2341A
+
+Rose/Neon (current): Light Rose #FFF1F2 + #EC4899 accent; Dark Neon #000000 + #39FF14
+
+Why: v2 modular dashboard selected Rose/Neon as canonical
+
+Change 7: Monolithic error handling → Comprehensive Error System
+
+Before: Try/catch scattered, no unified classification
+
+Change: Full error system — AppError class, PostgreSQL mapping, central error handler, safe-fetch wrapper, offline-first save queue, timer integrity, achievement guard, network monitor, error UI, accessibility, multi-tab sync
+
+Why: Prevent data loss, no leaked secrets, graceful degradation
+
+3. CURRENT PROJECT STATE
+Completed [CONFIRMED / IMPLEMENTED]
+Backend:
+
+85+ endpoints
+
+51 database tables
+
+23 migrations (001 → 023)
+
+42 games in catalog
+
+630 difficulty levels (was 540, expanded with bonus games)
+
+15 AI features (12 original + 3 additional integrated)
+
+3 AI providers + failover router
+
+Validator on all LLM output
+
+Catalog sync
+
+Admin catalog API (6 endpoints)
+
+Soft delete for games
+
+Stats auto-computation
+
+Unified snapshot endpoint
+
+Verifier (verify.ps1)
+
+6/6 golden tests passing
+
+Dockerfile + render.yaml ready
+
+TypeScript: 0 errors
+
+Frontend Dashboard v2:
+
+32+ CSS files (3 root + 3 panels + 26+ modules)
+
+34+ JS files (10 root + 2 lib + 22+ modules)
+
+11 phases complete (modular rebuild)
+
+42 games wired into data.js
+
+PWA ready (manifest + service worker, currently disabled for dev)
+
+Full theme system (light/dark + 5 accent colors)
+
+Full bilingual (EN/AR + RTL)
+
+Full keyboard shortcut system
+
+Onboarding + settings + data export
+
+Session detail + domain compare + cheat sheet
+
+Wide panels (5): Deltas, Hour of Day, Errors, Transfer, Game Log
+
+AI features integrated (15 features):
+
+AI Coach Chat (floating icon, Dr. Flash persona)
+
+Predictions (footer strip)
+
+Weekly Insights (footer strip)
+
+Error Patterns (wide panel)
+
+Transfer Tracker (wide panel)
+
+Daily Plan (Today panel)
+
+Cognitive Fingerprint (fingerprint.html)
+
+Micro-Lessons (Today panel)
+
+Session Recap (modal after game)
+
+AI Journal (chat extras)
+
+Voice (chat extras)
+
+AI Lab (ai-lab.html)
+
+Variants (split-pane)
+
+Director Mode (Today panel CTA)
+
+Nudge (in-game toast)
+
+Error System (Complete):
+
+backend/src/lib/errors.ts — AppError class + PostgreSQL error mapping
+
+backend/src/lib/error-handler.ts — Fastify error handler plugin
+
+backend/src/middleware/idempotency.ts — Idempotency middleware
+
+backend/src/services/ai/fallback-policy.ts — AI fallback policy
+
+frontend/dashboard/js/lib/errors.js — Frontend error system
+
+frontend/dashboard/js/lib/safe-fetch.js — Retry + timeout + idempotency
+
+frontend/dashboard/js/modules/error-ui.js — Banner/toast/modal/empty/skeleton
+
+frontend/dashboard/js/modules/network-monitor.js — Online/offline detection
+
+frontend/dashboard/js/modules/save-queue.js — Offline-first save queue
+
+frontend/dashboard/js/modules/game-complete-bridge.js — postMessage listener
+
+frontend/dashboard/js/modules/timer-guard.js — Timer integrity
+
+frontend/dashboard/js/modules/achievement-guard.js — Double-fire protection
+
+frontend/dashboard/js/modules/provider-status.js — AI provider pill
+
+frontend/dashboard/js/modules/save-pill.js — Save status pill
+
+frontend/dashboard/js/modules/component-boundaries.js — Section protection
+
+frontend/dashboard/js/modules/multi-tab-sync.js — BroadcastChannel sync
+
+frontend/dashboard/js/modules/a11y.js — Screen reader + skip link
+
+frontend/dashboard/js/modules/session-restore.js — Refresh recovery
+
+frontend/dashboard/error.html — Full-page error screen
+
+frontend/dashboard/errors-demo.html — Demo page
+
+frontend/dashboard/css/modules/error-ui.css
+
+frontend/dashboard/css/modules/error-page.css
+
+frontend/dashboard/css/modules/provider-status.css
+
+frontend/dashboard/css/modules/a11y.css
+
+Games:
+
+42 game folders exist (frontend/games/{domain}/{game-id}/)
+
+42 core games complete (8-file pattern)
+
+go-no-go.legacy folder exists (incomplete — this is a legacy backup, not a real game)
+
+In Progress [CONFIRMED]
+Frontend ↔ Backend integration testing
+
+Grid layout bug (main grid showing 1 column instead of 3)
+
+Backend is currently offline during debugging sessions
+
+Planned [PLANNED]
+Streak freeze tokens (real consumption)
+
+Daily missions card (3 tasks/day)
+
+Badges shelf (12 badges)
+
+Achievements notifications
+
+Session replay viewer
+
+Sync push (offline-first)
+
+Deploy to Render + Cloudflare Pages
+
+Auth UI polish
+
+Domain.html full upgrade
+
+Proposed [PROPOSED — NOT CONFIRMED]
+Voice coach integration via Whisper
+
+Mobile app (PWA → Tauri or Capacitor)
+
+Multi-language expansion (FR, ES, DE)
+
+Real user analytics dashboard
+
+A/B testing framework
+
+ML model (after 1000+ sessions)
+
+Blocked
+Push to GitHub (SSH key was resolved earlier; current state unknown)
+
+Frontend grid layout (under investigation)
+
+Unknown [REQUIRES VERIFICATION]
+Exact state of adaptive_difficulty_state vs player_game_ability overlap
+
+Whether GET /next/:gameId has side effects
+
+Actual JSONB size in session_trials per session
+
+Whether RESEND_API_KEY is functional
+
+Whether Gemini fallback is ZDR-compliant
+
+Actual Neon CU-hour consumption
+
+4. PROJECT ARCHITECTURE
+High-Level Architecture
+text
+┌─────────────────────────────────────────────────────────────┐
+│  FRONTEND (Vanilla HTML/CSS/JS)                             │
+│  ├─ dashboard/ (index.html + 52 CSS + 80 JS files)          │
+│  ├─ games/ (42 games × 8 files = 336 files)                 │
+│  └─ shared/ (i18n, settings, flash-stages)                  │
+└────────────────────┬────────────────────────────────────────┘
+                     │ HTTPS + postMessage (MessageChannel target)
+┌────────────────────▼────────────────────────────────────────┐
+│  BACKEND (Fastify 5 + TypeScript 5.6)                       │
+│  ├─ routes/ (35+ files, 85+ endpoints)                      │
+│  ├─ services/ (29 files, including 34 AI files)             │
+│  ├─ middleware/ (auth, admin-auth, step-up, idempotency)    │
+│  ├─ catalog/ (42 TS configs)                                │
+│  ├─ lib/ (errors, error-handler)                            │
+│  └─ AI Router → 3 providers                                 │
+└────────────────────┬────────────────────────────────────────┘
+                     │ pg pool
+┌────────────────────▼────────────────────────────────────────┐
+│  Neon PostgreSQL 17 (51 tables, 23 migrations)              │
+└────────────────────┬────────────────────────────────────────┘
+                     │
+┌────────────────────▼────────────────────────────────────────┐
+│  External: Groq · OpenRouter · Gemini · Resend (planned)    │
+└─────────────────────────────────────────────────────────────┘
+AI Layer
+text
+Service → router.ts (routeChat() / routeJson())
+   ↓
+Router (circuit breaker per provider)
+   ├─ GroqProvider (primary)
+   │   ├─ gpt-oss-120b (EN)
+   │   ├─ allam-2-7b (AR)
+   │   ├─ gpt-oss-20b (fast)
+   │   └─ whisper-large-v3-turbo (voice)
+   ├─ OpenRouterProvider (fallback)
+   │   └─ google/gemini-2.0-flash-exp:free
+   └─ GeminiProvider (fallback 2)
+       └─ gemini-2.0-flash
+   ↓
+Validator (L4 filter + hype filter + shape + echo)
+   ↓
+Response with { source, provider, model, latency_ms, tokens }
+Catalog Flow
+text
+catalog/games/*.ts (42 files)
+   ↓ _migrate.ts (generator)
+   ↓ registry.ts (lookup + validation)
+   ↓ npm run catalog:sync
+   ↓
+DB: games + game_domain_weights + difficulty_configs
+Dashboard v2 Architecture
+text
+index.html
+  ├─ css/tokens.css        (design tokens)
+  ├─ css/base.css          (reset + typography)
+  ├─ css/layout.css        (grid + shell)
+  ├─ css/panels/*.css      (3 panels)
+  └─ css/modules/*.css     (52 modules)
+  ├─ js/config.js          (config + flags)
+  ├─ js/api.js             (fetch client)
+  ├─ js/data.js            (mock data)
+  ├─ js/i18n.js            (translations)
+  ├─ js/core.js            (state + theme + lang)
+  ├─ js/render.js          (orchestrator)
+  └─ js/modules/*.js       (68 modules)
+Frontend ↔ Backend Flow
+text
+User opens index.html
+   ↓
+FLASH_API.checkLive() → GET /health
+   ↓
+If live:
+   ├─ GET /profile      → merge user + domains
+   ├─ GET /sessions     → merge recent sessions
+   └─ GET /plan         → merge today plan
+   ↓
+window.dispatchEvent('flash:render')
+   ↓
+Dashboard re-renders with real data
+Fallback: Any failure → returns mock data (never breaks UI).
+Game Session Flow
+text
+1. Shell creates MessageChannel
+2. Load iframe (sandboxed, no allow-same-origin)
+3. Wait for 'load' event
+4. Send flash:init with port2
+5. Game sends flash:ready
+6. User plays
+7. Session ends → Game sends flash:session (raw trials)
+8. Shell validates + queues for sync via save-queue
+9. Shell sends flash:ack
+10. If online → save-queue flushes to POST /sessions
+11. If offline → stored in localStorage, flushed on reconnect
+12. Backend derives metrics, PB, badges, engine decision
+13. Response → Shell updates UI
+14. Session Recap fetched via POST /ai/recap
+15. Modal shown with AI-generated analysis
+5. COMPLETE FILE/FOLDER STRUCTURE
+Root: D:\Flash\
+text
+D:\Flash\
+├── .github/                          [3 files]
+│   ├── workflows/ci.yml
+│   ├── CODEOWNERS
+│   └── dependabot.yml
+├── backend/                          [222+ files, ~1.04 MB]
+│   ├── backups/                      (gitignored, encrypted JSON)
+│   ├── deploy/README.md
+│   ├── scripts/                      [7 files]
+│   │   ├── audit-db.ts
+│   │   ├── backup-db.ts
+│   │   ├── golden-tests.ts
+│   │   ├── setup-owner.ts
+│   │   ├── verify-catalog.ts
+│   │   ├── verify-db.ts
+│   │   └── verify-seed.ts
+│   ├── src/                          [195+ files]
+│   │   ├── catalog/                  [41 files]
+│   │   │   ├── games/*.ts (42 files)
+│   │   │   ├── _meta.ts
+│   │   │   ├── _migrate.ts
+│   │   │   ├── index.ts
+│   │   │   ├── registry.ts
+│   │   │   └── types.ts
+│   │   ├── config/
+│   │   │   ├── db.ts
+│   │   │   ├── env.ts
+│   │   │   └── rate-limit.ts
+│   │   ├── lib/                      [2 files - NEW]
+│   │   │   ├── errors.ts
+│   │   │   └── error-handler.ts
+│   │   ├── middleware/
+│   │   │   ├── admin-auth.ts
+│   │   │   ├── auth.ts
+│   │   │   ├── step-up.ts
+│   │   │   └── idempotency.ts        [NEW]
+│   │   ├── migrations/               [23 SQL files]
+│   │   ├── routes/                   [40 files, 35 active]
+│   │   ├── schemas/session.ts
+│   │   ├── scripts/sync-catalog.ts
+│   │   ├── services/                 [29 files]
+│   │   │   ├── ai/                   [34 files]
+│   │   │   ├── difficulty/
+│   │   │   └── profile/
+│   │   ├── migrate.ts
+│   │   ├── seed.ts
+│   │   ├── seed-atlas.ts
+│   │   └── server.ts
+│   ├── test/fixtures/
+│   ├── .admin-token
+│   ├── .dockerignore
+│   ├── .env
+│   ├── .env.example
+│   ├── .gitignore
+│   ├── diag.mjs
+│   ├── Dockerfile
+│   ├── install-bonus.ps1
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── render.yaml
+│   ├── SECURITY.md
+│   ├── test*.ps1
+│   ├── tsconfig.json
+│   └── verify.ps1
+├── docs/                             [36 files, ~665 KB]
+│   ├── 01_ARCHITECTURE/              [3 files]
+│   ├── 02_CONTRACTS/                 [4 files - FROZEN]
+│   ├── 03_BACKEND/                   [7 files]
+│   ├── 04_AI_SYSTEM/                 [3 files]
+│   ├── 05_FRONTEND/                  [2 files]
+│   ├── 06_PROJECT_HISTORY/           [5 files]
+│   ├── 07_SESSIONS/                  [2 files]
+│   ├── 08_STATS_AND_TREES/           [8 files]
+│   ├── 00_INDEX.md
+│   └── DOCS_TREE.txt
+├── frontend/                         [326+ files, ~4 MB]
+│   ├── dashboard/                    [Main app]
+│   │   ├── _legacy/                  (archived monolith)
+│   │   ├── assets/                   (icons)
+│   │   ├── css/
+│   │   │   ├── tokens.css
+│   │   │   ├── base.css
+│   │   │   ├── layout.css
+│   │   │   ├── panels/               [3 files]
+│   │   │   └── modules/              [52 files]
+│   │   ├── js/
+│   │   │   ├── api.js
+│   │   │   ├── config.js
+│   │   │   ├── core.js
+│   │   │   ├── data.js
+│   │   │   ├── domain-brain.js
+│   │   │   ├── i18n.js
+│   │   │   ├── inline-init.js
+│   │   │   ├── render.js
+│   │   │   ├── sw-cleanup.js
+│   │   │   ├── sw-killer.js
+│   │   │   ├── lib/                  [2 files]
+│   │   │   └── modules/              [68 files]
+│   │   ├── index.html
+│   │   ├── domain.html
+│   │   ├── sessions.html
+│   │   ├── 404.html
+│   │   ├── auth.html
+│   │   ├── error.html
+│   │   ├── errors-demo.html
+│   │   ├── fingerprint.html
+│   │   ├── ai-lab.html
+│   │   ├── manifest.webmanifest
+│   │   ├── favicon.svg
+│   │   ├── favicon.ico
+│   │   └── (sw.js — deleted for dev)
+│   ├── games/
+│   │   ├── attention/                [4 games + go-no-go.legacy]
+│   │   ├── spatial/                  [4 games]
+│   │   ├── speed/                    [4 games]
+│   │   ├── memory/                   [5 games]
+│   │   ├── logic/                    [5 games]
+│   │   ├── language/                 [4 games]
+│   │   ├── creativity/               [4 games]
+│   │   ├── emotional/                [4 games]
+│   │   ├── problem/                  [4 games]
+│   │   └── numerical/                [4 games - bonus]
+│   └── shared/
+│       ├── i18n.js
+│       ├── settings.js
+│       ├── flash-stages.js
+│       └── templates/                [7 files]
+├── design-v4/                        [7 files - archived]
+├── motion-lab/                       [4 files - archived]
+├── .gitignore
+├── AGENTS.md
+├── create-game.bat
+├── PROJECT_TREE.ps1
+├── PROJECT_TREE_COMPLETE.md
+└── stats.ps1
+6. TECHNOLOGY STACK
+Backend
+Layer	Technology	Version	Why
+Framework	Fastify	5.1 / 5.12	3× faster than Express, TS-first
+Language	TypeScript	5.6 / 5.9	Type safety
+Runtime	Node.js	20 → 24 LTS	Modern async
+Database	Neon PostgreSQL	17	Free, no auto-pause
+Validation	Zod	3.23 / 3.25	Schema-first
+DB Driver	pg	8.13 / 8.23	Standard
+Env	dotenv	16.4 / 16.6	
+CORS	@fastify/cors	10.0 / 10.1	
+Rate limit	@fastify/rate-limit	10.1 / 10.3	
+Multipart	@fastify/multipart	10.1	Voice
+Compression	@fastify/compress	9.2	Speed
+Security	@fastify/helmet	13.1	7 headers
+Dev runner	tsx	4.19 / 4.23	TS execution
+Frontend
+Layer	Technology	Why
+Framework	None (Vanilla HTML/CSS/JS)	No build step, runs from file://
+TypeScript	Not used	Build step avoided
+Build tools	None	Direct file loading
+Package manager (frontend)	None	No dependencies
+AI
+Layer	Technology	Role
+Primary LLM	Groq	Fast, free
+Fallback 1	OpenRouter	Free models
+Fallback 2	Google Gemini	Free tier
+Email (planned)	Resend	3k/month free
+Deployment
+Layer	Technology	Cost
+Backend Hosting	Render Free Tier	$0 (750h/month)
+Frontend Hosting	Cloudflare Pages	$0 (unlimited)
+Database	Neon PostgreSQL	$0 (1GB)
+Rejected Technologies [REJECTED]
+Tech	Reason
+React / Vue / Svelte	Framework lock-in, build step
+TypeScript in frontend	Build step
+Tailwind	Framework lock-in
+Vite / Webpack	Build step
+shadcn/ui	React dependency
+Chart.js / D3 / ECharts	Adds dependencies
+Canvas for charts	SVG is enough
+OpenAI GPT-4	Cost, rate limits
+Gemini 2.5 Flash	Deprecation
+qwen3.8-27b	Weak in both languages
+Confetti in UI	Doesn't fit serious tone
+Star ratings	Over-gamification
+Public leaderboards	User explicitly: no player comparison
+Redis / Queues	Premature
+Microservices	Modular monolith sufficient
+7. DATABASE — COMPLETE EXTRACTION
+Technology: Neon PostgreSQL 17 (serverless)
+
+Total tables: 51
+
+By Category
+Category	Count	Tables
+Identity	2	users, devices
+Catalog	5	domains, games, game_domain_weights, badges, norms
+Facts	2	sessions, session_trials
+Derived	4	personal_bests, user_game_stats, domain_scores, user_badges
+Sync/Ops	6	user_sync_state, user_settings, play_tickets, integrity_events, import_batches, _migrations
+AI Base	6	user_cognitive_profile, ai_recommendation_log, adaptive_difficulty_state, generated_content_cache, ai_conversations, ai_messages
+Difficulty	3	difficulty_configs (630 rows), player_game_ability, engine_decisions
+Extended (008)	11	nudge_cache, cognitive_fingerprints, game_variants, predictions, journal_entries, lab_experiments, micro_lessons, director_sessions, voice_requests, transfer_signals, error_patterns
+Admin (013)	2	admin_users, admin_audit_log
+Auth (014)	3	auth_identities, auth_sessions, auth_otp_codes
+Reviews (017)	1	session_reviews
+Metric (019)	1	metric_daily
+Flags (020)	1	feature_flags
+AI Usage (021)	1	ai_provider_usage
+Jobs (022)	1	job_runs
+Privacy (023)	1	privacy_requests
+Key Table Shapes
+users
+
+text
+id UUID PK
+email TEXT UNIQUE
+email_verified_at TIMESTAMPTZ
+display_name TEXT
+created_at TIMESTAMPTZ
+deleted_at TIMESTAMPTZ
+leaderboard_eligible BOOLEAN
+origin TEXT (real|demo|test|internal)   [013]
+status TEXT (active|suspended|deleted)  [013]
+locale TEXT (en|ar)                     [013]
+sessions (append-only, 27 columns)
+
+text
+id UUID PK
+user_id UUID FK
+client_session_id UUID UNIQUE with user_id
+game_id TEXT FK
+domain_id TEXT FK
+mode TEXT
+seed TEXT
+ticket_id TEXT
+started_at TIMESTAMPTZ
+ended_at TIMESTAMPTZ
+server_received_at TIMESTAMPTZ
+duration_ms INT
+n_trials INT
+n_correct INT
+accuracy REAL
+median_rt_ms REAL
+rcs REAL
+primary_score REAL
+game_version TEXT
+scoring_version INT
+trust_tier TEXT
+source TEXT
+status TEXT
+anomaly_score REAL
+change_seq BIGINT
+deleted_at TIMESTAMPTZ
+games
+
+text
+id TEXT PK
+name TEXT
+domain_id TEXT FK
+trial_pattern TEXT
+primary_metric TEXT
+metric_direction TEXT (higher|lower)
+rt_floor_ms INT
+rt_ceiling_ms INT
+max_trials_per_session INT
+min_duration_ms INT
+max_duration_ms INT
+max_score INT
+trial_exclusion_rules JSONB
+game_version TEXT
+scoring_version INT
+status TEXT
+deleted_at TIMESTAMPTZ   [010]
+deleted_reason TEXT      [010]
+difficulty_configs (630 rows)
+
+text
+id UUID PK
+game_id TEXT FK
+mode TEXT
+level INT (1-15)
+label TEXT
+levers JSONB
+calibrated_difficulty REAL
+domain_loadings JSONB
+UNIQUE (game_id, mode, level)
+engine_decisions (10 reason codes)
+
+text
+PROMOTE_STABLE, DEMOTE_STRUGGLE, HOLD_IN_BAND,
+HOLD_FRUSTRATION, RECOVERY, WARMUP,
+CALIBRATING, RUST_RETURN, STRETCH, FIRST_SESSION
+Migrations Summary
+#	File	Purpose
+001	identity.sql	users, devices
+002	catalog.sql	domains, games, weights, badges, norms
+003	facts.sql	sessions, session_trials
+004	derived.sql	PBs, stats, scores, sync
+005	ai.sql	AI base tables
+006	difficulty.sql	Atlas + ability + decisions
+007	ai_coach.sql	conversations + messages
+008	ai_extended.sql	11 AI feature tables
+009	predictions_enhanced.sql	+10 columns
+010	soft_delete_and_indexes.sql	Games soft delete + 6 indexes
+011	games_defaults.sql	NOT NULL + defaults
+012	migration_checksums.sql	SHA-256 checksums
+013	admin_bootstrap.sql	admin_users + admin_audit_log + users.origin
+014	player_auth.sql	auth_identities + auth_sessions + auth_otp_codes
+015	tickets_v2.sql	play_tickets enhancement
+016	fix_play_tickets.sql	fix token_hash
+017	session_reviews.sql	session_reviews table
+018	norms_pipeline.sql	norms status + version
+019	metric_daily.sql	daily rollups
+020	feature_flags.sql	feature_flags table
+021	ai_usage.sql	ai_provider_usage ledger
+022	job_runs.sql	job_runs table
+023	privacy_requests.sql	privacy_requests table
+Rule: Migrations 001-023 are FROZEN. New migrations start at 024+.
+
+8. API DOCUMENTATION (85+ Endpoints)
+Core (10)
+text
+GET  /health          Liveness (no DB)
+GET  /ready           Readiness (DB check)
+GET  /domains         9→10 domains
+GET  /games           42 games
+GET  /plan            Daily Ritual
+GET  /profile         Profile + recs
+GET  /ability         Per-game ability
+GET  /next/:gameId    Next level
+GET  /decisions       Engine decisions
+GET  /sessions        Last 30
+POST /sessions        Ingest
+Player Auth (4)
+text
+POST /auth/otp/request   { email }
+POST /auth/otp/verify    { email, code }
+GET  /auth/me
+POST /auth/logout
+Plays (2)
+text
+POST /plays              { game_id, mode }
+POST /plays/consume      { token }
+Player Me (2)
+text
+GET  /me/export
+POST /me/erase           { confirm: "DELETE" }
+Sync (2)
+text
+GET  /sync/changes?cursor=N
+GET  /sync/state
+AI Core (9)
+text
+GET  /ai/status
+POST /ai/generate
+POST /ai/chat
+GET  /ai/conversations
+GET  /ai/conversations/:id
+POST /ai/recap
+GET  /ai/insights
+GET  /ai/daily-plan
+GET  /ai/health
+AI Features (21+)
+text
+POST /ai/nudge
+GET  /ai/fingerprint, POST /ai/fingerprint/regenerate
+GET  /ai/variants/game/:gameId, /ai/variants/generate/:gameId, /ai/variants/:variantId
+POST /ai/variants/regenerate
+GET  /ai/predictions, /ai/predictions/history
+POST /ai/journal/entry
+GET  /ai/journal/today, /ai/journal/today/entry, /ai/journal/history
+DELETE /ai/journal/today
+GET  /ai/voice/status, POST /ai/voice/chat
+POST /ai/lab/start, /ai/lab/complete, DELETE /ai/lab/abandon
+GET  /ai/lab/suggestions, /ai/lab/current, /ai/lab/history
+POST /ai/director/start, /ai/director/:id/checkpoint, /ai/director/:id/end
+GET  /ai/director/:id
+GET  /ai/lessons/topics, /ai/lessons, /ai/lessons/:topic
+POST /ai/lessons/regenerate
+GET  /ai/error-patterns, /ai/transfer-tracker
+Admin Auth (8)
+text
+POST /admin/auth/login
+GET  /admin/auth/me
+POST /admin/auth/logout
+GET  /admin/admins
+POST /admin/admins/invite
+POST /admin/admins/:id/revoke
+GET  /admin/audit
+GET  /admin/audit/verify
+Admin AI (4)
+text
+GET /admin/ai/health
+GET /admin/ai/providers
+GET /admin/ai/pool
+GET /admin/ai/budget
+Admin Catalog (10)
+text
+GET  /admin/catalog/games
+GET  /admin/catalog/games/:id
+GET  /admin/registry/trial-stats
+GET  /admin/catalog
+GET  /admin/catalog/drift
+GET  /admin/catalog/:id
+POST /admin/catalog/sync
+POST /admin/catalog/:id/disable
+POST /admin/catalog/:id/enable
+Admin Difficulty (2)
+text
+GET /admin/difficulty/:gameId
+GET /admin/difficulty/calibration
+Admin Integrity (3)
+text
+GET  /admin/integrity/queue
+GET  /admin/integrity/sessions/:id
+POST /admin/integrity/sessions/:id/review
+Admin Norms (4)
+text
+GET  /admin/norms
+GET  /admin/norms/candidates
+POST /admin/norms/publish
+GET  /admin/norms/percentile
+Admin Analytics (3)
+text
+GET /admin/analytics/metrics
+GET /admin/analytics/funnel
+GET /admin/analytics/retention
+Admin Flags (3)
+text
+GET  /admin/flags
+POST /admin/flags/:key
+GET  /flags/eval
+Admin Privacy (2)
+text
+GET /admin/privacy/inventory
+GET /admin/privacy/processors
+Admin Demo (7)
+text
+GET  /admin/demo/origins
+POST /admin/demo/users/:id/origin
+POST /admin/demo/generate
+POST /admin/demo/reset
+GET  /admin/demo/scripts
+POST /admin/demo/scripts
+POST /admin/demo/scripts/reset
+Admin Jobs (2)
+text
+GET  /admin/jobs
+POST /admin/jobs/enqueue
+Admin Retention (3)
+text
+GET  /admin/retention/rules
+GET  /admin/retention/preview
+POST /admin/retention/run
+Admin Console + Platform (3)
+text
+GET /admin/console
+GET /admin/platform/health
+GET /admin/platform/ping
+9. AUTHENTICATION & AUTHORIZATION
+Player Authentication [CONFIRMED / IMPLEMENTED]
+Method: Email OTP (passwordless)
+
+Flow:
+
+POST /auth/otp/request → email → 6-digit OTP sent via Resend
+POST /auth/otp/verify → email + code → session token
+Session token used as Authorization: Bearer ses_...
+Rate limits: 5 OTP requests per hour per email
+
+OTP: 6-digit, constant-time compare, attempts + expiry tracked
+
+Session: idle + absolute expiry
+
+Tables: auth_identities, auth_sessions, auth_otp_codes
+
+Middleware: requirePlayer (strict), optionalPlayer (fallback to demo)
+
+Frontend: auth.html (implemented), auth-guard.js (implemented)
+
+Admin Authentication [CONFIRMED / IMPLEMENTED]
+Method: Bearer tokens (adm_xxx) + SHA-256 hash
+
+Roles (5): owner, ops, science, support, analyst
+
+Step-up: 5-min re-auth window for sensitive operations
+
+Audit: Hash-chained append-only log
+
+Bootstrap: npm run admin:setup -- email "Name"
+
+Token storage: .admin-token (gitignored)
+
+Protected Routes
+/admin/* — requires admin token via x-admin-token header OR Bearer
+
+/me/* — requires player session
+
+/plays/* — requires player session
+
+Rate Limiting [CONFIRMED]
+Global: 200 req/min
+
+Allow-list: /health, /ready, /_internal/*, OPTIONS
+
+Layered: PUBLIC 200/min, AI 20/min, SESSION_POST 30/min, ADMIN 10/min, VOICE 5/min
+
+Headers: X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, Retry-After
+
+Security Concerns
+Sanitization: bidi/zero-width/control char stripping (sanitize.ts)
+
+Helmet: 7 security headers
+
+Secrets: All API keys in .env, never committed
+
+CORS: restricted to specific origins (localhost:5173, 8080, 5500, 9999, 127.0.0.1:9999)
+
+Planned Security Improvements
+Passkey/TOTP (Sprint 19)
+
+Better Auth migration
+
+10. ADMIN SYSTEM
+Admin Modules (13)
+#	Module	Endpoints	Purpose
+1	Admin Auth	8	Login/Logout/Me + Invite + Revoke + Audit
+2	Admin AI	4	Health + Providers + Pool + Budget
+3	Admin Catalog	10	List + Drift + Sync + Disable/Enable
+4	Admin Difficulty	2	Per-game + Calibration
+5	Admin Integrity	3	Queue + Session + Review
+6	Admin Norms	4	List + Candidates + Publish + Percentile
+7	Admin Analytics	3	Metrics + Funnel + Retention
+8	Admin Flags	3	List + Update + Eval
+9	Admin Privacy	2	Inventory + Processors
+10	Admin Demo	7	Origins + Generate + Reset + Scripts
+11	Admin Jobs	2	List + Enqueue
+12	Admin Retention	3	Rules + Preview + Run
+13	Admin Console + Platform	3	Console + Platform Health + Ping
+Admin Roles (5 Levels)
+Role	Purpose
+owner	Everything
+ops	Monitoring + fix jobs
+science	Content review + catalog
+support	User lookup + privacy requests
+analyst	Aggregated metrics only
+Data Classes (D0 → D4)
+Class	Examples	Access
+D0	domains, games, badges	All roles
+D1	job_runs, flags	Staff
+D2	sessions, PBs	Aggregates by default
+D3	users, auth, devices	Support + Owner
+D4	ai_messages, journal, voice	Break-glass only
+Admin Security
+Bearer tokens adm_xxx + SHA-256
+
+Step-up auth (5-min window)
+
+Hash-chained audit log (append-only)
+
+5 roles with fine-grained permissions
+
+11. USER SYSTEM
+User Profile
+users table: id, email, display_name, email_verified_at, locale (en/ar), origin (real/demo/test/internal), status
+
+devices table: device tracking per user
+
+Settings
+Stored in user_settings (key/value JSONB per user)
+
+Global settings in localStorage: flash:settings
+
+Statistics
+user_game_stats — per-game aggregates
+
+domain_scores — per-domain scores
+
+personal_bests — per-game PB
+
+Progress
+player_game_ability — per-game ability + current level
+
+engine_decisions — decision history
+
+Achievements
+badges — 15 badges (3 tiers × 5 modes)
+
+user_badges — unlocked badges per user
+
+Sessions
+sessions — 27 columns, append-only
+
+session_trials — raw trials JSONB
+
+Data Privacy
+GET /me/export — export all user data
+
+POST /me/erase — requires confirm: "DELETE", 30-day grace
+
+privacy_requests table for tracking
+
+12. GAME SYSTEM
+42 Games by Domain
+Attention (4):
+
+flanker — Eriksen 1974
+
+go-no-go — Drewe 1975
+
+task-switching — Monsell 2003
+
+vigilance — Rosvold 1956
+
+Spatial (4):
+
+mental-rotation — Shepard 1971
+
+corsi-blocks — Corsi 1972
+
+map-memory — Postma 1996
+
+block-counter — KABC-II
+
+Speed (4):
+
+reaction — Ball 2002
+
+color-match — Stroop 1935
+
+symbol-sprint — Treisman 1980
+
+rapid-fire — Monsell 2003
+
+Memory (5):
+
+n-back — Jaeggi 2008
+
+face-match — Naveh-Benjamin 2000
+
+pattern-recall — Corsi 1972
+
+seq-mem — Miller 1956
+
+flash-cards — Naveh-Benjamin 2000 (bonus)
+
+Logic (5):
+
+matrix-logic — Raven 1938
+
+syllogisms — Aristotle
+
+deduction — Evans 2008
+
+argument-analyzer — Abrami 2015
+
+truth-tbl — Wason 1966 (bonus)
+
+Language (4):
+
+lexical-decision — Meyer 1971
+
+vocabulary-elite — WAIS-IV
+
+verbal-analogies — Sternberg 1977
+
+word-scramble — Lexical access
+
+Creativity (4):
+
+alternative-uses — Guilford 1967
+
+creative-connect — Mednick 1962
+
+story-spark — Amabile 1982
+
+idea-flow — Guilford 1967
+
+Emotional (4):
+
+micro-expressions — Ekman 1969
+
+tone-detector — MSCEIT
+
+empathy-engine — Ickes 1993
+
+social-read — Burgoon 1994
+
+Problem (4):
+
+hanoi — Simon 1975
+
+river-crossing — Simon 1971
+
+gear-logic — Hegarty 2004
+
+path-finder — Shallice 1982
+
+Numerical (4) — bonus:
+
+digit-span — WAIS-IV
+
+mental-math — Dehaene 1999
+
+num-chains — Kyllonen 1990
+
+speed-calc — Salthouse 1996
+
+The 8-File Pattern [CONFIRMED / IMPLEMENTED]
+text
+frontend/games/{domain}/{game-id}/
+├── config.json                 Metadata
+├── game.html                   HTML + 8 script tags
+├── game.css                    ~500 specific + ~450 shared
+├── game.js                     Core logic (~900-1300 lines)
+├── {game}-helpers.js           Storage + PB + History + Badges + Missions
+├── {game}-sounds.js            Web Audio API synthesis
+├── {game}-stages.js            8 progressive stages
+└── {game}-extra-modes.js       Speed + Endless + Precision + Daily
+Script Load Order (SACRED — NEVER CHANGE)
+html
+<script src="../../../shared/i18n.js"></script>
+<script src="../../../shared/settings.js"></script>
+<script src="../../../shared/flash-stages.js"></script>
+<script src="{game}-stages.js"></script>
+<script src="{game}-helpers.js"></script>
+<script src="{game}-sounds.js"></script>
+<script src="{game}-extra-modes.js"></script>
+<script src="game.js"></script>
+The 5 Modes
+Mode	Trials	Time	On Error
+classic	45 (3/level)	Normal	Lose life
+speed	20	Short/fast	No life loss
+endless	∞	Ramping	Game over on first error
+precision	15	None	Just counted
+daily	20-30	Fixed	Once per day
+The 8 Stages
+Apprentice 🥉 — Reach Level 5
+
+Journeyman 🥈 — Reach Level 10
+
+Adept 🥇 — Reach Level 15
+
+Specialist 🎯 — Game-specific metric
+
+Sprinter ⚡ — Speed mode challenge
+
+Perfectionist 💎 — 100% accuracy
+
+Endless Runner 🏃 — Endless mode Level 6
+
+Master 👑 — Beat PB with high level
+
+Game Status
+Category	Status
+36 core games	✅ 8 files each
+digit-span	✅ 8 files + full integration
+flash-cards	✅ 8 files + full integration
+truth-tbl	✅ 8 files + full integration
+mental-math	✅ 8 files
+num-chains	✅ 8 files
+speed-calc	✅ 8 files
+go-no-go.legacy	⚠️ Legacy backup folder (incomplete — not a real game)
+13. ADAPTIVE DIFFICULTY SYSTEM
+Algorithm [CONFIRMED]
+Weighted Staircase + EMA (Exponential Moving Average)
+
+Rule	Value
+PROMOTE_THRESHOLD	accuracy ≥ 85%
+PROMOTE_NEEDED	2 consecutive good rounds
+DEMOTE_THRESHOLD	accuracy < 60%
+FRUSTRATION_CAP	3 consecutive fails → RECOVERY
+MIN_LEVEL	1
+MAX_LEVEL	15
+EMA alpha	max(0.15, 1 / max(3, evidence_count))
+Uncertainty	max(0.05, old_uncertainty × 0.95)
+The 10 Reason Codes
+Code	Meaning
+PROMOTE_STABLE	Excellent performance → move up
+DEMOTE_STRUGGLE	Poor performance → move down
+HOLD_IN_BAND	In target zone, stay
+HOLD_FRUSTRATION	3+ fails, rebuild momentum
+RECOVERY	Serve easier round
+WARMUP	Start of session
+CALIBRATING	Not enough data
+RUST_RETURN	Long gap since last play
+STRETCH	User opted for challenge
+FIRST_SESSION	Never played this game
+Files
+backend/src/services/difficulty/atlas.ts — 42 games × 15 levels = 630
+
+backend/src/services/difficulty/engine.ts
+
+Target Performance Bands
+Mode	Target Success	When Used
+Warm-up	90–95%	Start of session / after days away
+Train (default)	80–85%	Main blocks
+Stretch	60–70%	Opt-in / after steady success
+Recovery	90%	After failures / quit risk
+Assess	~50% (adaptive)	Monthly benchmark
+Free Play	player decides	Player autonomy
+Difficulty Vector (example)
+javascript
+difficulty = {
+  sequence_length:  3,
+  time_limit_ms:   2000,
+  distractor_count: 0,
+  stimulus_sim:     0.3,
+  rule_complexity:  1,
+  switching_rate:   0.0,
+  novelty:          0.1,
+  penalty:          'soft'
+}
+14. AI SYSTEM
+Providers [CONFIRMED]
+Provider	Models	Role
+Groq	gpt-oss-120b (EN), allam-2-7b (AR), gpt-oss-20b (fast), whisper-large-v3-turbo (voice)	Primary
+OpenRouter	google/gemini-2.0-flash-exp:free	Fallback
+Google Gemini	gemini-2.0-flash	Fallback 2
+Multi-Provider Router
+Priority: Groq → OpenRouter → Gemini → Rule fallback
+
+Circuit breaker: 3 failures → 60s cooldown
+
+Language-aware model selection
+
+Fallback chain logged
+
+Every response carries: { source, provider, model, language, latency_ms, tokens }
+
+Validator
+L4 filter (EN + AR) — blocks clinical claims
+
+Hype filter (EN + AR) — blocks overreach
+
+Shape validator — JSON missing fields
+
+Echo detector — LLM repeated fact sheet
+
+Header stripper — removes section headers
+
+The 15 AI Features
+#	Feature	Endpoint	Frontend
+1	In-Game Micro-Coach (nudge)	POST /ai/nudge	nudge.js
+2	Cognitive Fingerprint	GET /ai/fingerprint	fingerprint.html
+3	Dynamic Game Variants	GET /ai/variants/*	variants.js
+4	Predictive Coach	GET /ai/predictions	ai-panels-live.js
+5	AI Journal	POST /ai/journal/entry	chat-extras.js
+6	Voice-First	POST /ai/voice/chat	chat-extras.js
+7	AI Lab	POST /ai/lab/start	ai-lab.html
+8	Director Mode	POST /ai/director/start	director.js
+9	Micro-Lessons	GET /ai/lessons	micro-lessons.js
+10	Error Pattern Analysis	GET /ai/error-patterns	ai-panels-live.js
+11	Transfer Tracker	GET /ai/transfer-tracker	ai-panels-live.js
+12	Daily Plan	GET /ai/daily-plan	daily-plan.js
+13	AI Coach Chat	POST /ai/chat	ai-chat.js
+14	Session Recap	POST /ai/recap	session-recap.js
+15	Weekly Insights	GET /ai/insights	ai-panels-live.js
+Model Selection Gotchas [CONFIRMED]
+gpt-oss-120b needs max_tokens >= 500 (consumes ~300 on reasoning)
+
+allam-2-7b ~4K context — needs compression
+
+OpenRouter free models removed often
+
+Gemini new key format needs x-goog-api-key header
+
+Fallback Policy (NEW)
+File: backend/src/services/ai/fallback-policy.ts
+
+When all providers fail → returns safe default per kind
+
+Kinds: nudge, chat, difficulty, content, recommendation, insight
+
+Rule: never invent metrics; never violate L4
+
+Evidence Ladder
+Level	Type	Allowed
+L0	Observed	✅
+L1	Derived	✅
+L2	Estimated	✅ (with confidence)
+L3	Hypothesized	✅ (≥5 sessions)
+L4	Clinical	🚫 PROHIBITED
+L4 forbidden: ADHD / IQ / depression / autism / diagnosis / therapy / cure / "brain age" / أي كلمة طبية
+
+15. PLAYER DATA & ANALYTICS
+Metrics Collected
+accuracy (%)
+
+median_rt_ms (median reaction time)
+
+rtv (std dev of RTs)
+
+rcs (rate-correct score)
+
+max_level_reached
+
+n_trials, n_correct
+
+primary_score (game-specific)
+
+duration_ms
+
+RT after errors
+
+First-trial penalty
+
+Late-session fatigue
+
+Consecutive errors
+
+Where Stored
+Raw: sessions + session_trials
+
+Derived: user_game_stats, domain_scores, personal_bests
+
+Aggregated: metric_daily (nightly rollups)
+
+AI: user_cognitive_profile, predictions, error_patterns, transfer_signals
+
+Server Derives (Never Client-Sends)
+accuracy
+
+median_rt_ms
+
+rcs
+
+score
+
+max_level_reached
+
+pb_flag
+
+badges_unlocked
+
+Rule: If client sends these, server IGNORES them.
+
+Transfer Tracker
+Pearson correlation between domains (daily)
+
+Min 5 days + 3 domains
+
+Min |r| 0.4
+
+Deduped mirror pairs
+
+Error Pattern Detectors (4)
+post_error_slowdown — RT after errors > 1.25×
+
+first_trial_penalty — first 3 trials worse by 25%
+
+late_session_fatigue — second half worse by 15%
+
+consecutive_errors — streaks ≥ 3
+
+Predictions
+Weighted linear regression (recent sessions weighted)
+
+EMA
+
+R²
+
+5 risk detectors: recent_dip, rt_creep, volatile, plateau, long_gap
+
+Trajectory: improving / plateauing / declining / volatile
+
+Confidence tier: low / medium / high
+
+Multi-horizon: next session, next level, max level (15)
+
+Min 5 sessions per game
+
+16. FRONTEND / UI / UX
+Design DNA (Current = Rose/Neon)
+Light theme (Rose):
+
+css
+--bg:        #FFF1F2;
+--pn:        #FFFFFF;
+--tx:        #1F2937;
+--tx-mu:     #9F1239;
+--ac:        #EC4899;
+Dark theme (Neon):
+
+css
+--bg:        #000000;
+--pn:        #0A0A0A;
+--tx:        #F0FDF4;
+--tx-mu:     #86EFAC;
+--ac:        #39FF14;
+Motion timings:
+
+text
+--t-fast: 160ms
+--t-base: 240ms
+--t-mid:  320ms
+--t-slow: 480ms
+--t-grand: 720ms
+Easing curves:
+
+text
+--e-out:    cubic-bezier(0.16, 1, 0.3, 1)
+--e-in-out: cubic-bezier(0.65, 0, 0.35, 1)
+--e-spring: cubic-bezier(0.34, 1.56, 0.64, 1)
+--e-cine:   cubic-bezier(0.76, 0, 0.24, 1)
+Domain Colors (10):
+
+Domain	Hex
+Attention	#2dd4e0
+Spatial	#3ddc97
+Speed	#ffd93d
+Memory	#9b7bff
+Logic	#4d8dff
+Language	#ff9f43
+Creativity	#ff6ec7
+Emotional	#ff5a5f
+Problem	#5aa9ff
+Numerical	#b6f04a
+5 Accent Colors:
+
+ID	Light	Dark
+pink	#EC4899	#39FF14
+violet	#8B5CF6	#A78BFA
+blue	#3B82F6	#60A5FA
+teal	#14B8A6	#2DD4BF
+amber	#F59E0B	#FBBF24
+The 3-Column Layout
+text
+┌───────────────────────────────────────────────────────────┐
+│ HEADER (52px): FLASH · live badge · settings · theme · lang │
+├──────────────┬──────────────────────────┬─────────────────┤
+│  LEFT 340px  │  CENTER flexible         │  RIGHT 380px    │
+│  ┌─────────┐ │  ┌────────────────────┐  │  ┌───────────┐  │
+│  │ Brain   │ │  │ The Season         │  │  │ Recent    │  │
+│  │ KPIs    │ │  │ 10 domain lanes    │  │  │ sessions  │  │
+│  │ Plan    │ │  │ sparklines +       │  │  │ table     │  │
+│  │ CTA     │ │  │ forecast + now     │  │  │           │  │
+│  └─────────┘ │  └────────────────────┘  │  └───────────┘  │
+├──────────────┴──────────────────────────┴─────────────────┤
+│ FOOTER: prediction · weekly insight · week heatmap         │
+└───────────────────────────────────────────────────────────┘
+Wide Panels (5) — only on ≥1600px
+Deltas Watchlist — 7-day change per domain
+
+Hour-of-Day Strip — 24 bars
+
+Error Ledger — Top 3 error patterns
+
+Transfer Matrix — 10×10 heatmap
+
+Game Log — Recent per game
+
+Keyboard Shortcuts
+Shortcut	Action
+Cmd/Ctrl + K	Command palette
+/	Quick search
+?	Cheat sheet
+F	Focus mode
+C	Compare domains
+Cmd/Ctrl + ,	Settings
+Cmd/Ctrl + Shift + L	Toggle theme
+Cmd/Ctrl + Shift + K	Toggle language
+Cmd/Ctrl + Shift + F	Focus mode
+Esc	Close anything
+↑ / ↓	Navigate lists
+Enter	Run / open
+Typography
+UI / labels / numbers: system-ui
+
+AI narrative text: Iowan Old Style serif
+
+Arabic display: Noto Naskh Arabic
+
+All numbers: font-variant-numeric: tabular-nums
+
+17. COMPONENT ARCHITECTURE
+Dashboard Modules (68 JS modules)
+Core:
+
+api.js — fetch client with auth header
+
+config.js — API_BASE, feature flags
+
+core.js — state (theme, lang), helpers (t, N, DF, pc)
+
+data.js — mock data (domains, games, recentSessions)
+
+i18n.js — translations
+
+render.js — orchestrator
+
+domain-brain.js — mini brain for domain page
+
+inline-init.js — theme + lang button wiring
+
+sw-cleanup.js / sw-killer.js — SW kill switch
+
+Panels:
+
+today.js — Today panel (KPIs, plan, CTA)
+
+season.js — Season panel (10 lanes, sparklines)
+
+recent.js — Recent sessions table
+
+AI:
+
+ai-chat.js — AI Coach Chat with floating icon
+
+ai-panels-live.js — Live AI panels (Predictions, Insights, Errors, Transfer)
+
+session-recap.js — Modal after game
+
+chat-extras.js — Voice + Journal buttons in chat
+
+daily-plan.js — Today's Plan block
+
+micro-lessons.js — 60-second lesson card
+
+fingerprint.js — Fingerprint page runtime
+
+ai-lab.js — AI Lab page
+
+variants.js — Game variants chip strip
+
+director.js — Director Mode CTA
+
+nudge.js — In-game nudge toast
+
+Error System:
+
+error-ui.js — Banner/toast/modal/empty/skeleton
+
+network-monitor.js — Online/offline + ping
+
+save-queue.js — Offline-first save queue
+
+game-complete-bridge.js — postMessage listener
+
+timer-guard.js — Timer integrity
+
+achievement-guard.js — Double-fire protection
+
+provider-status.js — AI provider pill
+
+save-pill.js — Save status pill
+
+component-boundaries.js — Section protection
+
+multi-tab-sync.js — BroadcastChannel
+
+a11y.js — Screen reader + skip link
+
+session-restore.js — Refresh recovery
+
+Visual:
+
+theme-transition.js — Circular reveal
+
+ambient.js — Master metronome + sparkline packets
+
+ambient-pack-v2.js — 6 ambient motions
+
+streak-ring.js — Streak day countdown
+
+streak-break.js — Streak break animation
+
+brain.js — Brain v2 (grid, DISABLED)
+
+brain-v3.js — Brain v3 (neural sphere)
+
+brain-state.js — Brain reactivity
+
+brain-alt.js — Lattice/Fib/Slices alternatives
+
+neural-network-panel.js — Brain v3 injector
+
+brain-alt-panel.js — Brain alt injector
+
+wide-panels.js — 5 wide panels
+
+split-pane.js — Master/detail inspector
+
+lang-flip.js — FLIP for language switch
+
+xp-gain.js — XP count-up + particles
+
+navigation.js — Circular reveal CTA
+
+mobile-nav.js — Bottom nav for mobile
+
+command-palette.js — Cmd+K palette
+
+session-progress.js — Session progress bar
+
+week-heatmap.js — 7-day activity strip
+
+focus-mode.js — Immersive mode
+
+sound.js — Web Audio feedback
+
+export-snapshot.js — PNG export
+
+session-hud.js — Floating timer
+
+milestone.js — Radial ring burst
+
+domain-compare.js — Side-by-side compare
+
+cheat-sheet.js — Keyboard help
+
+pwa.js — PWA registration (DISABLED for dev)
+
+settings-panel.js — Settings drawer
+
+onboarding.js — 3-step onboarding
+
+data-io.js — Export/import
+
+session-detail.js — Session detail modal
+
+reminder.js — Daily reminder
+
+interactions.js — CTA/lane/card hover
+
+tag-panels.js — Adds data-panel to columns
+
+audio-unlock.js — Unlock AudioContext
+
+game-catalog-patch.js — Wire bonus games
+
+domain-games.js — Domain page games list
+
+live-data.js — Live loader + mock fallback
+
+live-status.js — Header badge
+
+18. BACKEND SERVICES
+Services (29 files)
+Core:
+
+derive.ts — Compute accuracy, medianRT, rcs, score
+
+pb.ts — Personal Best tracking
+
+badges.ts — Badge unlocking
+
+planner.ts — Daily Ritual (rule-based)
+
+recommendations.ts — Rule-based recommendations
+
+users.ts — Demo user + change_seq
+
+stats.ts — user_game_stats + domain_scores maintenance
+
+Catalog:
+
+catalog-sync.ts — TS → DB sync
+
+scripts/sync-catalog.ts — CLI
+
+Difficulty:
+
+atlas.ts — 42 games × 15 levels
+
+engine.ts — Adaptive decision engine
+
+AI (34 files):
+
+coach.ts, context.ts, daily-plan.ts, error-patterns.ts, fingerprint.ts
+
+gemini-client.ts, groq-client.ts, generate.ts, health.ts
+
+insights.ts, journal.ts, lab.ts, micro-lessons.ts
+
+nudge.ts, predictions.ts, recap.ts, router.ts
+
+transfer-tracker.ts, validator.ts, fallback-policy.ts [NEW]
+
+director/ (4 files), providers/ (4 files), variants/ (4 files), voice/ (2 files)
+
+prompts-*.ts (12+ files)
+
+Security:
+
+admin-auth.ts — Admin auth + hash-chained audit
+
+auth.ts — Player auth (OTP + sessions)
+
+ai-usage.ts — Token/cost ledger
+
+cache.ts — In-memory cache + ETag
+
+claims-lexicon.ts — L4 + hype filter
+
+feature-flags.ts — Flags + rollout %
+
+ingestion-validator.ts — Trial plausibility
+
+integrity-rules.ts — Shadow integrity checks
+
+job-runner.ts — Queue with SKIP LOCKED
+
+norms.ts — Candidate + publish
+
+privacy.ts — Data inventory + processors
+
+privacy-player.ts — Export + erase
+
+retention.ts — Retention rules + purge
+
+sanitize.ts — Bidi/zero-width strip
+
+tickets.ts — Single-use play tickets
+
+trial-stats.ts — Trial size stats
+
+user-lock.ts — Per-user advisory lock
+
+ai-content-pool.ts — Pool depth report
+
+analytics.ts — Funnel + retention
+
+demo-scripts.ts — 5 scripted demo users
+
+19. ERROR HISTORY & DEBUGGING
+Backend Bugs [CONFIRMED]
+#	Bug	Fix
+001	user_game_stats empty	Added stats.ts
+002	games.rt_ceiling_ms NULL	Migration 011
+003	Missing hot-path indexes	Migration 010
+004	Games couldn't be deleted	Soft delete
+005	32 TS errors	Null checks
+006	pg DATE as Date object	::text in SQL
+007	max_tokens too low	60 → 500+
+008	allam-2-7b generic	Few-shot + negative examples
+009	L4 filter too aggressive AR	Context-aware regex
+010	OpenRouter model removed	Changed model
+011	Gemini key format changed	x-goog-api-key
+012	Fingerprint cache collision	Cache by language
+013	daily-plan JSON parse fails	max_tokens 1400 + json_mode
+014	415 on POST /ai/lab/abandon	Changed to DELETE
+015	/ai/lab/current returned non-active	Added status filter
+016	journal entry_date format	::text in SQL
+017	journal.plan_adjusted never set	Added UPDATE
+018	PowerShell + Arabic	Use Node writeFileSync
+019	-replace with 3 args	.Replace()
+020	verify.ps1 embedded TS broke	Split into scripts/*.ts
+021	play_tickets.token_hash missing	Migration 016
+022	POST /plays 500	Fixed by 021
+023	auth.ts TS2783	return result
+024	authRoutes not registered	Explicit replace
+025	Neon cold start timeout	Retry + warmup
+Dashboard Bugs (this session)
+#	Bug	Fix
+D-01	reminder.js missing at verify	Recreated
+D-02	Files in wrong folder	Cleanup script
+D-03	PowerShell here-string with Arabic	ASCII-safe re-write
+D-04	stats.ps1 parse errors	Rewrote with safe chars
+D-05	CORS error from file://	Use local HTTP server
+D-06	SSH push Permission denied	Use HTTPS
+D-07	README.md missing at commit	Recreated
+D-08	digit-span-stages.js mismatch	Added both fields
+D-09	Commit included unneeded file	Kept for reference
+D-10	Orphan <script> tags in index.html	Removed
+D-11	Leaked inline JS code (Wire up theme...)	Removed, moved to inline-init.js
+D-12	.js.js in script src (cache busting bug)	Fixed regex
+D-13	recent.js:14 — d['name_en'] undefined	Added null guards
+D-14	live-status.js:98 — A.status() undefined	Added safe access
+D-15	Service Worker intercepting localhost:3000	Deleted sw.js, disabled pwa.js
+D-16	CORS blocked 9999 origin	Added to CORS_ORIGIN
+D-17	brain-alt-panel.js — No today panel found	Data-panel not set
+D-18	tag-panels.js — didn't tag columns	Added, wired
+D-19	Grid columns showing 1 instead of 3	Under investigation (see below)
+D-20	[data-panel] attributes missing	Added via tag-panels.js
+D-21	Daily Plan + Micro Lessons in wrong place (week-cell)	Strict selector fix
+D-22	innerWidth: 456 while outerWidth: 1333	Browser Zoom/Device Mode issue
+Critical Debugging Session (Grid Layout)
+Problem: Main grid showing 667.296px (1 column instead of 3).
+
+Investigation:
+
+getComputedStyle(.main).gridTemplateColumns → 667.296px (single)
+
+.col-main and .col-right both had grid-column: 1 / -1
+
+innerWidth: 456 (unexpected for desktop monitor)
+
+outerWidth: 1333
+
+Cause: Browser in Device Emulation Mode OR Zoom < 100%.
+
+Failed Solutions:
+
+Adding grid-fix.css with !important on everything → didn't help because @media (max-width: 760px) was matching
+
+Adding layout-override.css with mobile-first breakpoints → didn't help for same reason
+
+Removing full-width.css and grid-fix.css → didn't help
+
+Successful Solution (pending confirmation): Ctrl + 0 (reset zoom) + Ctrl + Shift + M (toggle device mode).
+
+Status: Partially resolved — root cause identified.
+
+Errors to Avoid [CONFIRMED]
+Don't paste large TS files into PowerShell (interprets as commands)
+
+Don't use PowerShell here-strings with Arabic + emojis
+
+Don't test CORS from file://
+
+Don't leave migrations half-run
+
+Don't retry requests that returned 4xx
+
+Don't commit README.md after git add -A if it doesn't exist yet
+
+Don't run Get-Process node | Stop-Process -Force (kills frontend server too)
+
+Don't trust file existence check alone — must verify DOM render
+
+20. DECISIONS & RATIONALE
+Decision	Chosen	Alternatives	Why
+Backend framework	Fastify 5	Express, NestJS	3× faster, TS-first
+Database	Neon PostgreSQL	Supabase	Free, no auto-pause
+AI primary	Groq	OpenAI, Gemini	Free, fast, JSON mode
+AI routing	Multi-provider	Single	Reliability
+AR model	allam-2-7b	gpt-oss-120b AR	Better AR quality
+Catalog	Config-driven TS	DB-only	Reviewable
+Games delete	Soft delete	Hard	Data preservation
+LLM output	Validator layer	Trust LLM	Safety
+Files per game	8 files	4 files	Separation of concerns
+Build step	None	Webpack/Vite	file:// works
+Frontend framework	None	React/Vue	No lock-in
+Auth (player)	Email OTP	Password	Passwordless
+Auth (admin)	Bearer + roles	JWT + roles	Simple + hashable
+Dashboard architecture	Modular files	Monolithic	Extensible
+Design system v2	Rose + Neon	Cortex Reef	New direction
+Motion clock	8s metronome	Individual loops	Discipline
+3D brain	Anatomical mesh	Network / Slices	Brand identity
+Data fetching	fetch + fallback	GraphQL	Simpler
+Mock fallback	Yes	No	UI never breaks
+Games count	42	36	Include 6 bonus
+21. REJECTED IDEAS [REJECTED]
+Idea	Why Rejected
+React / Vue / Svelte	Framework lock-in, build step
+TypeScript in frontend	Build step
+Tailwind	Framework lock-in
+Vite / Webpack	Build step
+shadcn/ui	React dependency
+Chart.js / D3 / ECharts	Adds dependencies
+Canvas for charts	SVG is enough
+OpenAI GPT-4	Cost, rate limits
+Gemini 2.5 Flash	Deprecation
+qwen3.8-27b	Weak in both languages
+Confetti in UI	Doesn't fit serious tone
+Star ratings	Over-gamification
+Public leaderboards	User explicitly: no player comparison
+Redis / Queues	Premature
+Microservices	Modular monolith sufficient
+Drifting now-line	Frame cost, no benefit
+Cursor parallax on sparklines	Data should not wobble
+Pulse on XP bar	Reads as loading state
+26-week heatmap alone	Answers no question
+Neon glow everywhere	Cheap-looking
+Letter-scramble for Arabic	Breaks script's joining
+Bouncing button	Too playful
+The Recorder (Claude)	Paper-and-ink design rejected
+Logo "Living Mark"	Rejected
+Dashboard "Cortex Canvas"	Rejected
+Generic SaaS look with rounded cards	Rejected
+Warm cream background + terracotta accent	AI-generated look
+22. USER PREFERENCES & DEVELOPMENT STYLE
+Communication Style [CONFIRMED]
+Language: Egyptian Arabic + Technical English mixed
+
+Format: Tables, emojis (moderate), structured Markdown
+
+Files: Full files only — never partial, never diffs, never Ctrl+H
+
+Naming: Name + Path + Type before code block
+
+One feature at a time
+
+Signals: "اللي بعدو" = Next · "تمم" = Done · "كمّل" = Continue · "صلح" = Fix · "فين" = Where
+
+PowerShell Rules [CONFIRMED]
+Use [System.IO.File]::WriteAllText with UTF8Encoding $false
+
+Use Node for large files (>30 lines with Arabic)
+
+.Replace() not -replace (3 args)
+
+No emojis in scripts
+
+No here-strings for files with Arabic
+
+Use chcp 65001 for UTF-8 console
+
+Git Workflow [CONFIRMED]
+Milestone commits only
+
+3 commands: cd + add + commit + push
+
+Conventional commit style
+
+No emojis in commits
+
+User Context [CONFIRMED]
+Vibe Coder — understands concepts, doesn't write code
+
+Trusts AI to write code
+
+Uses screenshots for bugs
+
+Prefers specific questions
+
+Wants real AI (not simple chatbot)
+
+Project is venture-capital-bound
+
+Wants maximum speed but no quality compromise
+
+Design Preferences [CONFIRMED]
+No emojis in UI
+
+Serious tone
+
+Scientific feel
+
+No over-gamification
+
+Pink is preferred accent color
+
+Light: rose-tinted white
+
+Dark: black + neon green
+
+No confetti, no gradients as decoration
+
+Development Preferences [CONFIRMED]
+Server + Frontend separate
+
+Manual testing after each phase
+
+No framework
+
+Screenshots for bugs
+
+Console logs for debugging
+
+Full files only
+
+Golden Rules [CONFIRMED]
+Full files only
+
+Migrations 001-023 FROZEN. New = 024+
+
+UTF-8 no BOM
+
+Vanilla only
+
+8-file pattern preserved
+
+Script load order sacred
+
+L4 claims prohibited
+
+No emojis in commits
+
+Contracts frozen
+
+Test after every change
+
+23. TODO / ROADMAP
+Critical (Must Do Immediately)
+□ Fix Backend running on port 3000 (currently offline)
+□ Fix frontend grid layout (see D-22 — Browser zoom/device mode)
+□ Verify 15 AI features are working end-to-end
+High Priority
+□ Auth UI polish (currently works as auth.html)
+□ Frontend ↔ Backend real data integration
+□ Deploy to Render + Cloudflare Pages
+□ Streak freeze tokens (real consumption)
+□ Daily missions card (3 tasks per day)
+□ Badges shelf (12 badges)
+□ Achievements notifications
+□ Session replay viewer
+Medium Priority
+□ Domain.html full upgrade (games list + AI insights)
+□ 3D brain in domain hero (larger, state-reactive)
+□ Sound design v2 (subtle background ambient)
+□ Sync push (offline-first)
+Low Priority
+□ PWA manifest refinements
+□ Multi-language expansion (FR, ES, DE)
+□ A/B testing framework
+Future
+□ Mobile app (PWA → Tauri or Capacitor)
+□ Voice coach integration (Whisper via Groq)
+□ Real user analytics dashboard
+□ ML model (after 1000+ sessions)
+□ Passkey/TOTP auth
+24. OPEN QUESTIONS
+[UNKNOWN] Exact state of adaptive_difficulty_state vs player_game_ability overlap
+
+[UNKNOWN] Whether GET /next/:gameId has side effects
+
+[UNKNOWN] Actual JSONB size in session_trials per session
+
+[UNKNOWN] Whether RESEND_API_KEY is functional
+
+[UNKNOWN] Whether Gemini fallback is ZDR-compliant
+
+[UNKNOWN] Actual Neon CU-hour consumption
+
+[UNKNOWN] Why brain-alt-panel.js says "No today panel found"
+
+[UNKNOWN] Whether the browser zoom was truly the cause of grid issue
+
+[REQUIRES VERIFICATION] 6 bonus games — do all 4 files (helpers/sounds/stages/extra-modes) exist for each?
+
+[REQUIRES VERIFICATION] Whether go-no-go.legacy should be deleted
+
+[REQUIRES VERIFICATION] Whether design-v4/ and motion-lab/ should be committed
+
+[REQUIRES VERIFICATION] Whether frontend/js/ empty folders should be removed
+
+[REQUIRES VERIFICATION] Whether frontend/games/vigilance/ (empty) and frontend/games/word-scramble/ (empty) at root should be removed
+
+25. TECHNICAL DEBT
+#	Item	Severity
+1	1 "game" incomplete (go-no-go.legacy — not real)	🟢 Low
+2	sessions table mixing facts + derived (27 columns)	🟡 Med
+3	Some endpoints still use getOrCreateDemoUser()	🟡 Med
+4	No tests (except 6 golden tests + PowerShell scripts)	🟡 Med
+5	No deployment yet (files ready)	🟡 Med
+6	verify.ps1 has hardcoded paths	🟢 Low
+7	Some services use console.error not Pino	🟡 Med
+8	design-v4/ and motion-lab/ uncommitted	🟢 Low
+9	Frontend grid layout issue unresolved	🔴 High
+10	Multiple .bak-* files in project	🟢 Low
+11	frontend/js/ empty folders	🟢 Low
+12	frontend/games/vigilance/ (empty) + word-scramble/ (empty) at root	🟢 Low
+26. TESTING
+Existing Tests
+File	Purpose	Last Result
+test.ps1	Master (12 checks)	ALL PASS
+test-security.ps1	Security headers	7/7
+test-health.ps1	/health + /ready	PASS
+test-catalog.ps1	ETag + 304	PASS
+test-rate-limit.ps1	X-RateLimit	PARTIAL
+test-r05.mjs	Concurrency	PASS
+scripts/golden-tests.ts	6 deterministic	6/6
+verify.ps1	5 sections	ALL PASS
+verify-games.ps1	Game completeness	42/42
+Missing Tests
+Unit tests
+
+Integration tests
+
+E2E tests
+
+AI tests
+
+UI tests
+
+Performance tests
+
+Security tests
+
+27. PERFORMANCE & SCALABILITY
+Current Bottlenecks
+Backend on Render Free sleeps after 15min idle
+
+Groq rate limits (1000 req/day)
+
+Neon cold start (mitigated with retry)
+
+Expected Users
+Phase 1 (3 months): 500 users, 5000 sessions
+
+Phase 2 (6 months): 5000 users, 50K sessions
+
+Phase 3 (1 year): 50K users, 500K sessions
+
+Optimization Plans
+Caching: /games from 3768ms → 36ms after cache hit
+
+Neon archive + compression for 1GB limit
+
+Cloudflare Workers fallback for backend down
+
+Scaling Strategy
+500-1000 users: ~$15-25/month (Railway + Neon Pro)
+
+5000 users: ~$75-100/month
+
+50000 users: ~$300-500/month
+
+28. SECURITY
+Implemented
+Auth (Player): Email OTP (passwordless)
+
+Auth (Admin): Bearer + roles + step-up
+
+Input Validation: Zod schemas on all endpoints
+
+Sanitization: bidi/zero-width/control char stripping
+
+Secrets Management: .env gitignored
+
+Rate Limiting: Layered (PUBLIC, AI, SESSION_POST, ADMIN, VOICE)
+
+Audit Trail: Hash-chained append-only log
+
+Data Privacy: Export + erasure endpoints
+
+Security Headers: 7 via Helmet
+
+CORS: Restricted to specific origins
+
+Planned
+Passkey/TOTP
+
+Better Auth migration
+
+GDPR compliance
+
+Encryption at rest
+
+29. DEPLOYMENT & ENVIRONMENT
+Environment Variables [REDACTED SECRET for values]
+env
+NODE_ENV=development
+PORT=3000
+HOST=0.0.0.0
+LOG_LEVEL=info
+
+DATABASE_URL=[REDACTED SECRET]
+AUTH_SECRET=[REDACTED SECRET]
+AUTH_URL=http://localhost:3000
+ADMIN_TOKEN=[REDACTED SECRET]
+
+BACKUP_KEY=[REDACTED SECRET]
+BACKUP_DIR=./backups
+BACKUP_KEEP_LAST=7
+
+GROQ_API_KEY=[REDACTED SECRET]
+GROQ_MODEL_EN=openai/gpt-oss-120b
+GROQ_MODEL_AR=allam-2-7b
+GROQ_MODEL_FAST=openai/gpt-oss-20b
+
+OPENROUTER_API_KEY=[REDACTED SECRET]
+OPENROUTER_MODEL=google/gemini-2.0-flash-exp:free
+
+GEMINI_API_KEY=[REDACTED SECRET]
+GEMINI_MODEL=gemini-2.0-flash
+
+VOICE_MODEL=whisper-large-v3-turbo
+VOICE_MAX_BYTES=10485760
+
+RESEND_API_KEY=[REDACTED SECRET]
+EMAIL_FROM=FLASH <noreply@flash.app>
+
+CORS_ORIGIN=http://localhost:5173,http://localhost:8080,http://localhost:5500,http://127.0.0.1:5500,http://127.0.0.1:9999,http://localhost:9999,http://localhost:3000
+Deployment Stack
+Backend: Render Free Tier (Dockerfile + render.yaml ready)
+
+Frontend: Cloudflare Pages
+
+Database: Neon PostgreSQL (Frankfurt region)
+
+Domain: Cloudflare (free SSL)
+
+Monitoring: UptimeRobot (planned)
+
+CI/CD
+.github/workflows/ci.yml — Backend: npm ci → tsc --noEmit → verify-catalog
+
+.github/dependabot.yml — Weekly npm + monthly actions
+
+.github/CODEOWNERS — @khalid8923
+
+30. COMMANDS & WORKFLOWS
+Backend Commands
+powershell
+cd D:\Flash\backend
+npm run dev          # tsx watch src/server.ts → http://localhost:3000
+npm run build        # tsc
+npm start            # node dist/server.js
+npm run typecheck    # tsc --noEmit (CI gate)
+npm run migrate      # tsx src/migrate.ts
+npm run seed         # tsx src/seed.ts
+npm run seed:atlas   # tsx src/seed-atlas.ts
+npm run catalog:sync # tsx src/scripts/sync-catalog.ts
+npm run backup       # tsx scripts/backup-db.ts
+npm run admin:setup  # tsx scripts/setup-owner.ts
+npm run test:golden  # tsx scripts/golden-tests.ts
+npx tsc --noEmit     # Type check
+Frontend Commands
+powershell
+cd D:\Flash
+npx --yes serve . -l 9999   # Serve on port 9999
+# or
+python -m http.server 8080
+Kill Node Processes (Safe — only port 3000)
+powershell
+Get-NetTCPConnection -LocalPort 3000 -State Listen -ErrorAction SilentlyContinue | 
+    ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }
+Kill All Node (careful — kills frontend too)
+powershell
+Get-Process node -ErrorAction SilentlyContinue | Stop-Process -Force
+Frontend URLs (Dev)
+http://127.0.0.1:9999/frontend/dashboard/ — Main dashboard
+
+http://127.0.0.1:9999/frontend/dashboard/errors-demo.html — Error UI demo
+
+http://127.0.0.1:9999/frontend/dashboard/error.html?code=500 — Error page
+
+http://127.0.0.1:9999/frontend/dashboard/auth.html — Login
+
+http://127.0.0.1:9999/frontend/dashboard/fingerprint.html — Fingerprint
+
+http://127.0.0.1:9999/frontend/dashboard/ai-lab.html — AI Lab
+
+31. EXTERNAL SERVICES & INTEGRATIONS
+Service	Purpose	Auth	Usage	Current Status
+Groq	Primary LLM	API key	EN/AR/voice	Working
+OpenRouter	LLM fallback	API key	Free models	Untested
+Google Gemini	LLM fallback 2	API key	Free tier	Untested
+Neon	PostgreSQL	Connection string	DB	Working
+Resend	Email (OTP)	API key	3k/month	Untested
+Render	Backend hosting	—	Free tier	Not deployed
+Cloudflare Pages	Frontend hosting	—	Free	Not deployed
+32. IMPORTANT CONVERSATION CONTEXT
+Why Features Were Requested
+AI Coach Chat: User wanted "دكتور جيمر" persona — floating doctor icon, knows all user data before user asks
+
+Error System: User wanted "شكل حلو" for errors, no leaked secrets, no data loss, prevent duplicate submissions
+
+15 AI Features: User asked "عايزهم كلهم يظهروا ويكونوا شغالين فعلاً"
+
+Grid Layout Fix: User frustrated — "ده اي الي بيظهر تحت ده اي ده يعم"
+
+Trade-offs Discussed
+Auth: OTP vs Password → OTP chosen (passwordless, no password reset flow)
+
+AI: 3 providers vs 1 → 3 chosen (reliability)
+
+Games: 36 vs 42 → 42 chosen (include bonus)
+
+Design: Cortex Reef vs Rose/Neon → Rose/Neon chosen (modular v2)
+
+User Considered Unacceptable
+Leaked secrets in error messages
+
+Data loss (player progress)
+
+Duplicate session counting
+
+Generic SaaS look
+
+Emojis in UI
+
+Confetti animations
+
+Framework lock-in
+
+Build step
+
+Previous AI Suggestions Rejected
+React/Vue/Svelte
+
+Tailwind
+
+Chart.js
+
+Confetti
+
+Star ratings
+
+Public leaderboards
+
+User Repeatedly Emphasized
+"Full files only"
+
+"One game at a time"
+
+"Script order is sacred"
+
+"8-file pattern"
+
+"No partial patches"
+
+"Test after each phase"
+
+33. CURRENT NEXT STEPS
+1. Must Do Immediately
+Fix Backend on port 3000 (running)
+
+Fix frontend grid layout (browser zoom/device mode suspected)
+
+Verify AI features work end-to-end
+
+2. Should Do Next
+Real Frontend ↔ Backend integration
+
+Update flash-data.js to include all 42 games if missing
+
+Test 15 AI features manually
+
+3. Should Verify
+go-no-go.legacy folder — delete or keep?
+
+design-v4/ and motion-lab/ — commit or archive?
+
+frontend/js/ empty folders — remove?
+
+Bonus games completeness (4 files each)
+
+Browser device emulation mode
+
+4. Future Work
+Deploy to Render + Cloudflare
+
+Auth UI polish
+
+Streak freeze tokens
+
+Daily missions
+
+Badges shelf
+
+Session replay
+
+34. INSTRUCTIONS FOR THE NEXT AI
+Read the entire document before making architectural decisions.
+
+Treat labels as follows:
+
+[CONFIRMED / IMPLEMENTED] — Established context
+
+[PLANNED] — Intended work
+
+[PROPOSED — NOT CONFIRMED] — Optional, not committed
+
+[EXPERIMENTAL] — Temporary, verify status
+
+[REJECTED] — Rejected unless user revisits
+
+[DEPRECATED] — Replaced but exists
+
+[UNKNOWN] — Requires verification
+
+[REQUIRES VERIFICATION] — Needs file check
+
+Non-negotiable rules:
+
+Do NOT modify migrations 001-023
+
+Do NOT change API contracts
+
+Do NOT touch frontend without permission
+
+Do NOT add frameworks
+
+Do NOT skip testing
+
+Do NOT emit emojis in commits
+
+Do NOT invent missing information
+
+Do:
+
+Use full files only
+
+Use [System.IO.File]::WriteAllText with UTF8Encoding $false
+
+Commit at milestones
+
+Verify with verify.ps1 after changes
+
+Respect user's Arabic + English mixed style
+
+Check actual files before claiming implementation
+
+User context:
+
+Egyptian Arabic + technical English
+
+Vibe Coder — understands concepts, relies on AI for code
+
+Signals: "تمم" = Done · "اللي بعدو" = Next · "كمّل" = Continue
+
+Testing: Manual in browser after each phase
+
+Full files only
+
+Immediate priorities:
+
+Get Backend + Frontend running (ports 3000 + 9999)
+
+Fix grid layout (check browser zoom/device mode)
+
+Verify 15 AI features end-to-end
+
+Deploy to Render + Cloudflare
+
+Continue from CURRENT STATE — do not restart.
+
+35. FINAL PROJECT STATE SNAPSHOT
+Project
+FLASH — Cognitive Training Platform
+
+Purpose
+Free, science-backed alternative to Lumosity/Peak/BrainHQ
+
+Current Stage
+Backend v4.1 complete + Dashboard v2 with 15 AI features integrated + Error System complete + debugging grid layout
+
+Stack
+Fastify 5 + TS 5.6 + Neon PG 17 + Groq/OpenRouter/Gemini + Vanilla HTML/CSS/JS
+
+Architecture
+Modular monolith + Multi-provider AI router + Config-driven catalog
+
+Database
+51 tables, 23 migrations, 630 difficulty levels
+
+Backend
+85+ endpoints, 15 AI features, 42 games in catalog, 0 TS errors
+
+Frontend
+Vanilla HTML/CSS/JS, 52 CSS + 80 JS files
+
+AI
+Router + Validator + 3 providers + circuit breaker + fallback policy
+
+Games
+42 across 10 domains (36 core + 6 bonus)
+
+Adaptive System
+Weighted staircase + EMA + 10 reason codes
+
+Authentication
+Email OTP (player) + Bearer + roles (admin)
+
+Admin
+13 modules · 54 endpoints · 5 roles · D0-D4 classes
+
+Analytics
+Derived per-session, per-game, per-domain
+
+Completed
+85 endpoints
+
+51 tables
+
+15 AI features (12 original + 3 additional)
+
+Dashboard v2 (11 phases)
+
+42 games wired
+
+Error System (complete)
+
+Backend v4.1
+
+6/6 golden tests
+
+In Progress
+Grid layout debugging
+
+Frontend↔Backend integration
+
+Backend running on port 3000
+
+Planned
+Auth UI polish
+
+Deploy
+
+Streak freeze tokens
+
+Daily missions
+
+Badges shelf
+
+Session replay
+
+Blocked
+Grid layout (browser zoom suspected)
+
+Backend offline during debugging
+
+Known Bugs
+Grid showing 1 column instead of 3 (browser zoom)
+
+brain-alt-panel.js — "No today panel found"
+
+go-no-go.legacy incomplete (legacy backup)
+
+Technical Debt
+sessions table mixing facts + derived
+
+Some endpoints use demo user
+
+No tests (except 6 golden + PS scripts)
+
+Multiple .bak-* files
+
+Empty folders at frontend/js/ and frontend/games/vigilance/
+
+Immediate Next Steps
+Start Backend on port 3000
+
+Start Frontend on port 9999
+
+Reset browser zoom (Ctrl+0) + toggle device mode (Ctrl+Shift+M)
+
+Verify grid layout
+
+Verify 15 AI features
+
+Commit
+
+Deploy
+
+36. QUALITY CONTROL — FINAL AUDIT
+Extracted
+✅ Every requirement
+
+✅ Every feature (42 games + 15 AI + 13 admin modules)
+
+✅ Every architecture decision
+
+✅ Every database decision (51 tables + 23 migrations)
+
+✅ Every API (85+ endpoints)
+
+✅ Every important file
+
+✅ Every major component
+
+✅ Every AI feature
+
+✅ Every game
+
+✅ Every adaptive mechanic
+
+✅ Every admin feature
+
+✅ Every analytics metric
+
+✅ Every known bug (25 backend + 22 dashboard)
+
+✅ Every failed approach (rejected list)
+
+✅ Every successful solution
+
+✅ Every important user preference
+
+✅ Every rejected idea
+
+✅ Every planned feature
+
+✅ Every unresolved issue
+
+✅ Every important decision
+
+✅ Every roadmap item
+
+✅ Every technical constraint
+
+Uncertainties Labeled
+[UNKNOWN] for adaptive_difficulty_state overlap
+
+[UNKNOWN] for /next side effects
+
+[UNKNOWN] for Gemini ZDR compliance
+
+[REQUIRES VERIFICATION] for bonus games completeness
+
+[REQUIRES VERIFICATION] for design-v4 / motion-lab status
+
+[REQUIRES VERIFICATION] for empty folders cleanup
+
+Conflicts Identified
+36 vs 42 games: Contracts say 36 (frozen), actual = 42. Final decision: 42 is canonical; contract is aspirational.
+
+9 vs 10 domains: Contracts say 9 (CHC), actual = 10 (includes numerical). Final decision: 10 is canonical.
+
+postMessage: Contract 03 says MessageChannel; actual games use window.parent.postMessage (7 fields). Final decision: parent.postMessage is canonical for v1; MessageChannel is aspirational v2.
+
+Design system: v6.0 = Cyan/Pink dark, Cortex Reef = Vellum/Ink/Rubric, Rose/Neon = current. Final decision: Rose/Neon is canonical.
+
+Auth: Older docs say "no auth"; v4.1 says "complete" (OTP). Final decision: OTP complete.
+
+Error system: New implementation (v4.1 + this session) supersedes all previous.
+
+END OF PROJECT MEMORY EXPORT
+Generated: 2026-10-13
+Version: 1.0
+Total context transferred from: Entire conversation history + all shared files + all debugging sessions

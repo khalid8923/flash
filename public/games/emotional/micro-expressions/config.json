@@ -1,0 +1,10 @@
+{
+  "id": "micro-expressions",
+  "name": "Micro Expressions",
+  "domain": "emotional",
+  "icon": "😮",
+  "description": "Detect fleeting facial emotion cues",
+  "difficulty": 5,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "avgResponseTime", "maxStreak", "hardEmotionAccuracy"]
+}

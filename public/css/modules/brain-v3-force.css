@@ -1,0 +1,25 @@
+/* ============================================================
+   FLASH — Force brain v3 (hide v2 canvas)
+   ============================================================ */
+
+/* Hide any canvas inside .brain-wrap (v2) */
+.brain-wrap canvas,
+.brain-wrap > canvas {
+  display: none !important;
+}
+
+/* Ensure v3 canvas is visible and sized */
+.brain-v3,
+#brain-v3 {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.brain-v3 canvas,
+#brain-v3-canvas {
+  display: block !important;
+  visibility: visible !important;
+  width: 100% !important;
+  height: 100% !important;
+}

@@ -1,0 +1,359 @@
+/* ═══════════════════════════════════════════════════════════
+   FLASH — N-Back Helpers
+   Storage · PB · History · Insights · Daily · Missions · Badges
+   ═══════════════════════════════════════════════════════════ */
+
+(function () {
+  'use strict';
+
+  const GAME_ID = 'n-back';
+  const KEYS = {
+    PB:       'flash:' + GAME_ID + ':pb',
+    HISTORY:  'flash:' + GAME_ID + ':history',
+    DAILY:    'flash:' + GAME_ID + ':daily',
+    SETTINGS: 'flash:' + GAME_ID + ':settings',
+    BADGES:   'flash:' + GAME_ID + ':badges',
+    MISSIONS: 'flash:' + GAME_ID + ':missions'
+  };
+
+  const HISTORY_MAX = 30;
+  const DAILY_MAX = 90;
+
+  function safeGet(k, d) {
+    try { const r = localStorage.getItem(k); return r ? JSON.parse(r) : d; }
+    catch (e) { return d; }
+  }
+  function safeSet(k, v) {
+    try { localStorage.setItem(k, JSON.stringify(v)); return true; }
+    catch (e) { return false; }
+  }
+
+  /* ═══ PB ═══ */
+  function getPB() {
+    return safeGet(KEYS.PB, {
+      bestAccuracy: 0,
+      bestMedianRT: 99999,
+      bestRCS: 0,
+      bestDPrime: 0,
+      bestNLevel: 0,
+      updatedAt: null
+    });
+  }
+
+  function checkAndUpdatePB(session) {
+    const pb = getPB();
+    const rec = {};
+
+    if (session.accuracy > pb.bestAccuracy) {
+      rec.accuracy = { old: pb.bestAccuracy, new: session.accuracy };
+      pb.bestAccuracy = session.accuracy;
+    }
+    if (session.medianRT > 0 && session.medianRT < pb.bestMedianRT) {
+      rec.medianRT = { old: pb.bestMedianRT, new: session.medianRT };
+      pb.bestMedianRT = session.medianRT;
+    }
+    if (session.rcs > pb.bestRCS) {
+      rec.rcs = { old: pb.bestRCS, new: session.rcs };
+      pb.bestRCS = session.rcs;
+    }
+    if (session.dPrime > pb.bestDPrime) {
+      rec.dPrime = { old: pb.bestDPrime, new: session.dPrime };
+      pb.bestDPrime = session.dPrime;
+    }
+    if (session.maxNLevel > pb.bestNLevel) {
+      rec.maxNLevel = { old: pb.bestNLevel, new: session.maxNLevel };
+      pb.bestNLevel = session.maxNLevel;
+    }
+
+    if (Object.keys(rec).length) {
+      pb.updatedAt = new Date().toISOString();
+      safeSet(KEYS.PB, pb);
+    }
+    return rec;
+  }
+
+  /* ═══ HISTORY ═══ */
+  function getHistory() { return safeGet(KEYS.HISTORY, []); }
+
+  function addToHistory(s) {
+    const h = getHistory();
+    h.push({
+      date: new Date().toISOString(),
+      mode: s.mode || 'classic',
+      medianRT: s.medianRT,
+      accuracy: s.accuracy,
+      rcs: s.rcs,
+      dPrime: s.dPrime,
+      maxNLevel: s.maxNLevel
+    });
+    while (h.length > HISTORY_MAX) h.shift();
+    safeSet(KEYS.HISTORY, h);
+    return h;
+  }
+
+  function getRecentSessions(n) { return getHistory().slice(-n); }
+
+  /* ═══ DAILY ═══ */
+  function getTodayKey() {
+    const d = new Date();
+    return d.getFullYear() + '-' +
+           String(d.getMonth() + 1).padStart(2, '0') + '-' +
+           String(d.getDate()).padStart(2, '0');
+  }
+
+  function getDailyLog() { return safeGet(KEYS.DAILY, {}); }
+  function isTodayDone() { return !!getDailyLog()[getTodayKey()]; }
+
+  function markTodayDone(r) {
+    const log = getDailyLog();
+    log[getTodayKey()] = {
+      done: true,
+      rcs: r.rcs,
+      accuracy: r.accuracy,
+      completedAt: new Date().toISOString()
+    };
+    const keys = Object.keys(log).sort();
+    while (keys.length > DAILY_MAX) delete log[keys.shift()];
+    safeSet(KEYS.DAILY, log);
+  }
+
+  /* ═══ MISSIONS ═══ */
+  const MISSION_POOL = [
+    { id: 'play-2',       text: 'Play 2 sessions',              target: 2,   type: 'sessions' },
+    { id: 'play-4',       text: 'Play 4 sessions',              target: 4,   type: 'sessions' },
+    { id: 'acc-85',       text: 'Reach 85% accuracy',           target: 85,  type: 'accuracy' },
+    { id: 'acc-95',       text: 'Reach 95% accuracy',           target: 95,  type: 'accuracy' },
+    { id: 'pb',           text: 'Beat a personal best',         target: 1,   type: 'pb' },
+    { id: 'dprime-2',     text: 'Reach d\' of 2.0 or higher',   target: 2,   type: 'dPrime' },
+    { id: 'nlevel-3',     text: 'Reach 3-back level',           target: 3,   type: 'maxNLevel' }
+  ];
+
+  function seedRand(seed) {
+    let x = seed;
+    return () => { x = (x * 9301 + 49297) % 233280; return x / 233280; };
+  }
+
+  function getTodayMissions() {
+    const today = getTodayKey();
+    const cur = safeGet(KEYS.MISSIONS, null);
+    if (cur && cur.date === today) return cur;
+
+    const seed = today.split('-').reduce((a, b) => a + parseInt(b, 10), 0);
+    const rand = seedRand(seed);
+    const shuffled = MISSION_POOL.slice().sort(() => rand() - 0.5);
+    const picked = shuffled.slice(0, 3).map(m =>
+      Object.assign({}, m, { progress: 0, done: false })
+    );
+
+    const fresh = { date: today, missions: picked };
+    safeSet(KEYS.MISSIONS, fresh);
+    return fresh;
+  }
+
+  function updateMissionProgress(type, value) {
+    const d = getTodayMissions();
+    let changed = false;
+    d.missions.forEach(m => {
+      if (m.done || m.type !== type) return;
+      if (type === 'sessions') m.progress = Math.min(m.target, (m.progress || 0) + value);
+      else m.progress = Math.max(m.progress || 0, value);
+      if (m.progress >= m.target) m.done = true;
+      changed = true;
+    });
+    if (changed) safeSet(KEYS.MISSIONS, d);
+    return d;
+  }
+
+  /* ═══ SETTINGS (compat) ═══ */
+  const DEFAULT_SETTINGS = {
+    reducedMotion: false, highContrast: false,
+    inputMode: 'both', haptics: true, soundEnabled: true
+  };
+
+  function getSettings() {
+    const saved = safeGet(KEYS.SETTINGS, {});
+    return Object.assign({}, DEFAULT_SETTINGS, saved);
+  }
+  function saveSettings(s) { safeSet(KEYS.SETTINGS, s); }
+
+  function applySettingsToDOM(s) {
+    const html = document.documentElement;
+    if (s.reducedMotion) html.setAttribute('data-motion', 'reduced');
+    else html.removeAttribute('data-motion');
+    if (s.highContrast) html.setAttribute('data-contrast', 'high');
+    else html.removeAttribute('data-contrast');
+  }
+
+  /* ═══ BADGES ═══ */
+  const BADGE_DEFS = {
+    classic: [
+      { tier: 'bronze', label: 'Bronze', icon: '🥉', desc: 'Reach Level 5',  check: s => (s.maxLevel || 0) >= 5 },
+      { tier: 'silver', label: 'Silver', icon: '🥈', desc: 'Reach Level 10', check: s => (s.maxLevel || 0) >= 10 },
+      { tier: 'gold',   label: 'Gold',   icon: '🥇', desc: 'Reach Level 15', check: s => (s.maxLevel || 0) >= 15 }
+    ],
+    speed: [
+      { tier: 'bronze', label: 'Bronze', icon: '🥉', desc: 'Score 8+ correct',  check: s => (s.totalCorrect || 0) >= 8 },
+      { tier: 'silver', label: 'Silver', icon: '🥈', desc: 'Score 11+ correct', check: s => (s.totalCorrect || 0) >= 11 },
+      { tier: 'gold',   label: 'Gold',   icon: '🥇', desc: 'Score 14+ correct', check: s => (s.totalCorrect || 0) >= 14 }
+    ],
+    endless: [
+      { tier: 'bronze', label: 'Bronze', icon: '🥉', desc: 'Reach Level 3',  check: s => (s.levelReached || 0) >= 3 },
+      { tier: 'silver', label: 'Silver', icon: '🥈', desc: 'Reach Level 6',  check: s => (s.levelReached || 0) >= 6 },
+      { tier: 'gold',   label: 'Gold',   icon: '🥇', desc: 'Reach Level 10', check: s => (s.levelReached || 0) >= 10 }
+    ],
+    precision: [
+      { tier: 'bronze', label: 'Bronze', icon: '🥉', desc: 'Score 70% accuracy',  check: s => (s.accuracy || 0) >= 70 },
+      { tier: 'silver', label: 'Silver', icon: '🥈', desc: 'Score 85% accuracy',  check: s => (s.accuracy || 0) >= 85 },
+      { tier: 'gold',   label: 'Gold',   icon: '🥇', desc: 'Achieve 100% accuracy', check: s => (s.accuracy || 0) >= 100 }
+    ]
+  };
+
+  function getBadges() { return safeGet(KEYS.BADGES, {}); }
+
+  function checkAndUnlockBadges(mode, data) {
+    const unlocked = getBadges();
+    const defs = BADGE_DEFS[mode];
+    if (!defs) return [];
+
+    const newly = [];
+    const md = unlocked[mode] || {};
+
+    defs.forEach(def => {
+      if (md[def.tier]) return;
+      if (def.check && def.check(data || {})) {
+        md[def.tier] = { unlockedAt: new Date().toISOString() };
+        newly.push(def);
+      }
+    });
+
+    if (newly.length) {
+      unlocked[mode] = md;
+      safeSet(KEYS.BADGES, unlocked);
+    }
+    return newly;
+  }
+
+  function getModeBadges(mode) {
+    const unlocked = getBadges();
+    return BADGE_DEFS[mode] ? BADGE_DEFS[mode].map(d => Object.assign({}, d, {
+      unlocked: !!(unlocked[mode] && unlocked[mode][d.tier])
+    })) : [];
+  }
+
+  /* ═══ STATS ═══ */
+  function median(arr) {
+    if (!arr.length) return 0;
+    const s = arr.slice().sort((a, b) => a - b);
+    const m = Math.floor(s.length / 2);
+    return s.length % 2 ? s[m] : Math.round((s[m - 1] + s[m]) / 2);
+  }
+
+  function stdDev(arr) {
+    if (arr.length < 2) return 0;
+    const mean = arr.reduce((a, b) => a + b, 0) / arr.length;
+    const v = arr.reduce((a, b) => a + (b - mean) * (b - mean), 0) / arr.length;
+    return Math.round(Math.sqrt(v));
+  }
+
+  function rcs(correct, rts) {
+    const sum = rts.reduce((a, b) => a + b, 0);
+    if (sum === 0) return 0;
+    return parseFloat((correct / (sum / 1000)).toFixed(2));
+  }
+
+  function zScore(p) {
+    if (p <= 0) return -5;
+    if (p >= 1) return 5;
+    const c0 = 2.515517, c1 = 0.802853, c2 = 0.010328;
+    const d1 = 1.432788, d2 = 0.189269, d3 = 0.001308;
+    let t, z;
+    if (p < 0.5) {
+      t = Math.sqrt(-2 * Math.log(p));
+      z = -(t - (c0 + c1 * t + c2 * t * t) / (1 + d1 * t + d2 * t * t + d3 * t * t * t));
+    } else {
+      t = Math.sqrt(-2 * Math.log(1 - p));
+      z = (t - (c0 + c1 * t + c2 * t * t) / (1 + d1 * t + d2 * t * t + d3 * t * t * t));
+    }
+    return z;
+  }
+
+  function dPrime(hits, misses, falseAlarms, correctRejections) {
+    const hitRate = Math.max(0.01, Math.min(0.99, hits / Math.max(1, hits + misses)));
+    const faRate = Math.max(0.01, Math.min(0.99, falseAlarms / Math.max(1, falseAlarms + correctRejections)));
+    return parseFloat((zScore(hitRate) - zScore(faRate)).toFixed(2));
+  }
+
+  /* ═══ INSIGHTS ═══ */
+  function generateInsights(s) {
+    const out = [];
+
+    if (s.dPrime != null) {
+      if (s.dPrime >= 3) out.push('Excellent working memory — d\' over 3.0.');
+      else if (s.dPrime < 1) out.push('Low d\' — working memory load is exceeding capacity.');
+    }
+
+    if (s.maxNLevel >= 4) out.push('Reached ' + s.maxNLevel + '-back — exceptional span.');
+    else if (s.maxNLevel > 0 && s.maxNLevel < 2) out.push('Still at 1-back — practice to expand span.');
+
+    if (s.medianRT > 0 && s.medianRT < 400 && s.accuracy >= 90) out.push('Fast AND accurate — automatic matching.');
+    else if (s.medianRT > 900) out.push('Slower responses — the memory trace is fading.');
+
+    if (s.isNewPB) out.push('New personal best this session!');
+
+    return out.slice(0, 3);
+  }
+
+  /* ═══ CHART ═══ */
+  function renderChart(container, sessions, metric) {
+    if (!container) return;
+    if (!sessions || sessions.length < 2) {
+      container.innerHTML = '<div style="color:var(--t3);font-family:var(--f-m);font-size:11px;text-align:center;padding:30px 0;">Play 2+ sessions to see progress</div>';
+      return;
+    }
+
+    const W = 600, H = 100, PAD = 10;
+    const vals = sessions.map(s => s[metric]).filter(v => v != null && v > 0);
+    if (vals.length < 2) { container.innerHTML = ''; return; }
+
+    const min = Math.min.apply(null, vals);
+    const max = Math.max.apply(null, vals);
+    const range = max - min || 1;
+
+    const pts = vals.map((v, i) => [
+      PAD + (i / (vals.length - 1)) * (W - PAD * 2),
+      H - PAD - ((v - min) / range) * (H - PAD * 2)
+    ]);
+
+    const path = pts.map((p, i) => (i === 0 ? 'M' : 'L') + p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ');
+    const dots = pts.map(p => '<circle cx="' + p[0].toFixed(1) + '" cy="' + p[1].toFixed(1) + '" r="2.5" fill="#00EEFF"/>').join('');
+    const color = metric === 'medianRT' ? '#2EC4B6' : metric === 'accuracy' ? '#00FF96' : metric === 'maxNLevel' ? '#9D4EDD' : '#00EEFF';
+
+    container.innerHTML = '<svg viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none">' +
+      '<path d="' + path + '" fill="none" stroke="' + color + '" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>' +
+      dots + '</svg>';
+  }
+
+  /* ═══ RESET ═══ */
+  function resetAll() {
+    safeSet(KEYS.PB, {
+      bestAccuracy: 0, bestMedianRT: 99999, bestRCS: 0,
+      bestDPrime: 0, bestNLevel: 0, updatedAt: null
+    });
+    safeSet(KEYS.HISTORY, []);
+    safeSet(KEYS.DAILY, {});
+    safeSet(KEYS.BADGES, {});
+    safeSet(KEYS.MISSIONS, null);
+  }
+
+  window.NBackHelpers = {
+    getPB, checkAndUpdatePB,
+    getHistory, addToHistory, getRecentSessions,
+    getTodayKey, isTodayDone, markTodayDone,
+    getTodayMissions, updateMissionProgress,
+    getSettings, saveSettings, applySettingsToDOM,
+    getBadges, checkAndUnlockBadges, getModeBadges,
+    resetAll,
+    median, stdDev, rcs, dPrime, zScore,
+    generateInsights, renderChart
+  };
+})();

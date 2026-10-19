@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>FLASH — Error UI Demo</title>
+<script>
+try {
+  var t = localStorage.getItem('flash.theme');
+  if (t !== 'dark' && t !== 'light') t = 'light';
+  document.documentElement.dataset.theme = t;
+} catch(e){}
+</script>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/modules/error-ui.css">
+<style>
+  body { padding: 32px 24px; max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 20px; margin-bottom: 8px; }
+  h2 { font-size: 13px; margin: 32px 0 12px; color: var(--tx-mu); letter-spacing: .08em; text-transform: uppercase; }
+  .demo-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  .demo-card {
+    padding: 16px;
+    border: 1px solid var(--ln);
+    border-radius: 10px;
+    background: var(--pn);
+  }
+  .demo-card h3 { font-size: 12px; margin: 0 0 10px; color: var(--tx-mu); letter-spacing: .05em; text-transform: uppercase; font-weight: 600; }
+  .demo-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 500;
+    background: var(--ac);
+    color: #fff;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    margin: 2px;
+  }
+  .demo-btn.ghost { background: transparent; color: var(--tx); border: 1px solid var(--ln); }
+  .demo-actions { margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<h1>FLASH — Error UI Preview</h1>
+<p style="color:var(--tx-mu);font-size:13px;">Preview every error state · click to interact</p>
+
+<div class="demo-actions">
+  <button class="demo-btn" onclick="document.documentElement.dataset.theme='light'">Light</button>
+  <button class="demo-btn ghost" onclick="document.documentElement.dataset.theme='dark'">Dark</button>
+  <button class="demo-btn ghost" onclick="document.documentElement.lang='en';document.documentElement.dir='ltr'">EN</button>
+  <button class="demo-btn ghost" onclick="document.documentElement.lang='ar';document.documentElement.dir='rtl'">AR</button>
+</div>
+
+<h2>Toasts</h2>
+<div class="demo-grid">
+  <div class="demo-card"><h3>Info</h3>
+    <button class="demo-btn" onclick="FLASH_UI.showToast({kind:'info',title:'Heads up',message:'Your session will sync in the background.'})">Show</button></div>
+  <div class="demo-card"><h3>Success</h3>
+    <button class="demo-btn" onclick="FLASH_UI.showToast({kind:'success',title:'Saved',message:'Session result is safe.'})">Show</button></div>
+  <div class="demo-card"><h3>Warning</h3>
+    <button class="demo-btn" onclick="FLASH_UI.showToast({kind:'warning',title:'Offline',message:'Saved locally, will sync when online.'})">Show</button></div>
+  <div class="demo-card"><h3>Error</h3>
+    <button class="demo-btn" onclick="FLASH_UI.showToast({kind:'error',title:'Connection issue',message:'Could not reach the server.'})">Show</button></div>
+</div>
+
+<h2>Banner</h2>
+<div class="demo-grid">
+  <div class="demo-card"><h3>Offline</h3>
+    <button class="demo-btn" onclick="FLASH_UI.showBanner({kind:'offline',message:'You are offline. Progress is saved locally.',actionLabel:'Retry',onAction:()=>alert('retry')})">Show</button></div>
+  <div class="demo-card"><h3>Error</h3>
+    <button class="demo-btn" onclick="FLASH_UI.showBanner({kind:'error',message:'Backend is not responding.',actionLabel:'Retry',onAction:()=>alert('retry')})">Show</button></div>
+  <div class="demo-card"><h3>Hide</h3>
+    <button class="demo-btn ghost" onclick="FLASH_UI.hideBanner()">Hide</button></div>
+</div>
+
+<h2>Modal</h2>
+<div class="demo-grid">
+  <div class="demo-card"><h3>Error with Retry</h3>
+    <button class="demo-btn" onclick="FLASH_UI.showModal({title:'Session could not be saved',body:'We could not verify that your last session was recorded. You can retry now or keep training — we will retry automatically.',retryLabel:'Retry now',onRetry:()=>alert('retrying'),errorId:'err_a1b2c3'})">Show</button></div>
+  <div class="demo-card"><h3>Simple</h3>
+    <button class="demo-btn" onclick="FLASH_UI.showModal({title:'You are offline',body:'Please check your connection and try again.'})">Show</button></div>
+</div>
+
+<h2>Empty / Skeleton</h2>
+<div class="demo-grid">
+  <div class="demo-card">
+    <h3>Empty State</h3>
+    <div id="demo-empty"></div>
+  </div>
+  <div class="demo-card">
+    <h3>Skeleton</h3>
+    <div id="demo-skeleton"></div>
+  </div>
+</div>
+
+<h2>Save Status Pills</h2>
+<div class="demo-grid">
+  <div class="demo-card"><h3>Saved</h3><div id="pill-saved"></div></div>
+  <div class="demo-card"><h3>Syncing</h3><div id="pill-pending"></div></div>
+  <div class="demo-card"><h3>Failed</h3><div id="pill-failed"></div></div>
+</div>
+
+<h2>Inline (form field)</h2>
+<div class="demo-grid">
+  <div class="demo-card">
+    <h3>Email field</h3>
+    <input type="email" id="demo-email" placeholder="you@example.com" style="width:100%;padding:10px;border:1px solid var(--ln);border-radius:8px;background:transparent;color:var(--tx);font:inherit;">
+    <button class="demo-btn" style="margin-top:8px;" onclick="FLASH_UI.setInlineError(document.getElementById('demo-email'),'Please enter a valid email.')">Show error</button>
+    <button class="demo-btn ghost" style="margin-top:8px;" onclick="FLASH_UI.setInlineError(document.getElementById('demo-email'),null)">Clear</button>
+  </div>
+</div>
+
+<h2>Full-Page Errors</h2>
+<div class="demo-grid">
+  <div class="demo-card"><h3>404</h3>
+    <button class="demo-btn" onclick="location.href='error.html?code=404&kind=info'">Open</button></div>
+  <div class="demo-card"><h3>401</h3>
+    <button class="demo-btn" onclick="location.href='error.html?code=401&kind=warning'">Open</button></div>
+  <div class="demo-card"><h3>429</h3>
+    <button class="demo-btn" onclick="location.href='error.html?code=429&kind=warning'">Open</button></div>
+  <div class="demo-card"><h3>500</h3>
+    <button class="demo-btn" onclick="location.href='error.html?code=500&kind=error&ref=err_8a3f12'">Open</button></div>
+  <div class="demo-card"><h3>503 (debug)</h3>
+    <button class="demo-btn" onclick="location.href='error.html?code=503&kind=error&debug=1&ref=err_test123'">Open</button></div>
+</div>
+
+<script src="js/lib/errors.js"></script>
+<script src="js/lib/safe-fetch.js"></script>
+<script src="js/modules/error-ui.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  FLASH_UI.renderEmpty(document.getElementById('demo-empty'), {
+    title: 'No sessions yet',
+    message: 'Play your first session to see it here.',
+    actionLabel: 'Start training',
+    onAction: () => alert('start')
+  });
+  FLASH_UI.renderSkeleton(document.getElementById('demo-skeleton'), { lines: 3 });
+  FLASH_UI.setSaveStatus(document.getElementById('pill-saved'), 'saved');
+  FLASH_UI.setSaveStatus(document.getElementById('pill-pending'), 'pending');
+  FLASH_UI.setSaveStatus(document.getElementById('pill-failed'), 'failed');
+});
+</script>
+
+</body>
+</html>

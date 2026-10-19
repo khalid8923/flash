@@ -1,0 +1,33 @@
+{
+  "id": "vocabulary-elite",
+  "name": "Vocabulary Elite",
+  "domain": "language",
+  "icon": "📖",
+  "description": "Synonym matching — WAIS-IV Vocabulary (Wechsler 2008)",
+  "difficulty": 3,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "medianRT", "rtv", "rcs", "maxStreak"],
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "tiers": {
+    "easy": 10,
+    "medium": 10,
+    "hard": 10
+  },
+  "features": [
+    "shared-stages",
+    "shared-settings",
+    "shared-i18n",
+    "missions",
+    "badges",
+    "insights",
+    "history-chart",
+    "personal-best",
+    "postmessage",
+    "back-button",
+    "accessibility",
+    "30-word-bank",
+    "3-tier-difficulty",
+    "missed-words-tracking",
+    "keyboard-input"
+  ]
+}

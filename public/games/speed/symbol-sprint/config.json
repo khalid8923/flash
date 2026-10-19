@@ -1,0 +1,20 @@
+{
+  "id": "symbol-sprint",
+  "name": "Symbol Sprint",
+  "domain": "speed",
+  "icon": "🔍",
+  "description": "Visual search (Treisman & Gelade 1980)",
+  "difficulty": 4,
+  "maxLevel": 15,
+  "metrics": [
+    "maxLevel",
+    "accuracy",
+    "medianRT",
+    "rtv",
+    "rcs",
+    "searchSlope",
+    "avgFeatureRT",
+    "avgConjunctionRT",
+    "maxStreak"
+  ]
+}

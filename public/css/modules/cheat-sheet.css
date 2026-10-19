@@ -1,0 +1,111 @@
+/* =========================================================
+   MODULE - Keyboard Cheat Sheet
+   Overlay showing all shortcuts. Open with "?" key.
+   ========================================================= */
+.cheat-overlay{
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, var(--bg) 80%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 700;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+.cheat-overlay.on{ display: flex; }
+
+.cheat-box{
+  background: var(--pn);
+  border: 1px solid var(--ln-strong);
+  border-radius: var(--r-3);
+  width: min(680px, 96vw);
+  max-height: 84vh;
+  overflow: auto;
+  padding: 24px;
+  box-shadow: 0 30px 80px -30px rgba(0,0,0,.5);
+  transform: translateY(8px) scale(.98);
+  opacity: 0;
+  transition: transform 260ms var(--e-out),
+              opacity 260ms var(--e-out);
+}
+.cheat-overlay.on .cheat-box{
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.cheat-hdr{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 20px;
+  gap: 12px;
+}
+.cheat-hdr h2{
+  font-size: 18px;
+}
+.cheat-close{
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-2);
+  color: var(--tx-mu);
+  font-size: 22px;
+  line-height: 1;
+}
+.cheat-close:hover{
+  background: var(--bg-alt);
+  color: var(--tx);
+}
+
+.cheat-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+@media (max-width: 640px){
+  .cheat-grid{ grid-template-columns: 1fr; }
+}
+
+.cheat-section h3{
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--tx-mu);
+  margin-bottom: 10px;
+}
+
+.cheat-row{
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--ln);
+  font-size: 13px;
+}
+.cheat-row:last-child{ border-bottom: 0; }
+
+.cheat-keys{
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+kbd{
+  font: 500 11px var(--font-mono);
+  color: var(--tx);
+  background: var(--bg-alt);
+  border: 1px solid var(--ln);
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 2px 7px;
+  min-width: 22px;
+  text-align: center;
+  display: inline-block;
+}
+.cheat-row .plus{
+  color: var(--tx-mu);
+  font-size: 10px;
+}

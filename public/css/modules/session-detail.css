@@ -1,0 +1,142 @@
+/* =========================================================
+   MODULE - Session Detail Modal
+   Click a session row to see the full trial breakdown.
+   ========================================================= */
+.sdm-overlay{
+  position: fixed;
+  inset: 0;
+  background: color-mix(in srgb, var(--bg) 70%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 800;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.sdm-overlay.on{ display: flex; }
+
+.sdm-box{
+  width: min(560px, 96vw);
+  max-height: 84vh;
+  overflow: auto;
+  background: var(--pn);
+  border: 1px solid var(--ln-strong);
+  border-radius: var(--r-3);
+  padding: 24px;
+  box-shadow: 0 30px 80px -30px rgba(0,0,0,.5);
+  transform: translateY(8px) scale(.98);
+  opacity: 0;
+  transition: transform 260ms var(--e-out),
+              opacity  260ms var(--e-out);
+}
+.sdm-overlay.on .sdm-box{
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.sdm-hdr{
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.sdm-title{
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 18px;
+  font-weight: 600;
+}
+.sdm-dot{
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--dc);
+  flex: none;
+}
+.sdm-sub{
+  font-size: 12px;
+  color: var(--tx-mu);
+  margin-top: 4px;
+}
+.sdm-close{
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  border-radius: var(--r-2);
+  color: var(--tx-mu);
+  font-size: 22px;
+  line-height: 1;
+  flex: none;
+}
+.sdm-close:hover{ background: var(--bg-alt); color: var(--tx); }
+
+.sdm-kv{
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.sdm-kv .cell{
+  background: var(--bg-alt);
+  border: 1px solid var(--ln);
+  border-radius: var(--r-2);
+  padding: 12px 14px;
+}
+.sdm-kv .cell .lbl{
+  font-size: 10px;
+  color: var(--tx-mu);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: 6px;
+}
+.sdm-kv .cell .val{
+  font-size: 20px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.sdm-kv .cell .val small{
+  font-size: 12px;
+  color: var(--tx-mu);
+  font-weight: 400;
+  margin-inline-start: 3px;
+}
+
+.sdm-chart{
+  height: 100px;
+  border: 1px solid var(--ln);
+  border-radius: var(--r-2);
+  padding: 12px;
+  background: var(--bg-alt);
+  margin-bottom: 16px;
+}
+.sdm-chart svg{
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.sdm-chart path{
+  fill: none;
+  stroke: var(--dc);
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.sdm-badge{
+  display: inline-block;
+  padding: 3px 10px;
+  border: 1px solid var(--dc);
+  border-radius: 20px;
+  color: var(--dc);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+@media (max-width: 560px){
+  .sdm-kv{ grid-template-columns: repeat(2, 1fr); }
+}

@@ -1,0 +1,26 @@
+{
+  "id": "mental-rotation",
+  "name": "Mental Rotation",
+  "domain": "spatial",
+  "icon": "🔄",
+  "description": "Shepard & Metzler — 3D object rotation",
+  "difficulty": 5,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "medianRT", "rtv", "rcs", "maxStreak", "sameAccuracy", "differentAccuracy"],
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "features": [
+    "shared-stages",
+    "shared-settings",
+    "shared-i18n",
+    "missions",
+    "badges",
+    "insights",
+    "history-chart",
+    "personal-best",
+    "postmessage",
+    "back-button",
+    "accessibility",
+    "voxel-3d-rendering",
+    "isometric-projection"
+  ]
+}

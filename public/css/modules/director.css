@@ -1,0 +1,24 @@
+/* FLASH - Director Mode */
+.dir-block { margin-top: 12px; padding: 14px; border: 1px solid color-mix(in srgb, var(--ac) 25%, var(--ln)); background: color-mix(in srgb, var(--ac) 4%, var(--pn)); border-radius: 10px; }
+.dir-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.dir-icon { width: 26px; height: 26px; border-radius: 8px; background: linear-gradient(135deg, var(--ac), color-mix(in srgb, var(--ac) 60%, #000)); display: grid; place-items: center; color: #fff; flex-shrink: 0; }
+.dir-icon svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.dir-title { font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--tx); }
+.dir-sub { font-size: 11px; color: var(--tx-mu); margin-top: 2px; }
+.dir-body { font-size: 12px; line-height: 1.5; color: var(--tx-mu); margin-bottom: 12px; }
+.dir-cta { width: 100%; padding: 10px 16px; font-size: 13px; font-weight: 600; color: #fff; background: var(--ac); border: 0; border-radius: 9px; cursor: pointer; transition: filter 160ms, transform 100ms; }
+.dir-cta:hover { filter: brightness(1.08); }
+.dir-cta:active { transform: scale(.98); }
+.dir-cta:disabled { opacity: .5; cursor: not-allowed; }
+.dir-modal { position: fixed; inset: 0; z-index: 9800; background: color-mix(in srgb, #000 55%, transparent); display: grid; place-items: center; padding: 24px; }
+.dir-modal-inner { width: 100%; max-width: 520px; background: var(--pn); color: var(--tx); border: 1px solid var(--ln); border-radius: 14px; padding: 24px; }
+.dir-modal-h { font-size: 16px; font-weight: 700; margin: 0 0 4px; }
+.dir-modal-sub { font-size: 12px; color: var(--tx-mu); margin: 0 0 20px; }
+.dir-round { padding: 12px; border: 1px solid var(--ln); border-radius: 8px; margin-bottom: 8px; font-size: 13px; }
+.dir-round-num { font-size: 10px; color: var(--ac); font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin-bottom: 4px; }
+.dir-round-title { font-weight: 600; margin-bottom: 2px; }
+.dir-round-desc { font-size: 12px; color: var(--tx-mu); }
+.dir-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+.dir-btn { padding: 9px 18px; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; border: 0; }
+.dir-btn.primary { background: var(--ac); color: #fff; }
+.dir-btn.secondary { background: transparent; color: var(--tx); border: 1px solid var(--ln); }

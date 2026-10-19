@@ -1,0 +1,20 @@
+.missions-block {
+  background: var(--pn); border: 1px solid var(--ln); border-radius: 8px;
+  padding: 20px; margin-top: 20px;
+}
+.missions-block h3 { font-size: 16px; margin-bottom: 16px; color: var(--tx); }
+.mission-item {
+  display: flex; align-items: center; gap: 12px; padding: 12px 0;
+  border-bottom: 1px solid var(--ln);
+}
+.mission-item:last-child { border-bottom: none; }
+.m-check {
+  width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--ln);
+  display: flex; align-items: center; justify-content: center; font-size: 12px;
+  color: transparent;
+}
+.mission-item:not(.incomplete) .m-check {
+  background: var(--ac); border-color: var(--ac); color: var(--on-ac);
+}
+.m-text { flex: 1; font-size: 14px; color: var(--tx); }
+.m-xp { font-size: 12px; font-weight: 600; color: var(--ac); }

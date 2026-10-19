@@ -1,0 +1,10 @@
+{
+  "id": "task-switching",
+  "name": "Task Switching",
+  "domain": "attention",
+  "icon": "🔀",
+  "description": "Rapidly adapt to changing classification rules",
+  "difficulty": 5,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "avgResponseTime", "switchCost", "maxStreak"]
+}

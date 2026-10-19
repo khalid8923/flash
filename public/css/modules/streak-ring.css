@@ -1,0 +1,48 @@
+/* ═══════════════════════════════════════════════════════════
+   MODULE — Streak Ring
+   A ring around the streak number that depletes as the day
+   progresses. Fills at midnight, empties by end of day.
+   ═══════════════════════════════════════════════════════════ */
+.streak-ring-wrap{
+  display: inline-grid;
+  place-items: center;
+  position: relative;
+  width: 48px;
+  height: 48px;
+  margin-inline-end: 8px;
+  vertical-align: middle;
+}
+.streak-ring-wrap svg{
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+.streak-ring-track{
+  fill: none;
+  stroke: var(--ln);
+  stroke-width: 2.5;
+}
+.streak-ring-fill{
+  fill: none;
+  stroke: var(--ac);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100; /* set by JS */
+  transition: stroke-dashoffset 1s linear;
+}
+.streak-ring-num{
+  position: relative;
+  font: 600 16px var(--font-ui);
+  font-variant-numeric: tabular-nums;
+  color: var(--tx);
+  line-height: 1;
+}
+.streak-wrap{
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}

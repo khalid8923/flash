@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Digit Span — FLASH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../../shared/tokens.css">
+<link rel="stylesheet" href="../../../shared/game-theme.css">
+<link rel="stylesheet" href="game.css">
+</head>
+<body>
+
+<div id="game-root">
+  <header class="g-header">
+    <div class="g-logo">
+      <span class="g-logo-icon">⚡</span>
+      <span class="g-logo-text">FLASH</span>
+    </div>
+    <div class="g-meta">
+      <span class="g-meta-item">
+        <span class="g-meta-label">LEVEL</span>
+        <span class="g-meta-value" id="level-display">1</span>
+      </span>
+      <span class="g-meta-item">
+        <span class="g-meta-label">SPAN</span>
+        <span class="g-meta-value" id="span-display">0</span>
+      </span>
+      <span class="g-meta-item">
+        <span class="g-meta-label">LIVES</span>
+        <span class="g-meta-value" id="lives-display">—</span>
+      </span>
+    </div>
+    <button class="g-settings-btn" id="settings-btn" aria-label="Settings">⚙</button>
+  </header>
+
+  <main id="stage" class="stage" data-phase="idle">
+    <div class="stage-inner">
+      <div id="phase-content"></div>
+    </div>
+  </main>
+
+  <footer class="g-footer">
+    <div class="hint-bar"><div class="hint-progress" id="hint-progress"></div></div>
+  </footer>
+</div>
+
+<script src="../../../shared/i18n.js"></script>
+<script src="../../../shared/settings.js"></script>
+<script src="../../../shared/flash-stages.js"></script>
+<script src="digit-span-stages.js"></script>
+<script src="digit-span-helpers.js"></script>
+<script src="digit-span-sounds.js"></script>
+<script src="digit-span-extra-modes.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "id": "go-no-go",
+  "domain": "attention",
+  "name": { "en": "Go / No-Go", "ar": "انطلق / توقّف" },
+  "paradigm": "Response inhibition (Go/No-Go) scored with signal detection theory: d' and criterion c",
+  "citation": "Drewe, E. A. (1975). Go-no go learning after frontal lobe lesions in humans. Cortex, 11(1), 8-16. Green, D. M., & Swets, J. A. (1966). Signal detection theory and psychophysics. Wiley.",
+  "stimulus": "Gauge needle: on zero = Go, deflected = No-Go",
+  "levers": { "pGo": [0.70, 0.87], "deflectionDeg": [44, 10], "exposureMs": [700, 308], "fixationMs": [900, 410] },
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "randomness": "seedrandom(seed); 3 draws per trial in fixed order: isGo, side, jitter",
+  "note": "Documentation only. Runtime reads CONFIG in game.js and the mode tables in go-no-go-extra-modes.js."
+}

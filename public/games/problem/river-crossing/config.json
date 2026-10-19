@@ -1,0 +1,25 @@
+{
+  "id": "river-crossing",
+  "name": "River Crossing",
+  "domain": "problem",
+  "icon": "🌊",
+  "description": "Constraint satisfaction — Simon & Newell (1971)",
+  "difficulty": 4,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "medianRT", "rcs", "maxStreak", "optimalRate"],
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "features": [
+    "shared-stages",
+    "shared-settings",
+    "shared-i18n",
+    "missions",
+    "badges",
+    "insights",
+    "history-chart",
+    "personal-best",
+    "postmessage",
+    "back-button",
+    "accessibility",
+    "constraint-solver"
+  ]
+}

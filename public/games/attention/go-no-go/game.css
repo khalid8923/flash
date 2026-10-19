@@ -1,0 +1,97 @@
+/* game.css — "Stylus": chart-recorder paper, one instrument face, two pens (cobalt = signal, crimson = error).
+   Square corners, no cards. Logical properties throughout so Arabic (rtl) flows natively.
+   Template: change the tokens and the gauge/tape blocks; keep the phase-visibility rules. */
+:root{--paper:#dbe5da;--ink:#12212c;--blue:#1b4fb0;--red:#b3122e;--grid:#a9bfae;
+  --f:"DIN Alternate","Bahnschrift","Roboto Condensed","Arial Narrow","Segoe UI","Geeza Pro","Noto Naskh Arabic",Tahoma,sans-serif}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{background:var(--paper);color:var(--ink);font:17px/1.4 var(--f);font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+#app{max-width:600px;min-height:100%;margin:0 auto;padding:12px 16px 20px;display:flex;flex-direction:column;gap:14px}
+
+/* readout bar */
+.bar{display:flex;align-items:center;gap:18px;padding-bottom:6px;border-bottom:2px solid var(--ink);font-size:14px}
+.bar button{text-decoration:underline;text-underline-offset:4px}
+#x{margin-inline-start:auto}
+[data-phase=idle] #cfg{margin-inline-start:auto}
+[data-phase=idle] #x,[data-phase=idle] #lvl,[data-phase=idle] #lives{display:none}
+#lives i{display:inline-block;width:7px;height:15px;margin-inline-start:3px;vertical-align:middle;background:var(--ink)}
+#lives i.off{background:none;box-shadow:inset 0 0 0 1px var(--ink)}
+#lvl.step{animation:st .4s steps(2)}
+@keyframes st{50%{background:var(--ink);color:var(--paper)}}
+
+/* phase visibility */
+#idle,#play,#end{display:none}
+[data-phase=idle] #idle,[data-phase=end] #end{display:block}
+[data-phase=count] #play,[data-phase=fix] #play,[data-phase=stim] #play,[data-phase=resp] #play,[data-phase=fb] #play{display:flex}
+[data-phase=idle] .tape{display:none}
+
+/* idle: ledger of modes */
+h1{font-size:46px;line-height:1;font-weight:700;letter-spacing:-.01em}
+.cite{margin-top:4px;font-size:13px;opacity:.7}
+.rule{margin:12px 0 6px;max-width:40ch}
+.notch{display:flex;align-items:baseline;gap:14px;width:100%;padding:12px 0;border-bottom:1px solid var(--ink);text-align:start}
+.notch::before{content:"";flex:none;align-self:center;width:24px;border-top:3px solid var(--ink);transition:width .18s steps(4)}
+.notch:hover::before,.notch:focus-visible::before{width:52px;border-color:var(--blue)}
+.notch b{font-size:23px;font-weight:600}
+.notch small{margin-inline-start:auto;font-size:13px;opacity:.75}
+.notch[aria-disabled=true]{opacity:.4;cursor:not-allowed}
+.notch[aria-disabled=true]::before{width:6px}
+.row{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:14px}
+#log{display:block;width:100%;height:auto;margin-top:10px;border-block:1px solid var(--ink)}
+#log .ref{stroke:var(--blue);stroke-width:.7;stroke-dasharray:3 3}
+#log .trace{fill:none;stroke:var(--ink);stroke-width:1.2}
+#log circle{fill:var(--ink)}
+#log circle.alt{fill:var(--paper);stroke:var(--ink)}
+#stages{display:flex;flex-wrap:wrap;gap:4px;margin-top:10px}
+.stg{padding:3px 8px 0;border-top:3px solid var(--grid);font-size:12px;opacity:.55}
+.stg.on{border-color:var(--blue);opacity:1}
+
+/* play: gauge, breathing baseline, marginal note */
+#play{flex:1;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+#gauge{width:min(74vw,320px);height:auto;touch-action:manipulation}
+.ring{fill:none;stroke:var(--ink);stroke-width:2;stroke-dasharray:100}
+#ticks line{stroke:var(--ink);stroke-width:1.2}
+.zero{fill:var(--blue)}
+.fix{fill:none;stroke:var(--ink);stroke-width:1;opacity:0}
+[data-phase=fix] .fix{opacity:.6}
+#needle{opacity:0;stroke:var(--ink);stroke-width:3.5}
+#needle circle{fill:var(--ink);stroke:none}
+[data-phase=stim] #needle{opacity:1}
+#count{font-size:60px;font-weight:700;fill:var(--ink)}
+[data-fb=ok] .ring{stroke:var(--blue);stroke-width:5}
+[data-fb=bad] .ring{stroke:var(--red);stroke-width:5}
+.breath{width:55%;height:0;border:0;border-top:1px solid var(--ink);animation:br 6s ease-in-out infinite}
+@keyframes br{50%{transform:scaleX(.8);opacity:.4}}
+.note{min-height:26px;font-size:16px;color:var(--blue)}
+.w{display:inline-block;padding-inline-start:8px;border-inline-start:2px solid var(--blue);animation:wr .7s steps(14) both}
+@keyframes wr{from{clip-path:inset(0 100% 0 0)}}
+@keyframes wrr{from{clip-path:inset(0 0 0 100%)}}
+[dir=rtl] .w{animation-name:wrr}
+
+/* tape: one sprocket hole per trial, inked by outcome; it is the progress, the session and the record */
+.tape{display:flex;align-items:center;height:52px;margin-top:auto;padding-inline:4px;border-block:2px solid var(--ink);
+  background:linear-gradient(var(--grid),var(--grid)) 0 50%/100% 1px no-repeat}
+.tape i{flex:1 1 0;min-width:4px;max-width:14px;height:100%;position:relative}
+.tape i::before{content:"";position:absolute;inset-inline:22%;top:calc(50% - 3px);height:6px;border:1px solid var(--ink);border-radius:50%;background:var(--paper);opacity:.45}
+.tape .now::before{opacity:1;border-width:2px}
+.tape i::after{content:"";position:absolute;inset-inline:36%}
+.tape .hit::after{bottom:50%;height:44%;background:var(--blue)}
+.tape .cr::after{top:calc(50% - 1px);height:2px;inset-inline:8%;background:var(--blue)}
+.tape .fa::after{top:50%;height:44%;background:var(--red)}
+.tape .ms::before{opacity:1;border:2px solid var(--red)}
+
+/* end: torn strip and readout */
+.tear{height:8px;background:radial-gradient(circle,var(--ink) 1.3px,transparent 1.8px) 0 50%/9px 8px repeat-x}
+.big{font-size:72px;line-height:1.1;font-weight:700}
+.big small{margin-inline-start:8px;font-size:16px;font-weight:400}
+.pbm{color:var(--blue);font-weight:600}
+#end dl{display:grid;grid-template-columns:1fr auto;gap:3px 16px;margin:12px 0;padding-top:8px;border-top:1px solid var(--ink);font-size:15px}
+#end dd{text-align:end}
+#end p.tag{margin-top:4px;font-size:14px}
+#again{width:100%;margin-top:12px;padding:12px 0;border-block:3px solid var(--ink);font-size:16px;font-weight:600}
+#again:hover{border-color:var(--blue);color:var(--blue)}
+
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+#app[data-rm=on] *,#app[data-rm=on] *::before{animation:none!important;transition:none!important}

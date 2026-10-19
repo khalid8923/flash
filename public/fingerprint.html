@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>FLASH — Your Fingerprint</title>
+<script>
+try{
+  var t = localStorage.getItem('flash.theme');
+  if (t !== 'dark' && t !== 'light') t = 'light';
+  document.documentElement.dataset.theme = t;
+  var l = localStorage.getItem('flash.lang');
+  if (l !== 'ar' && l !== 'en') l = 'en';
+  document.documentElement.lang = l;
+  document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+}catch(e){}
+</script>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/modules/fingerprint.css">
+</head>
+<body class="fp-page">
+
+<header class="fp-top">
+  <a href="index.html" class="fp-back" aria-label="Back">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    <span id="fp-back-label">Back</span>
+  </a>
+  <span class="fp-mark">FLASH</span>
+  <span class="fp-tag" id="fp-tag">Cognitive Fingerprint</span>
+</header>
+
+<main class="fp-main" id="fp-main">
+  <div class="fp-loading" id="fp-loading">
+    <div class="fp-spinner"></div>
+    <p id="fp-loading-msg">Analyzing your patterns…</p>
+  </div>
+</main>
+
+<script src="js/config.js"></script>
+<script src="js/lib/errors.js"></script>
+<script src="js/lib/safe-fetch.js"></script>
+<script src="js/modules/fingerprint.js"></script>
+</body>
+</html>

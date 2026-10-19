@@ -1,0 +1,25 @@
+{
+  "id": "deduction",
+  "name": "Deduction Engine",
+  "domain": "logic",
+  "icon": "🔍",
+  "description": "Multi-premise inference — Evans (2008)",
+  "difficulty": 5,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "medianRT", "rtv", "rcs", "maxStreak"],
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "features": [
+    "shared-stages",
+    "shared-settings",
+    "shared-i18n",
+    "missions",
+    "badges",
+    "insights",
+    "history-chart",
+    "personal-best",
+    "postmessage",
+    "back-button",
+    "accessibility",
+    "inference-engine"
+  ]
+}

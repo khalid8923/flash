@@ -1,0 +1,69 @@
+/* ═══════════════════════════════════════════════════════════
+   FLASH — Game Theme Bridge v2 (Balanced)
+   ═══════════════════════════════════════════════════════════
+   Maps v6.0 game vars → v2 dashboard tokens.
+   Games auto-follow dashboard theme.
+   ═══════════════════════════════════════════════════════════ */
+
+html[data-theme=light] {
+  /* Legacy vars → Cloud + Rose */
+  --cyan:    #DB2777;                      /* primary accent */
+  --pink:    #BE185D;                      /* deeper */
+  --green:   #10B981;                      /* success */
+  --yellow:  #F59E0B;
+  --red:     #EF4444;
+  --purple:  #8B5CF6;
+  --orange:  #F97316;
+
+  --grad:     linear-gradient(135deg, #DB2777 0%, #BE185D 100%);
+  --grad-rev: linear-gradient(135deg, #BE185D 0%, #DB2777 100%);
+
+  --bg:      #F7F7F8;                      /* neutral */
+  --bg-1:    #FFFFFF;
+  --bg-2:    #EFEFF1;
+
+  --t1:      #18181B;                      /* true dark text */
+  --t2:      #71717A;                      /* gray */
+  --t3:      #A1A1AA;                      /* light gray */
+
+  --f-d:     system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-m:     ui-monospace, 'SF Mono', Consolas, monospace;
+  --f-b:     system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+html[data-theme=dark] {
+  /* Legacy vars → Obsidian + Emerald */
+  --cyan:    #10B981;
+  --pink:    #34D399;
+  --green:   #10B981;
+  --yellow:  #FBBF24;
+  --red:     #F87171;
+  --purple:  #A78BFA;
+  --orange:  #FB923C;
+
+  --grad:     linear-gradient(135deg, #10B981 0%, #34D399 100%);
+  --grad-rev: linear-gradient(135deg, #34D399 0%, #10B981 100%);
+
+  --bg:      #0A0A0B;                      /* near-black */
+  --bg-1:    #131316;                      /* panels */
+  --bg-2:    #17171A;
+
+  --t1:      #EDEDEE;                      /* off-white, not green */
+  --t2:      #9A9AA0;                      /* gray */
+  --t3:      #5A5A60;                      /* dim gray */
+
+  --f-d:     system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-m:     ui-monospace, 'SF Mono', Consolas, monospace;
+  --f-b:     system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* Body adopts theme */
+html, body {
+  background: var(--bg);
+  color: var(--t1);
+}
+html { transition: background 240ms ease, color 240ms ease; }
+
+/* RTL support */
+html[dir=rtl] body { direction: rtl; }
+html[dir=rtl] .g-header { direction: rtl; }

@@ -1,0 +1,120 @@
+/* =========================================================
+   MODULE - Domain Games
+   Game cards inside the split-pane inspector.
+   ========================================================= */
+.sp-games{
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+.sp-game{
+  display: grid;
+  grid-template-columns: 42px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  background: var(--pn);
+  border: 1px solid var(--ln);
+  border-radius: var(--r-2);
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: border-color var(--t-fast) var(--e-std),
+              background var(--t-fast) var(--e-std),
+              transform var(--t-fast) var(--e-out);
+  position: relative;
+  overflow: hidden;
+}
+.sp-game::before{
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 3px;
+  background: var(--dc);
+  opacity: 0;
+  transition: opacity var(--t-fast) var(--e-std);
+}
+.sp-game:hover{
+  background: color-mix(in srgb, var(--dc) 6%, var(--pn));
+  border-color: color-mix(in srgb, var(--dc) 35%, var(--ln));
+  transform: translateX(calc(var(--dir) * 2px));
+}
+.sp-game:hover::before{ opacity: 1; }
+
+.sp-game-icon{
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  border-radius: var(--r-2);
+  background: color-mix(in srgb, var(--dc) 12%, var(--bg-alt));
+  flex: none;
+}
+
+.sp-game-body{
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+.sp-game-name{
+  font-size: 14px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sp-game-desc{
+  font-size: 11px;
+  color: var(--tx-mu);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sp-game-play{
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-2);
+  color: var(--dc);
+  background: color-mix(in srgb, var(--dc) 10%, transparent);
+  font-size: 14px;
+  flex: none;
+  transition: transform var(--t-fast) var(--e-out),
+              background var(--t-fast) var(--e-std);
+}
+.sp-game:hover .sp-game-play{
+  background: var(--dc);
+  color: var(--on-ac);
+  transform: translateX(calc(var(--dir) * 3px));
+}
+[dir=rtl] .sp-game:hover .sp-game-play{
+  transform: translateX(calc(var(--dir) * 3px)) scaleX(-1);
+}
+[dir=rtl] .sp-game-play{ transform: scaleX(-1); }
+
+.sp-game-badge{
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  font-size: 9px;
+  padding: 1px 6px;
+  border-radius: 8px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.sp-game-badge.wip{
+  color: var(--tx-mu);
+  background: var(--ln);
+}
+.sp-game[data-status="wip"]{
+  opacity: .55;
+  cursor: not-allowed;
+  pointer-events: none;
+}

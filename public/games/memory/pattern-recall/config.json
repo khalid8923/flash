@@ -1,0 +1,25 @@
+{
+  "id": "pattern-recall",
+  "name": "Pattern Recall",
+  "domain": "memory",
+  "icon": "🔷",
+  "description": "Sequential visuospatial memory",
+  "difficulty": 4,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "medianRT", "rtv", "rcs", "maxStreak", "maxSequence"],
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "features": [
+    "shared-stages",
+    "shared-settings",
+    "shared-i18n",
+    "missions",
+    "badges",
+    "insights",
+    "history-chart",
+    "personal-best",
+    "postmessage",
+    "back-button",
+    "accessibility",
+    "grid-4x4"
+  ]
+}

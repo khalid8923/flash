@@ -1,10 +1,10 @@
 /* ═══════════════════════════════════════════════════════════
-   FLASH - Player Auth Middleware (R03b)
-   Reads `Authorization: Bearer ses_...`, attaches req.player.
+   FLASH - Player Auth Middleware (Fixed Import)
    ═══════════════════════════════════════════════════════════ */
-
 import type { FastifyRequest, FastifyReply } from 'fastify';
+// FIXED: Correct path is services/auth/auth.js not services/auth.js
 import { verifySession, getPlayer, type AuthedPlayer } from '../services/auth/auth.js';
+import { getOrCreateDemoUser } from '../services/users.js';
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -19,6 +19,21 @@ declare module 'fastify' {
 
 export async function requirePlayer(req: FastifyRequest, reply: FastifyReply): Promise<void> {
   const header = req.headers.authorization;
+  
+  // DEV BYPASS: If no token and in dev, use Demo User
+  if (!header && process.env.NODE_ENV !== 'production') {
+    const demoId = await getOrCreateDemoUser();
+    req.player = { 
+      playerId: demoId, 
+      sessionId: 'demo-session', 
+      email: 'demo@flash.app', 
+      display_name: 'Demo User', 
+      origin: 'demo', 
+      locale: 'en' 
+    };
+    return;
+  }
+
   if (!header || !header.startsWith('Bearer ')) {
     return reply.code(401).send({ error: 'unauthorized' });
   }
@@ -33,7 +48,6 @@ export async function requirePlayer(req: FastifyRequest, reply: FastifyReply): P
   req.player = { ...session, email: user.email, display_name: user.display_name, origin: user.origin, locale: user.locale };
 }
 
-/** Optional auth: attaches req.player if valid, but never 401s. */
 export async function optionalPlayer(req: FastifyRequest): Promise<void> {
   const header = req.headers.authorization;
   if (!header || !header.startsWith('Bearer ')) return;

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Go / No-Go</title>
+<link rel="stylesheet" href="../../../shared/tokens.css">
+<link rel="stylesheet" href="../../../shared/game-theme.css">
+<link rel="stylesheet" href="game.css">
+</head>
+<body>
+<main id="app" data-phase="idle" data-fb="">
+  <header class="bar">
+    <span id="mode-l"></span><span id="lvl"></span><span id="lives" aria-live="polite"></span>
+    <button id="x" data-i="menu"></button><button id="cfg" data-i="settings"></button>
+  </header>
+
+  <section id="idle">
+    <h1 data-i="title"></h1>
+    <p class="cite" data-i="cite"></p>
+    <p class="rule" data-i="rule"></p>
+    <nav id="ledger"></nav>
+    <p id="pb" class="row"></p>
+    <p id="ms" class="row"></p>
+    <svg id="log" viewBox="0 0 300 70" role="img" aria-label="d'"></svg>
+    <div id="stages"></div>
+  </section>
+
+  <section id="play">
+    <svg id="gauge" viewBox="-100 -100 200 200" role="img" aria-label="gauge">
+      <circle id="ring" class="ring" r="95" pathLength="100"/>
+      <g id="ticks"></g>
+      <path class="zero" d="M0-86l-5-9h10z"/>
+      <path class="fix" d="M-8 0h16M0-8v16"/>
+      <g id="needle"><line y1="18" y2="-76"/><circle r="5"/></g>
+      <text id="count" y="20" text-anchor="middle"></text>
+    </svg>
+    <hr class="breath">
+    <p id="note" class="note" aria-live="polite"></p>
+  </section>
+
+  <div id="tape" class="tape"></div>
+
+  <section id="end">
+    <div class="tear"></div>
+    <div id="res"></div>
+    <p id="rc" class="note"></p>
+    <button id="again" data-i="again"></button>
+  </section>
+</main>
+
+<script src="../../../shared/i18n.js"></script>
+<script src="../../../shared/settings.js"></script>
+<script src="../../../shared/flash-stages.js"></script>
+<script src="go-no-go-stages.js"></script>
+<script src="go-no-go-helpers.js"></script>
+<script src="go-no-go-sounds.js"></script>
+<script src="go-no-go-extra-modes.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

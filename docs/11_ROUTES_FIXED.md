@@ -1,0 +1,82 @@
+# Route Registration Check
+
+## Registered (37)
+- `adminAiRoutes`
+- `adminAnalyticsRoutes`
+- `adminAuthRoutes`
+- `adminCatalogRoutes`
+- `adminConsoleRoutes`
+- `adminDemoRoutes`
+- `adminDemoScriptsRoutes`
+- `adminDifficultyRoutes`
+- `adminFlagsRoutes`
+- `adminIntegrityRoutes`
+- `adminJobsRoutes`
+- `adminNormsRoutes`
+- `adminPlatformRoutes`
+- `adminPrivacyRoutes`
+- `adminRegistryRoutes`
+- `adminRetentionRoutes`
+- `aiCoachRoutes`
+- `aiDirectorRoutes`
+- `aiJournalRoutes`
+- `aiPredictionsRoutes`
+- `aiProfileRoutes`
+- `aiRoutes`
+- `aiVariantsRoutes`
+- `aiVoiceRoutes`
+- `authRoutes`
+- `engagement2Routes`
+- `engagementRoutes`
+- `gamesRoutes`
+- `healthRoutes`
+- `meRoutes`
+- `nextRoutes`
+- `planRoutes`
+- `playsRoutes`
+- `profileRoutes`
+- `profileSnapshotRoutes`
+- `sessionsRoutes`
+- `syncRoutes`
+
+## Imported from routes/ (37)
+- `core/health` as healthRoutes
+- `player/auth` as authRoutes
+- `player/plays` as playsRoutes
+- `player/sync` as syncRoutes
+- `player/me` as meRoutes
+- `player/sessions` as sessionsRoutes
+- `core/games` as gamesRoutes
+- `player/profile` as profileRoutes
+- `ai/ai` as aiRoutes
+- `ai/ai-coach` as aiCoachRoutes
+- `ai/ai-profile` as aiProfileRoutes
+- `ai/ai-director` as aiDirectorRoutes
+- `ai/ai-voice` as aiVoiceRoutes
+- `ai/ai-variants` as aiVariantsRoutes
+- `ai/ai-journal` as aiJournalRoutes
+- `ai/ai-predictions` as aiPredictionsRoutes
+- `player/profile-snapshot` as profileSnapshotRoutes
+- `admin/admin-catalog` as adminCatalogRoutes
+- `admin/admin-auth` as adminAuthRoutes
+- `admin/admin-ai` as adminAiRoutes
+- `admin/admin-demo` as adminDemoRoutes
+- `admin/admin-registry` as adminRegistryRoutes
+- `admin/admin-difficulty` as adminDifficultyRoutes
+- `admin/admin-integrity` as adminIntegrityRoutes
+- `admin/admin-norms` as adminNormsRoutes
+- `admin/admin-analytics` as adminAnalyticsRoutes
+- `admin/admin-flags` as adminFlagsRoutes
+- `admin/admin-privacy` as adminPrivacyRoutes
+- `admin/admin-jobs` as adminJobsRoutes
+- `admin/admin-demo-scripts` as adminDemoScriptsRoutes
+- `admin/admin-retention` as adminRetentionRoutes
+- `admin/admin-console` as adminConsoleRoutes
+- `admin/admin-platform` as adminPlatformRoutes
+- `core/next` as nextRoutes
+- `core/plan` as planRoutes
+- `player/engagement` as engagementRoutes
+- `player/engagement-2` as engagement2Routes
+
+## Fingerprint Endpoint Check
+FOUND fingerprint route in ai-profile.ts

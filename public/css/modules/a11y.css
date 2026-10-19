@@ -1,0 +1,67 @@
+/* ============================================================
+   FLASH - Accessibility Enhancements
+   Screen reader announcements, focus management
+   ============================================================ */
+
+/* Screen-reader-only live region (never visible) */
+.flash-sr-announcer {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Focus visible improvements */
+*:focus-visible {
+  outline: 2px solid var(--ac);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+button:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--ac);
+  outline-offset: 2px;
+}
+
+/* Reduce focus outline on mouse click */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Keyboard-only skip link */
+.flash-skip-link {
+  position: absolute;
+  top: -100px;
+  inset-inline-start: 16px;
+  z-index: 10000;
+  padding: 10px 16px;
+  background: var(--ac);
+  color: #fff;
+  font-weight: 600;
+  border-radius: 0 0 8px 8px;
+  transition: top 200ms ease;
+}
+
+.flash-skip-link:focus {
+  top: 0;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: more) {
+  * {
+    border-color: currentColor !important;
+  }
+  .flash-toast {
+    border-width: 2px;
+  }
+  .flash-banner {
+    border-bottom: 2px solid currentColor;
+  }
+}

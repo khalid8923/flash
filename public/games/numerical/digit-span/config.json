@@ -1,0 +1,10 @@
+{
+  "id": "digit-span",
+  "name": "Digit Span",
+  "domain": "numerical",
+  "icon": "📊",
+  "description": "Extend numerical working memory with backward recall",
+  "difficulty": 5,
+  "maxLevel": 12,
+  "metrics": ["maxSpan", "accuracy", "avgDigitTime", "backwardCorrect"]
+}

@@ -1,0 +1,104 @@
+/* ═══════════════════════════════════════════════════════════
+   MODULE — Mobile Polish
+   Bottom nav, sticky header, larger touch targets,
+   collapsible sections. All at ≤ 760px.
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Bottom navigation (mobile only) ─── */
+.bottom-nav{
+  display: none;
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 200;
+  background: var(--pn);
+  border-top: 1px solid var(--ln);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+.bnav-btn{
+  display: grid;
+  place-items: center;
+  gap: 3px;
+  padding: 6px 4px;
+  border-radius: var(--r-2);
+  color: var(--tx-mu);
+  font-size: 10px;
+  min-height: 48px;
+  transition: background var(--t-fast) var(--e-std),
+              color var(--t-fast) var(--e-std);
+}
+.bnav-btn svg{
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.bnav-btn:hover,
+.bnav-btn:focus-visible{
+  background: var(--bg-alt);
+  color: var(--tx);
+}
+.bnav-btn[aria-current="true"]{
+  color: var(--ac);
+}
+
+/* ─── Larger touch targets (mobile) ─── */
+@media (max-width: 760px){
+  .lane{ min-height: 44px; padding: 6px 0; }
+  .cta{ min-height: 48px; }
+  .plan li{ padding: var(--sp-4); }
+  .lg button{ min-width: 44px; }
+
+  /* Pager: better scroll on touch */
+  .pn-scroll{
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+
+  /* Show bottom nav */
+  .bottom-nav{ display: grid; }
+
+  /* Add bottom padding so content isn't hidden */
+  .shell{ padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px)); }
+
+  /* Hide chevrons on mobile — no hover */
+  .lane-chev{ display: none; }
+
+  /* Always show mastery % */
+  .lane-pct{ opacity: 1; }
+}
+
+/* ─── Small phones (≤ 400px) ─── */
+@media (max-width: 400px){
+  .hdr{ padding: 6px 0; }
+  .wm{ font-size: 16px; letter-spacing: .02em; }
+  .stat b{ font-size: 18px; }
+  .stat-xp svg{ height: 5px; }
+  .plan{ gap: 6px; }
+  .plan li{ padding: 10px; }
+  .plan .pl-name{ font-size: 13px; }
+  .plan .pl-reason{ font-size: 11px; }
+}
+
+/* ─── Scroll snap for the mobile accordion (future) ─── */
+@media (max-width: 760px) and (hover: none){
+  .lane{
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
+
+/* ─── Prevent pull-to-refresh jank on iOS ─── */
+html, body{
+  overscroll-behavior-y: none;
+}
+
+/* ─── Reduced motion: freeze the bottom nav ─── */
+@media (prefers-reduced-motion: reduce){
+  .bnav-btn{ transition: none; }
+}

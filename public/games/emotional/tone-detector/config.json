@@ -1,0 +1,10 @@
+{
+  "id": "tone-detector",
+  "name": "Tone Detector",
+  "domain": "emotional",
+  "icon": "🎵",
+  "description": "Identify emotional tone in speech context",
+  "difficulty": 5,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "avgResponseTime", "maxStreak", "subtleToneAccuracy"]
+}

@@ -1,0 +1,10 @@
+{
+  "id": "idea-flow",
+  "name": "Idea Flow",
+  "domain": "creativity",
+  "icon": "🌊",
+  "description": "Generate many valid ideas rapidly under time pressure",
+  "difficulty": 5,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "fluency", "accuracy", "avgResponseTime", "maxStreak"]
+}

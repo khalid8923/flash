@@ -1,0 +1,10 @@
+{
+  "id": "mental-math",
+  "name": "Mental Math",
+  "domain": "numerical",
+  "icon": "➕",
+  "description": "Lightning-speed arithmetic chains under time pressure",
+  "difficulty": 4,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "avgResponseTime", "score"]
+}

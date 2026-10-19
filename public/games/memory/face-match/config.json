@@ -1,0 +1,25 @@
+{
+  "id": "face-match",
+  "name": "Face Match",
+  "domain": "memory",
+  "icon": "👤",
+  "description": "Associative memory — Naveh-Benjamin (2000)",
+  "difficulty": 4,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "medianRT", "rtv", "rcs", "maxStreak", "maxFaces"],
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "features": [
+    "shared-stages",
+    "shared-settings",
+    "shared-i18n",
+    "missions",
+    "badges",
+    "insights",
+    "history-chart",
+    "personal-best",
+    "postmessage",
+    "back-button",
+    "accessibility",
+    "svg-face-generation"
+  ]
+}

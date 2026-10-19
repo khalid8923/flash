@@ -1,38 +1,17 @@
 /* =========================================================
-   MODULE - Config
-   Central configuration for backend connectivity.
-   Change BACKEND_URL for production. Toggle live mode from
-   the settings panel or the header indicator.
+   FLASH - Configuration
    ========================================================= */
-window.FLASH_CONFIG = {
-  /* Backend endpoints */
-  BACKEND_URL: {
-    dev:  'http://localhost:3000',
-    prod: 'https://flash-backend.onrender.com'
-  },
-
-  /* API request settings */
-  REQUEST: {
-    timeoutMs: 5000,
-    retryCount: 2,
-    retryDelayMs: 400
-  },
-
-  /* Cache TTL per endpoint (ms) */
-  CACHE_TTL: {
-    domains:      60_000,       // 1 minute
-    games:        300_000,      // 5 minutes
-    profile:      30_000,       // 30 seconds
-    sessions:     15_000,       // 15 seconds
-    plan:         120_000,      // 2 minutes
-    health:       10_000        // 10 seconds
-  },
-
-  /* Feature flags */
-  FLAGS: {
-    liveMode: true,             // try to use backend if available
-    showSourceBadges: true,     // show live/mock badge on panels
-    cacheEnabled: true,
-    strictMode: false           // if true, errors break the UI
-  }
-};
+(function () {
+  'use strict';
+  const isCapacitor = window.Capacitor !== undefined;
+  
+  window.FLASH_CONFIG = {
+    API_BASE: isCapacitor ? 'https://flash-backend.onrender.com' : 'http://localhost:3000',
+    liveMode: !isCapacitor, // Offline on mobile, Live on web
+    isCapacitor: isCapacitor,
+    REQUEST: { timeoutMs: 8000, retryCount: 2, retryDelayMs: 500 },
+    CACHE_TTL: { profile: 30000, sessions: 15000, plan: 60000 }
+  };
+  
+  console.info('[FLASH_CONFIG] Ready. LiveMode:', window.FLASH_CONFIG.liveMode);
+})();

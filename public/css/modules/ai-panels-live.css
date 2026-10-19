@@ -1,0 +1,64 @@
+/* ============================================================
+   FLASH - AI Panels Live: state indicators + empty states
+   ============================================================ */
+
+/* Empty state inside a wide panel */
+.wp-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 60px;
+  font-size: 11px;
+  color: var(--tx-mu);
+  text-align: center;
+  padding: 8px;
+  font-style: italic;
+}
+
+/* Error rows: severity cue */
+.wp-error-row[data-severity="high"]   .wp-error-count { color: #ef4444; }
+.wp-error-row[data-severity="medium"] .wp-error-count { color: #f59e0b; }
+.wp-error-row[data-severity="low"]    .wp-error-count { color: var(--tx-mu); }
+
+/* Loading shimmer for panels currently fetching */
+.wide-panel[data-loading="1"] .wp-body {
+  opacity: 0.5;
+  transition: opacity 200ms ease;
+}
+
+.wide-panel[data-loading="1"] .wp-body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+    transparent,
+    color-mix(in srgb, var(--ac) 8%, transparent),
+    transparent);
+  animation: wp-loading 1.4s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes wp-loading {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Footer insight strips: better typography */
+.ft-k {
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tx-mu);
+  margin-inline-end: 8px;
+}
+
+.ft-v {
+  font-size: 13px;
+  color: var(--tx);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .wide-panel[data-loading="1"] .wp-body::after { animation: none; }
+}

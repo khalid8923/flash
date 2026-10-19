@@ -1,0 +1,194 @@
+/* ═══════════════════════════════════════════════════════════
+   MODULE — Split-Pane Master/Detail
+   Clicking a lane opens a right-side inspector panel.
+   Dashboard compresses to make room. Falls back to
+   full-screen on narrow viewports.
+   ═══════════════════════════════════════════════════════════ */
+.split-pane{
+  position: fixed;
+  inset-block: 0;
+  inset-inline-end: 0;
+  width: min(480px, 42vw);
+  background: var(--pn);
+  border-inline-start: 1px solid var(--ln);
+  transform: translateX(calc(var(--dir) * 100%));
+  transition: transform 360ms var(--e-out);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  visibility: hidden;
+  will-change: transform;
+}
+body.split-open .split-pane{
+  transform: translateX(0);
+  visibility: visible;
+}
+body.split-open .shell{
+  padding-inline-end: calc(min(480px, 42vw) + var(--sp-4));
+  transition: padding-inline-end 360ms var(--e-out);
+}
+body.split-closing .shell{
+  transition: padding-inline-end 280ms var(--e-out);
+}
+
+/* Header */
+.sp-hdr{
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--ln);
+  min-height: 56px;
+}
+.sp-back{
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  border-radius: var(--r-2);
+  color: var(--tx-mu);
+  transition: background var(--t-fast) var(--e-std),
+              color var(--t-fast) var(--e-std);
+}
+.sp-back:hover{
+  background: var(--bg-alt);
+  color: var(--tx);
+}
+.sp-title{
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.sp-dot{
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--dc);
+}
+
+/* Body */
+.sp-body{
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.sp-section{
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.sp-label{
+  font-size: 11px;
+  color: var(--tx-mu);
+  letter-spacing: .02em;
+  text-transform: uppercase;
+}
+.sp-mastery{
+  font-size: 42px;
+  font-weight: 600;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--dc);
+}
+.sp-mastery small{
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--tx-mu);
+  margin-inline-start: 4px;
+}
+
+/* Larger sparkline in pane */
+.sp-spark{
+  width: 100%;
+  height: 90px;
+  border: 1px solid var(--ln);
+  border-radius: var(--r-2);
+  padding: var(--sp-3);
+  background: var(--bg-alt);
+}
+.sp-spark svg{
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+[dir=rtl] .sp-spark svg{ transform: scaleX(-1); }
+.sp-spark path{
+  fill: none;
+  stroke: var(--dc);
+  stroke-width: 1.8;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+.sp-spark .f{
+  stroke-dasharray: 4 4;
+  opacity: .45;
+}
+
+/* Session rows */
+.sp-sessions{
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  border: 1px solid var(--ln);
+  border-radius: var(--r-2);
+  overflow: hidden;
+}
+.sp-row{
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: var(--sp-3);
+  padding: 10px var(--sp-3);
+  align-items: center;
+  background: var(--pn);
+  font-size: 13px;
+}
+.sp-row:hover{
+  background: var(--bg-alt);
+}
+.sp-row .d{
+  color: var(--tx-mu);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.sp-row .n{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.sp-row .a{
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+/* Empty */
+.sp-empty{
+  text-align: center;
+  color: var(--tx-mu);
+  font-size: 13px;
+  padding: var(--sp-6) 0;
+}
+
+/* CTA in pane */
+.sp-cta{
+  display: block;
+  padding: 12px var(--sp-4);
+  background: var(--dc);
+  color: var(--on-ac);
+  font-weight: 700;
+  text-align: center;
+  border-radius: var(--r-2);
+  transition: filter var(--t-fast) var(--e-std),
+              transform var(--t-fast) var(--e-out);
+}
+.sp-cta:hover{ filter: brightness(1.06); }
+.sp-cta:active{ transform: scale(0.985); }
+
+/* Mobile — full screen */
+@media (max-width: 1279px){
+  .split-pane{ width: 100vw; max-width: 100vw; }
+  body.split-open .shell{ padding-inline-end: var(--sp-4); }
+}

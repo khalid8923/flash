@@ -1,0 +1,25 @@
+{
+  "id": "gear-logic",
+  "name": "Gear Logic",
+  "domain": "problem",
+  "icon": "⚙️",
+  "description": "Mechanical reasoning — Hegarty (2004)",
+  "difficulty": 4,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "medianRT", "rcs", "maxStreak", "parityAccuracy"],
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "features": [
+    "shared-stages",
+    "shared-settings",
+    "shared-i18n",
+    "missions",
+    "badges",
+    "insights",
+    "history-chart",
+    "personal-best",
+    "postmessage",
+    "back-button",
+    "accessibility",
+    "svg-gears"
+  ]
+}

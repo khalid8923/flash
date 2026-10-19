@@ -1,0 +1,36 @@
+{
+  "id": "word-scramble",
+  "name": "Word Scramble",
+  "domain": "language",
+  "icon": "🔤",
+  "description": "Lexical access · Letter rearranging + hints",
+  "difficulty": 3,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "medianRT", "rtv", "rcs", "maxStreak", "longestWord"],
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "tiers": {
+    "easy": 20,
+    "medium": 20,
+    "hard": 20
+  },
+  "features": [
+    "shared-stages",
+    "shared-settings",
+    "shared-i18n",
+    "missions",
+    "badges",
+    "insights",
+    "history-chart",
+    "personal-best",
+    "postmessage",
+    "back-button",
+    "accessibility",
+    "60-word-bank",
+    "3-tier-difficulty",
+    "hint-system",
+    "shuffle-letters",
+    "clear-button",
+    "keyboard-input",
+    "missed-words-tracking"
+  ]
+}

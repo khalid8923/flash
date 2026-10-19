@@ -1,0 +1,181 @@
+/* ============================================================
+   FLASH - Chat Extras (Voice + Journal buttons)
+   ============================================================ */
+
+.ai-chat-composer {
+  position: relative;
+}
+
+.ai-chat-tools {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+  padding: 0 2px;
+}
+
+.ai-chat-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: var(--tx-mu);
+  background: color-mix(in srgb, var(--tx) 4%, transparent);
+  border: 1px solid var(--ln);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.ai-chat-tool:hover {
+  background: color-mix(in srgb, var(--ac) 10%, transparent);
+  color: var(--tx);
+}
+
+.ai-chat-tool svg {
+  width: 12px;
+  height: 12px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ai-chat-tool.recording {
+  background: color-mix(in srgb, #ef4444 15%, transparent);
+  color: #ef4444;
+  border-color: #ef4444;
+  animation: chat-tool-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes chat-tool-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.6; }
+}
+
+/* Journal modal */
+.journal-backdrop {
+  position: fixed; inset: 0; z-index: 9700;
+  background: color-mix(in srgb, #000 55%, transparent);
+  display: grid; place-items: center;
+  padding: 24px;
+}
+
+.journal-modal {
+  width: 100%; max-width: 420px;
+  background: var(--pn); color: var(--tx);
+  border: 1px solid var(--ln); border-radius: 14px;
+  padding: 24px;
+  box-shadow: 0 24px 64px -16px rgba(0,0,0,.45);
+}
+
+.journal-h {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+.journal-sub {
+  font-size: 12px;
+  color: var(--tx-mu);
+  margin: 0 0 20px;
+}
+
+.journal-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--tx-mu);
+  margin-bottom: 10px;
+}
+
+.journal-moods {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.journal-mood {
+  flex: 1;
+  min-width: 60px;
+  padding: 10px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  background: color-mix(in srgb, var(--tx) 4%, transparent);
+  border: 1px solid var(--ln);
+  border-radius: 8px;
+  color: var(--tx-mu);
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+
+.journal-mood:hover {
+  border-color: color-mix(in srgb, var(--ac) 40%, var(--ln));
+  color: var(--tx);
+}
+
+.journal-mood[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--ac) 15%, transparent);
+  border-color: var(--ac);
+  color: var(--ac);
+}
+
+.journal-energy {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.journal-energy button {
+  flex: 1;
+  height: 34px;
+  font-size: 12px;
+  font-weight: 600;
+  background: color-mix(in srgb, var(--tx) 4%, transparent);
+  border: 1px solid var(--ln);
+  border-radius: 6px;
+  color: var(--tx-mu);
+  cursor: pointer;
+  transition: all 160ms ease;
+}
+
+.journal-energy button[aria-pressed="true"] {
+  background: var(--ac);
+  color: #fff;
+  border-color: var(--ac);
+}
+
+.journal-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.journal-btn {
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 0;
+}
+.journal-btn.primary { background: var(--ac); color: #fff; }
+.journal-btn.secondary { background: transparent; color: var(--tx); border: 1px solid var(--ln); }
+
+.journal-result {
+  margin-top: 16px;
+  padding: 14px;
+  background: color-mix(in srgb, var(--ac) 6%, transparent);
+  border: 1px solid color-mix(in srgb, var(--ac) 20%, var(--ln));
+  border-radius: 10px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.journal-result strong { color: var(--ac); }

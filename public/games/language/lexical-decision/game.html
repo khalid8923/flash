@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Lexical Decision — FLASH</title>
+<link rel="stylesheet" href="../../../fonts/space-grotesk.css">
+<link rel="stylesheet" href="../../../fonts/jetbrains-mono.css">
+<link rel="stylesheet" href="../../../fonts/cairo.css">
+<link rel="stylesheet" href="../../../fonts/inter.css">
+<link rel="stylesheet" href="../../../shared/tokens.css">
+<link rel="stylesheet" href="../../../shared/game-theme.css">
+<link rel="stylesheet" href="game.css">
+</head>
+<body>
+
+<div id="game-root">
+  <header class="g-header">
+    <div class="g-header-left">
+      <button class="g-back-btn hidden" id="back-btn" title="Back to Menu" aria-label="Back to Menu">←</button>
+      <div class="g-logo">
+        <span class="g-logo-icon">⚡</span>
+        <span class="g-logo-text">FLASH</span>
+      </div>
+    </div>
+    <div class="g-meta">
+      <span class="g-meta-item">
+        <span class="g-meta-label">LEVEL</span>
+        <span class="g-meta-value" id="level-display">1</span>
+      </span>
+      <span class="g-meta-item">
+        <span class="g-meta-label">STREAK</span>
+        <span class="g-meta-value" id="streak-display">0</span>
+      </span>
+      <span class="g-meta-item">
+        <span class="g-meta-label">LIVES</span>
+        <span class="g-meta-value" id="lives-display">3</span>
+      </span>
+    </div>
+    <button class="g-settings-btn" id="settings-btn" title="Settings" aria-label="Settings">⚙</button>
+  </header>
+
+  <main id="stage" class="stage" data-phase="idle">
+    <div class="stage-inner">
+      <div id="phase-content"></div>
+    </div>
+  </main>
+
+  <footer class="g-footer">
+    <div class="timer-bar"><div class="timer-fill" id="timer-fill"></div></div>
+  </footer>
+</div>
+
+<!-- ⚠️ Script order matters -->
+<script src="../../../shared/i18n.js"></script>
+<script src="../../../shared/settings.js"></script>
+<script src="../../../shared/flash-stages.js"></script>
+<script src="lexical-decision-stages.js"></script>
+<script src="lexical-decision-helpers.js"></script>
+<script src="lexical-decision-sounds.js"></script>
+<script src="lexical-decision-extra-modes.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

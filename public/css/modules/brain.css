@@ -1,0 +1,34 @@
+/* ═══════════════════════════════════════════════════════════
+   MODULE — 3D Neural Brain (anatomical)
+   ═══════════════════════════════════════════════════════════ */
+.brain-wrap{
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 118px;
+  margin-bottom: var(--sp-3);
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-2);
+  background:
+    radial-gradient(
+      circle at 50% 60%,
+      color-mix(in srgb, var(--ac) 6%, transparent),
+      transparent 70%
+    );
+}
+#brain{
+  display: block;
+  width: 200px;
+  height: 118px;
+  opacity: .92;
+  transition: opacity var(--t-base) var(--e-std);
+}
+[data-theme=dark] #brain{ opacity: 1; }
+@media (prefers-reduced-motion: reduce){
+  #brain{ transition: none; }
+}
+@media (max-width: 760px){
+  .brain-wrap{ height: 92px; }
+  #brain{ width: 160px; height: 92px; }
+}

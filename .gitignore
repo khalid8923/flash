@@ -1,56 +1,36 @@
-# Dependencies
-node_modules/
-.pnpm-store/
+# Secrets & Env
+.env
+.env.*
+!.env.example
+.admin-token
+*.key
+*.pem
 
-# Build outputs
+# Dependencies & Builds
+node_modules/
 dist/
 build/
 .next/
-out/
-
-# Environment
-.env
-.env.local
-.env.*.local
-!.env.example
-
-# Backups
-*.bak
-*.bak2
-*.bak3
-backups/
-_legacy/
-*.backup
-
-# Logs
-*.log
-npm-debug.log*
-yarn-error.log*
-dev.log
-
-# OS
-.DS_Store
-Thumbs.db
-desktop.ini
-
-# IDE
-.vscode/
-.idea/
-*.swp
-
-# Test outputs
 coverage/
-.nyc_output/
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+.archive/
 
-# Local admin
-.admin-token
+# Core Identity CSS (Hidden for Proprietary reasons)
+frontend/dashboard/css/tokens.css
+frontend/dashboard/css/base.css
+frontend/dashboard/css/layout.css
+public/css/tokens.css
+public/css/base.css
+public/css/layout.css
 
-# Temp
-tmp/
-temp/
-*.tmp
-
-# Original screenshot artifacts
-flash-sessions.csv
-# Docs are local-only (not pushed to GitHub)
-docs/
+# Backups & Logs
+backups/
+*.bak
+*.bak.*
+*.log
+dev-run.log
+FLASH_*.txt
+FLASH_*.json

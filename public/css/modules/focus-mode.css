@@ -1,0 +1,75 @@
+/* ═══════════════════════════════════════════════════════════
+   MODULE — Focus Mode
+   Hides chrome, expands Season to full width.
+   Toggle: F key or click on the "focus" button in header.
+   ═══════════════════════════════════════════════════════════ */
+#focus-btn{
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-2);
+  color: var(--tx-mu);
+  transition: background var(--t-fast) var(--e-std),
+              color     var(--t-fast) var(--e-std);
+}
+#focus-btn:hover{ background: var(--bg-alt); color: var(--tx); }
+#focus-btn svg{
+  width: 18px; height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+body.focus-mode .hdr .lg{ display: none; }
+body.focus-mode #pn-today .brain-wrap{ height: 60px; }
+body.focus-mode #pn-recent{ opacity: .35; pointer-events: none; }
+
+body.focus-mode .main{
+  grid-template-columns: minmax(0, 1fr);
+  transition: grid-template-columns 380ms var(--e-out);
+}
+body.focus-mode .col-left,
+body.focus-mode .col-right{ display: none; }
+body.focus-mode .col-main{ max-width: 100%; }
+
+body.focus-mode .lane-plot svg{ height: 44px; }
+body.focus-mode .lane{ min-height: 48px; }
+body.focus-mode .season-axis{ padding: 0 0 var(--sp-2); }
+
+/* Exit animation */
+body:not(.focus-mode) .main{
+  transition: grid-template-columns 380ms var(--e-out);
+}
+
+/* Exit hint */
+body.focus-mode::after{
+  content: "";
+  position: fixed;
+  bottom: 12px;
+  inset-inline-end: 12px;
+  width: 40px; height: 24px;
+  background:
+    radial-gradient(circle 2px at 8px 12px, var(--tx-mu) 1.5px, transparent 2px),
+    radial-gradient(circle 2px at 20px 12px, var(--tx-mu) 1.5px, transparent 2px),
+    radial-gradient(circle 2px at 32px 12px, var(--tx-mu) 1.5px, transparent 2px);
+  opacity: .4;
+  pointer-events: none;
+  animation: focus-hint 6s ease-in-out infinite;
+  border-radius: var(--r-1);
+}
+@keyframes focus-hint{
+  0%, 100% { opacity: .15; }
+  50%      { opacity: .55; }
+}
+
+@media (max-width: 760px){
+  body.focus-mode .hdr .lg{ display: flex; }
+}
+@media (prefers-reduced-motion: reduce){
+  body.focus-mode .main,
+  body:not(.focus-mode) .main{ transition: none; }
+  body.focus-mode::after{ display: none; }
+}

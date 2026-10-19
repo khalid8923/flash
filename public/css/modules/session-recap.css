@@ -1,0 +1,14 @@
+.recap-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
+  display: flex; align-items: center; justify-content: center; z-index: 9998;
+}
+.recap-modal {
+  background: var(--pn); padding: 30px; border-radius: 12px;
+  width: 90%; max-width: 500px; border: 1px solid var(--ac);
+  box-shadow: 0 0 40px rgba(236,72,153,0.2);
+}
+.recap-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.recap-icon { font-size: 24px; }
+.recap-header h2 { font-size: 20px; color: var(--tx); }
+.recap-body p { font-size: 15px; line-height: 1.6; color: var(--tx-mu); margin-bottom: 24px; }
+.recap-footer { text-align: right; }

@@ -1,0 +1,26 @@
+{
+  "id": "vigilance",
+  "name": "Vigilance",
+  "domain": "attention",
+  "icon": "🎯",
+  "description": "Sustained attention — Rosvold (1956) CPT-X",
+  "difficulty": 5,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "medianRT", "rtv", "rcs", "maxStreak", "dPrime", "vigilanceDecrement"],
+  "modes": ["classic", "speed", "endless", "precision", "daily"],
+  "features": [
+    "shared-stages",
+    "shared-settings",
+    "shared-i18n",
+    "missions",
+    "badges",
+    "insights",
+    "history-chart",
+    "personal-best",
+    "postmessage",
+    "back-button",
+    "accessibility",
+    "dprime-calculation",
+    "block-analysis"
+  ]
+}

@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="en" dir="ltr" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>FLASH — Sessions</title>
+<script>
+try{
+  var t = localStorage.getItem('flash.theme');
+  if (t !== 'dark' && t !== 'light') t = 'light';
+  document.documentElement.dataset.theme = t;
+  var l = localStorage.getItem('flash.lang');
+  if (l !== 'ar' && l !== 'en') l = 'en';
+  document.documentElement.lang = l;
+  document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+  var a = localStorage.getItem('flash.accent');
+  if (a){
+    var map = {
+      pink:  { light: '#EC4899', dark: '#39FF14' },
+      violet:{ light: '#8B5CF6', dark: '#A78BFA' },
+      blue:  { light: '#3B82F6', dark: '#60A5FA' },
+      teal:  { light: '#14B8A6', dark: '#2DD4BF' },
+      amber: { light: '#F59E0B', dark: '#FBBF24' }
+    };
+    if (map[a]){
+      var color = t === 'dark' ? map[a].dark : map[a].light;
+      document.documentElement.style.setProperty('--ac', color);
+    }
+  }
+} catch(e){}
+</script>
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<style>
+.sessions-shell{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px 32px;
+  min-height: 100dvh;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 16px;
+}
+.sessions-hdr{
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--ln);
+  min-height: 52px;
+}
+.sessions-back{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--tx-mu);
+  font-size: 13px;
+  padding: 6px 12px;
+  border: 1px solid var(--ln);
+  border-radius: var(--r-2);
+  transition: color var(--t-fast) var(--e-std),
+              border-color var(--t-fast) var(--e-std);
+}
+.sessions-back:hover{ color: var(--tx); border-color: var(--ln-strong); }
+.sessions-title{
+  font-size: 18px;
+  font-weight: 600;
+  margin-inline-start: auto;
+}
+.filters{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filters input[type="search"]{
+  flex: 1;
+  min-width: 200px;
+  padding: 8px 12px;
+  border: 1px solid var(--ln);
+  background: var(--pn);
+  color: var(--tx);
+  border-radius: var(--r-2);
+  font: inherit;
+  font-size: 13px;
+}
+.filters input[type="search"]:focus{
+  outline: 2px solid var(--ac);
+  outline-offset: 1px;
+}
+.filters select{
+  padding: 8px 12px;
+  border: 1px solid var(--ln);
+  background: var(--pn);
+  color: var(--tx);
+  border-radius: var(--r-2);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+.session-table{
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--pn);
+  border: 1px solid var(--ln);
+  border-radius: var(--r-2);
+  overflow: hidden;
+}
+.session-table th{
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--pn);
+  text-align: start;
+  font: 400 11px var(--font-ui);
+  color: var(--tx-mu);
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--ln);
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  cursor: pointer;
+  user-select: none;
+}
+.session-table th:hover{ color: var(--tx); }
+.session-table th[data-sort]::after{
+  content: "";
+  display: inline-block;
+  width: 5px;
+  margin-inline-start: 4px;
+  border-inline-start: 4px solid transparent;
+  border-inline-end: 4px solid transparent;
+  border-top: 5px solid transparent;
+  vertical-align: middle;
+  opacity: 0;
+}
+.session-table th[data-dir="asc"][data-sort]::after{
+  border-bottom: 5px solid currentColor;
+  opacity: 1;
+}
+.session-table th[data-dir="desc"][data-sort]::after{
+  border-top: 5px solid currentColor;
+  opacity: 1;
+}
+.session-table td{
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--ln);
+  font-size: 13px;
+}
+.session-table td.num{ text-align: end; font-variant-numeric: tabular-nums; }
+.session-table tr:hover td{
+  background: color-mix(in srgb, var(--dc, var(--ac)) 6%, transparent);
+}
+.session-table .dom-dot{
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--dc);
+  margin-inline-end: 6px;
+  vertical-align: middle;
+}
+.session-table .pb-tag{
+  border: 1px solid var(--tx-mu);
+  font-size: 9px;
+  padding: 0 3px;
+  margin-inline-start: 4px;
+  color: var(--tx-mu);
+  border-radius: 2px;
+}
+.empty-state{
+  padding: 60px 20px;
+  text-align: center;
+  color: var(--tx-mu);
+  font-size: 14px;
+}
+.stats-strip{
+  display: flex;
+  gap: 24px;
+  flex-wrap: wrap;
+  padding: 12px 16px;
+  background: var(--pn);
+  border: 1px solid var(--ln);
+  border-radius: var(--r-2);
+  font-size: 12px;
+}
+.stats-strip .st{
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.stats-strip .st span{ color: var(--tx-mu); font-size: 10px; text-transform: uppercase; letter-spacing: .05em; }
+.stats-strip .st b{ font-size: 18px; font-weight: 600; font-variant-numeric: tabular-nums; }
+@media (max-width: 640px){
+  .session-table th:nth-child(4),
+  .session-table td:nth-child(4),
+  .session-table th:nth-child(6),
+  .session-table td:nth-child(6){
+    display: none;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="sessions-shell">
+
+  <header class="sessions-hdr">
+    <a class="sessions-back" href="index.html"><span id="bk">←</span><span id="bkt">Back</span></a>
+    <h1 class="sessions-title" id="ttl">Sessions</h1>
+  </header>
+
+  <div class="filters">
+    <input type="search" id="f-search" placeholder="Search games or domains…" autocomplete="off">
+    <select id="f-domain"></select>
+    <select id="f-limit">
+      <option value="30">30</option>
+      <option value="50" selected>50</option>
+      <option value="100">100</option>
+      <option value="all">All</option>
+    </select>
+  </div>
+
+  <div class="stats-strip" id="st"></div>
+
+  <div id="table-wrap"></div>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/i18n.js"></script>
+<script src="js/core.js"></script>
+<script>
+(function(){
+'use strict';
+const F = window.FLASH;
+const $ = id => document.getElementById(id);
+
+const state = {
+  search: '',
+  domain: 'all',
+  limit: 50,
+  sortKey: 'date',
+  sortDir: 'desc'
+};
+
+const AR = {
+  back: 'رجوع',
+  title: 'السجل الكامل',
+  search: 'ابحث عن لعبة أو مجال…',
+  date: 'التاريخ',
+  game: 'اللعبة',
+  domain: 'المجال',
+  acc: 'الدقة',
+  rt: 'الزمن',
+  delta: 'الفرق',
+  total: 'الإجمالي',
+  avgAcc: 'متوسط الدقة',
+  avgRT: 'متوسط الزمن',
+  bestAcc: 'أفضل دقة',
+  all: 'كل المجالات',
+  empty: 'لا توجد جلسات'
+};
+
+function t(k){ return F.state.lang === 'ar' ? AR[k] : (k === 'back' ? 'Back' : k === 'title' ? 'Sessions' : k === 'search' ? 'Search games or domains…' : k === 'date' ? 'Date' : k === 'game' ? 'Game' : k === 'domain' ? 'Domain' : k === 'acc' ? 'Accuracy' : k === 'rt' ? 'RT' : k === 'delta' ? 'Δ' : k === 'total' ? 'Total' : k === 'avgAcc' ? 'Avg accuracy' : k === 'avgRT' ? 'Avg RT' : k === 'bestAcc' ? 'Best accuracy' : k === 'all' ? 'All domains' : k === 'empty' ? 'No sessions' : k);
+}
+
+function populateFilters(){
+  const sel = $('f-domain');
+  sel.innerHTML = '';
+  const ar = F.state.lang === 'ar';
+  const opt = document.createElement('option');
+  opt.value = 'all';
+  opt.textContent = t('all');
+  sel.appendChild(opt);
+  F.M.domains.forEach(d => {
+    const o = document.createElement('option');
+    o.value = d.id;
+    o.textContent = d['name_' + F.state.lang] || d.name_en;
+    sel.appendChild(o);
+  });
+}
+
+function filtered(){
+  let rows = F.M.recentSessions.slice();
+
+  if (state.domain !== 'all'){
+    rows = rows.filter(r => r.domain === state.domain);
+  }
+
+  if (state.search.trim()){
+    const q = state.search.trim().toLowerCase();
+    rows = rows.filter(r => {
+      const g = (r['game_' + F.state.lang] || r.game_en).toLowerCase();
+      return g.indexOf(q) !== -1;
+    });
+  }
+
+  // Sort
+  rows.sort((a, b) => {
+    let ka = a[state.sortKey];
+    let kb = b[state.sortKey];
+    if (state.sortKey === 'date'){
+      ka = new Date(ka).getTime();
+      kb = new Date(kb).getTime();
+    }
+    if (typeof ka === 'number' && typeof kb === 'number'){
+      return state.sortDir === 'asc' ? ka - kb : kb - ka;
+    }
+    ka = String(ka);
+    kb = String(kb);
+    return state.sortDir === 'asc' ? ka.localeCompare(kb) : kb.localeCompare(ka);
+  });
+
+  if (state.limit !== 'all'){
+    rows = rows.slice(0, Number(state.limit));
+  }
+
+  return rows;
+}
+
+function renderStats(rows){
+  const accs = rows.map(r => r.accuracy);
+  const rts = rows.map(r => r.medianRT);
+  const avgAcc = accs.length ? Math.round(accs.reduce((a, b) => a + b, 0) / accs.length) : 0;
+  const avgRT = rts.length ? Math.round(rts.reduce((a, b) => a + b, 0) / rts.length) : 0;
+  const bestAcc = accs.length ? Math.max.apply(null, accs) : 0;
+
+  const ar = F.state.lang === 'ar';
+  $('st').innerHTML = `
+    <div class="st"><span>${t('total')}</span><b>${F.N(rows.length)}</b></div>
+    <div class="st"><span>${t('avgAcc')}</span><b>${F.pc(avgAcc)}</b></div>
+    <div class="st"><span>${t('avgRT')}</span><b>${F.N(avgRT)} ${ar ? 'م ث' : 'ms'}</b></div>
+    <div class="st"><span>${t('bestAcc')}</span><b>${F.pc(bestAcc)}</b></div>
+  `;
+}
+
+function renderTable(rows){
+  const wrap = $('table-wrap');
+  if (!rows.length){
+    wrap.innerHTML = `<div class="empty-state">${t('empty')}</div>`;
+    return;
+  }
+
+  const ar = F.state.lang === 'ar';
+  const ms = ar ? 'م ث' : 'ms';
+
+  wrap.innerHTML = `
+    <table class="session-table">
+      <thead>
+        <tr>
+          <th data-sort="date"   data-dir="${state.sortKey === 'date'   ? state.sortDir : ''}">${t('date')}</th>
+          <th data-sort="game_en">${t('game')}</th>
+          <th>${t('domain')}</th>
+          <th data-sort="accuracy" data-dir="${state.sortKey === 'accuracy' ? state.sortDir : ''}" class="num">${t('acc')}</th>
+          <th data-sort="medianRT" data-dir="${state.sortKey === 'medianRT' ? state.sortDir : ''}" class="num">${t('rt')}</th>
+          <th data-sort="deltaVsPB" data-dir="${state.sortKey === 'deltaVsPB' ? state.sortDir : ''}" class="num">${t('delta')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${rows.map(s => {
+          const d = F.M.domains.find(x => x.id === s.domain);
+          const game = s['game_' + F.state.lang] || s.game_en;
+          const dom = d ? (d['name_' + F.state.lang] || d.name_en) : s.domain;
+          const delta = s.deltaVsPB;
+          const deltaStr = (delta > 0 ? '+' : '−') + Math.abs(delta).toFixed(1);
+          const pb = delta > 0;
+          return `
+            <tr style="--dc:${d ? d.c : 'var(--ac)'}">
+              <td>${F.DF(s.date)}</td>
+              <td>${game}</td>
+              <td><span class="dom-dot"></span>${dom}</td>
+              <td class="num">${F.pc(s.accuracy)}</td>
+              <td class="num">${F.N(s.medianRT)} ${ms}</td>
+              <td class="num">${deltaStr}${pb ? '<span class="pb-tag">PB</span>' : ''}</td>
+            </tr>
+          `;
+        }).join('')}
+      </tbody>
+    </table>
+  `;
+
+  // Wire sort headers
+  wrap.querySelectorAll('th[data-sort]').forEach(th => {
+    th.addEventListener('click', () => {
+      const key = th.dataset.sort;
+      if (state.sortKey === key){
+        state.sortDir = state.sortDir === 'asc' ? 'desc' : 'asc';
+      } else {
+        state.sortKey = key;
+        state.sortDir = 'desc';
+      }
+      render();
+    });
+  });
+}
+
+function render(){
+  $('bk').textContent = F.state.lang === 'ar' ? '→' : '←';
+  $('bkt').textContent = t('back');
+  $('ttl').textContent = t('title');
+  $('f-search').placeholder = t('search');
+
+  populateFilters();
+  $('f-domain').value = state.domain;
+  $('f-limit').value = String(state.limit);
+
+  const rows = filtered();
+  renderStats(rows);
+  renderTable(rows);
+}
+
+$('f-search').addEventListener('input', (e) => {
+  state.search = e.target.value;
+  render();
+});
+$('f-domain').addEventListener('change', (e) => {
+  state.domain = e.target.value;
+  render();
+});
+$('f-limit').addEventListener('change', (e) => {
+  const v = e.target.value;
+  state.limit = v === 'all' ? 'all' : Number(v);
+  render();
+});
+
+F.onReady(() => { render(); });
+})();
+</script>
+</body>
+</html>

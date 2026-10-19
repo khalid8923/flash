@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Speed Calculus — FLASH</title>
+<link rel="stylesheet" href="../../../fonts/space-grotesk.css">
+<link rel="stylesheet" href="../../../fonts/jetbrains-mono.css">
+<link rel="stylesheet" href="../../../fonts/cairo.css">
+<link rel="stylesheet" href="../../../fonts/inter.css">
+<link rel="stylesheet" href="game.css">
+</head>
+<body>
+
+<div id="game-root">
+  <header class="g-header">
+    <div class="g-logo">
+      <span class="g-logo-icon">⚡</span>
+      <span class="g-logo-text">FLASH</span>
+    </div>
+    <div class="g-meta">
+      <span class="g-meta-item">
+        <span class="g-meta-label">SCORE</span>
+        <span class="g-meta-value" id="score-display">0</span>
+      </span>
+      <span class="g-meta-item">
+        <span class="g-meta-label">DIFFICULTY</span>
+        <span class="g-meta-value" id="difficulty-display">1</span>
+      </span>
+      <span class="g-meta-item">
+        <span class="g-meta-label">STREAK</span>
+        <span class="g-meta-value" id="streak-display">0</span>
+      </span>
+    </div>
+  </header>
+
+  <main id="stage" class="stage" data-phase="idle">
+    <div class="stage-inner">
+      <div id="phase-content"></div>
+    </div>
+  </main>
+
+  <footer class="g-footer">
+    <div class="total-time-bar">
+      <div class="total-time-fill" id="total-time-fill"></div>
+      <span class="total-time-label" id="total-time-label">90.0s</span>
+    </div>
+    <div class="question-time-bar">
+      <div class="question-time-fill" id="question-time-fill"></div>
+    </div>
+  </footer>
+</div>
+
+<script src="../../../shared/i18n.js"></script>
+<script src="../../../shared/settings.js"></script>
+<script src="../../../shared/flash-stages.js"></script>
+<script src="speed-calc-stages.js"></script>
+<script src="speed-calc-helpers.js"></script>
+<script src="speed-calc-sounds.js"></script>
+<script src="speed-calc-extra-modes.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

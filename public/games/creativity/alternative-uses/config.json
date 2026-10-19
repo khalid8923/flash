@@ -1,0 +1,10 @@
+{
+  "id": "alternative-uses",
+  "name": "Alternative Uses",
+  "domain": "creativity",
+  "icon": "💡",
+  "description": "Identify novel uses for everyday objects",
+  "difficulty": 4,
+  "maxLevel": 15,
+  "metrics": ["maxLevel", "accuracy", "avgResponseTime", "maxStreak", "noveltySelectionRate"]
+}
