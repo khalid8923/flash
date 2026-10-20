@@ -25,11 +25,11 @@ We are looking for a Technical Co-Founder / Senior Engineer to help with archite
 
 ---
 
-## Ã°Å¸Â¤â€“ AI System & Cognitive Intelligence
+## ÃƒÂ°Ã…Â¸Ã‚Â¤Ã¢â‚¬â€œ AI System & Cognitive Intelligence
 
 FLASH is not just a collection of games; it is a **cognitive training director**. The AI is deeply integrated into the core architecture, acting as a personalized coach, an adaptive difficulty engine, and a data analyst.
 
-### Ã°Å¸Â§Â  The AI Provider Architecture
+### ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Â  The AI Provider Architecture
 To ensure high availability and zero downtime, we built a **Multi-Provider Router** with a Circuit Breaker pattern. If the primary provider fails, the system seamlessly falls back to the next one.
 
 | Layer | Technology | Role | Language Support |
@@ -42,7 +42,7 @@ To ensure high availability and zero downtime, we built a **Multi-Provider Route
 *   **Context Compression:** The Arabic model (`allam-2-7b`) has a strict token limit. We implemented dynamic context compression that strips redundant data and sends only the last 2 messages, ensuring fast and accurate Arabic responses without hitting the limit.
 *   **Circuit Breaker:** If a provider fails 3 times in a row, it enters a 60-second cooldown, and traffic is routed to the next provider.
 
-### Ã°Å¸â€ºÂ¡Ã¯Â¸Â AI Safety & L4 Validation
+### ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂºÃ‚Â¡ÃƒÂ¯Ã‚Â¸Ã‚Â AI Safety & L4 Validation
 Because FLASH is a scientific tool, the AI must never hallucinate or make medical claims. We built a robust **Validator Layer** that intercepts every LLM output before it reaches the user.
 
 *   **Evidence Ladder:** The AI is strictly restricted to L0-L3 (Observed, Derived, Estimated, Hypothesized). **L4 (Clinical Diagnosis) is strictly PROHIBITED.**
@@ -50,7 +50,7 @@ Because FLASH is a scientific tool, the AI must never hallucinate or make medica
 *   **Hype Filter:** Blocks over-reaching claims like "supercharge your brain" or "100% effective".
 *   **Echo Detector:** Detects if the LLM is just repeating the user's data back to them (fact-sheet echo) and forces a re-generation.
 
-### Ã¢Å“Â¨ The 15 AI Features
+### ÃƒÂ¢Ã…â€œÃ‚Â¨ The 15 AI Features
 The AI system is not a single endpoint; it's a suite of 15 distinct features that work together to create a personalized training experience.
 
 | # | Feature | Description | Impact |
@@ -71,14 +71,14 @@ The AI system is not a single endpoint; it's a suite of 15 distinct features tha
 | 14 | **Voice Coach** | Uses Groq's `whisper-large-v3-turbo` to allow voice-to-text interactions with the AI Coach. | Hands-free accessibility. |
 | 15 | **In-Game Nudge** | The AI sends micro-coaching nudges mid-game (e.g., "Take a breath, focus on accuracy") if it detects frustration. | Real-time intervention. |
 
-### Ã¢Å¡â„¢Ã¯Â¸Â AI & Adaptive Difficulty Engine
+### ÃƒÂ¢Ã…Â¡Ã¢â€žÂ¢ÃƒÂ¯Ã‚Â¸Ã‚Â AI & Adaptive Difficulty Engine
 The AI doesn't just talk; it drives the core difficulty engine.
 *   **Weighted Staircase + EMA:** Every session feeds into an Exponential Moving Average model to calculate the user's "ability" and "uncertainty".
 *   **10 Reason Codes:** The engine explains *why* it promoted or demoted you (e.g., `PROMOTE_STABLE`, `DEMOTE_STRUGGLE`, `HOLD_FRUSTRATION`). The AI takes these codes and translates them into human-readable feedback.
 *   **Norms & Percentiles:** When sufficient data is collected, the AI maps the user's score to a percentile based on a normal distribution (CDF).
 
 
-## ðŸ§  FLASH AI System: Deep Technical Deep Dive
+## Ã°Å¸Â§Â  FLASH AI System: Deep Technical Deep Dive
 
 FLASH is not a simple wrapper around an LLM. It is a **Cognitive Training Director**. The AI is not just a chatbot embedded in the UI; it is the central nervous system that drives the platform's adaptive logic, analyzes behavioral data, and generates personalized coaching. 
 
@@ -103,7 +103,7 @@ LLM providers are notoriously unreliable (rate limits, downtime, deprecation). T
 Because FLASH is a scientific instrument, we cannot allow the LLM to hallucinate medical advice. Every single AI output passes through a strict **Validator Layer** before it reaches the frontend.
 
 *   **The Evidence Ladder:** The AI is restricted to L0-L3 claims. **L4 (Clinical Claims) is strictly prohibited.**
-*   **L4 Regex Filters (EN/AR):** We block terms like ADHD, Autism, Depression, IQ, Brain Age, Diagnosis (and their Arabic equivalents like Ø§Ù„ØªÙˆØ­Ø¯ØŒ Ø§Ù„Ø§ÙƒØªØ¦Ø§Ø¨ØŒ ØªØ´Ø®ÙŠØµ). 
+*   **L4 Regex Filters (EN/AR):** We block terms like ADHD, Autism, Depression, IQ, Brain Age, Diagnosis (and their Arabic equivalents like Ã˜Â§Ã™â€žÃ˜ÂªÃ™Ë†Ã˜Â­Ã˜Â¯Ã˜Å’ Ã˜Â§Ã™â€žÃ˜Â§Ã™Æ’Ã˜ÂªÃ˜Â¦Ã˜Â§Ã˜Â¨Ã˜Å’ Ã˜ÂªÃ˜Â´Ã˜Â®Ã™Å Ã˜Âµ). 
 *   **Hype Filter:** Blocks over-reaching marketing claims like "Supercharge your brain" or "100% effective".
 *   **Echo Detector:** If the LLM just repeats the user's data back to them in a `key: value` format (Fact-sheet echo), the validator rejects the response and forces a re-generation.
 *   **Shape Validator:** Ensures the JSON output from the LLM matches the exact Zod schema expected by the frontend.
@@ -123,7 +123,7 @@ The AI system is a suite of micro-services. Each feature is powered by a specifi
 | Feature | Endpoint | Technical Description |
 |---------|----------|-----------------------|
 | **Weekly Insights** | `GET /ai/insights` | Aggregates 7 days of data. The LLM analyzes domain gaps, streak consistency, and RT trends to generate a weekly digest. |
-| **Cognitive Fingerprint** | `GET /ai/fingerprint` | Analyzes historical session data to assign the user an archetype (e.g., "Tidewatcher" â€” strong starts, fades late). |
+| **Cognitive Fingerprint** | `GET /ai/fingerprint` | Analyzes historical session data to assign the user an archetype (e.g., "Tidewatcher" Ã¢â‚¬â€ strong starts, fades late). |
 | **Predictive Coach** | `GET /ai/predictions` | Uses a weighted linear regression model to predict future performance. The AI translates these math predictions into readable advice. |
 | **Error Patterns** | `GET /ai/error-patterns` | Detects behavioral anomalies (post-error slowdown, late-session fatigue) and writes an analysis of the user's cognitive endurance. |
 | **Transfer Tracker** | `GET /ai/transfer-tracker` | Calculates Pearson correlations between domains (e.g., Memory vs. Attention). The AI explains what this overlap means for the user. |
@@ -151,11 +151,11 @@ The AI does not operate in isolation; it feeds the core mathematical engine.
 
 ### 5. Fallback Policy (Zero Downtime)
 When all 3 LLM providers fail (e.g., total network outage), the system does not break. The `fallback-policy.ts` module intercepts the error and returns a **safe, pre-written static response**.
-*   **Example:** If `/ai/chat` fails, it returns: *"The AI coach is temporarily unavailable. Your data is safe â€” try again in a few minutes."* (in EN/AR).
+*   **Example:** If `/ai/chat` fails, it returns: *"The AI coach is temporarily unavailable. Your data is safe Ã¢â‚¬â€ try again in a few minutes."* (in EN/AR).
 *   **Difficulty Fallback:** If `/ai/director` fails, it defaults to `HOLD_IN_BAND` (keep the user at their current level).
 
 
-## 🏗️ Backend & Database: The Engine Room
+## ðŸ—ï¸ Backend & Database: The Engine Room
 
 While the frontend handles the user experience, the backend is where the heavy lifting happens. FLASH is built as a **Modular Monolith** using **Fastify 5** and **TypeScript 5.6**. We chose Fastify over Express for its superior performance (3x faster routing), native TypeScript support, and schema-based validation.
 
@@ -203,6 +203,51 @@ The engine is entirely deterministic and rule-based (no LLM involved here).
 *   **Helmet:** 7 security headers (HSTS, X-Frame-Options, CSP, etc.) to protect against XSS and clickjacking.
 *   **Connection Pooling:** The PG pool is tuned for Neon's serverless nature (`max: 10`, `statement_timeout: 15s`) to prevent hanging connections and burning compute credits.
 *   **Hash-Chained Audit Log:** Admin actions are cryptographically chained. If an admin record is tampered with, the `/admin/audit/verify` endpoint will detect a broken link.
+
+
+## 💻 Frontend & Mobile: The User Experience Layer
+
+Building a massive platform like FLASH without a framework like React or Vue might sound insane to some, but it was a deliberate architectural decision. We needed a system that could run from a `file://` protocol without a build step, compile instantly, and live comfortably inside a mobile WebView.
+
+### 1. The Zero-Build Frontend Architecture
+The frontend is built entirely with **Vanilla HTML, CSS, and JavaScript (ES6+)**. To manage the complexity of a 42-game platform, we adopted a highly modular architecture.
+*   **Module Pattern:** We have **68 distinct JavaScript modules** and **52 CSS modules**. Every feature (e.g., the command palette, the AI chat, the brain visualization) is an isolated file.
+*   **The Shell & Iframes:** The dashboard acts as a "Shell". When you click a game, it loads in a sandboxed `<iframe>`. This ensures that a memory leak or an infinite loop in one game cannot crash the entire dashboard.
+*   **Design Tokens:** The entire visual identity (colors, spacing, motion timings) is controlled via `tokens.css`. This allowed us to implement a full **Rose/Neon Theme System** and a **5-accent color palette** with zero hardcoded values in the components.
+*   **Full Bilingual Support (EN/AR):** RTL is not an afterthought. The layout uses CSS logical properties (e.g., `margin-inline-start` instead of `margin-left`). The shell dynamically flips the entire UI direction and font family (`Noto Naskh Arabic`) when the language is switched.
+
+### 2. The Central Error System (Resilience Engineering)
+In a native app, if the network drops, the app doesn't crash; it just shows an offline state. We built a similar system for the web to prevent the "white screen of death".
+*   **`AppError` Class:** Every error is mapped to a category (NETWORK, AUTH, VALIDATION, GAME_STATE, AI_SERVICE). The UI reacts differently based on the category.
+*   **Safe Fetch Wrapper:** We wrapped all API calls in a `safe-fetch.js` module that handles timeouts, exponential backoff retries, and idempotency headers automatically.
+*   **Save Queue (Offline-First):** If a user finishes a game while offline, the session is pushed into a `localStorage` queue. When the network is restored (`flash:online` event), the queue flushes and syncs the data to the backend.
+*   **Multi-Tab Sync:** Using `BroadcastChannel`, if a user opens the dashboard in two tabs, completing a game in one tab instantly updates the stats in the other tab.
+
+### 3. The Game Engine (The 8-File Pattern)
+Every single one of the 42 games follows a strict **8-file pattern**. This guarantees consistency and makes onboarding new developers (or AI agents) incredibly easy.
+1.  `config.json` (Metadata)
+2.  `game.html` (Markup)
+3.  `game.css` (Specific styles)
+4.  `game.js` (Core logic)
+5.  `{game}-helpers.js` (Storage, PB, History)
+6.  `{game}-sounds.js` (Web Audio API synthesis, zero external audio files)
+7.  `{game}-stages.js` (8 progressive achievement stages)
+8.  `{game}-extra-modes.js` (Speed, Endless, Precision, Daily)
+
+*   **postMessage Protocol:** The games communicate with the Shell using the `window.parent.postMessage` API. When a game ends, it sends a `flash:game-complete` event with the raw trials. The Shell intercepts this via `game-complete-bridge.js` and handles the backend submission.
+
+### 4. Mobile Migration via Capacitor
+Rewriting 42 games in React Native or Flutter would have taken 24+ months. Instead, we used **Capacitor** to wrap the existing web app into a native Android shell.
+*   **The `public/` Directory:** We separated the mobile web assets into a dedicated `public/` folder. Capacitor uses this as its `webDir`.
+*   **Native Storage Bridge (`@capacitor/preferences`):** WebView `localStorage` is notoriously volatile on Android (the OS can clear it if storage is low). We built `capacitor-storage.js`, which intercepts all `localStorage.setItem` calls and mirrors the data to native Android Preferences. On boot, it hydrates the web storage back.
+*   **Hardware Back Button:** Native Android users expect the back button to exit the current game. We intercept the `@capacitor/app` back button event, check if an iframe is open, and if so, close the iframe and return to the dashboard.
+*   **Mobile UI Overrides:** The 3-column desktop grid collapses into a single-column layout on mobile via `mobile-app.css`, and the iframes are forced to `100vw` and `100vh` to feel like a native game.
+
+### 5. Offline Mode & AI Disabling
+Mobile apps cannot hit `http://localhost:3000`. To prevent the app from hanging on launch, `config.js` detects if the app is running in Capacitor. If true, it sets `liveMode: false`. 
+*   The API client immediately returns mock data instead of making network calls.
+*   AI features are temporarily disabled (since they require an internet connection to Groq).
+*   When the backend is deployed to Render, this flag will be flipped to enable full cloud sync on mobile.
 
 
 ## License
