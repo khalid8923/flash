@@ -25,11 +25,11 @@ We are looking for a Technical Co-Founder / Senior Engineer to help with archite
 
 ---
 
-## 🤖 AI System & Cognitive Intelligence
+## ðŸ¤– AI System & Cognitive Intelligence
 
 FLASH is not just a collection of games; it is a **cognitive training director**. The AI is deeply integrated into the core architecture, acting as a personalized coach, an adaptive difficulty engine, and a data analyst.
 
-### 🧠 The AI Provider Architecture
+### ðŸ§  The AI Provider Architecture
 To ensure high availability and zero downtime, we built a **Multi-Provider Router** with a Circuit Breaker pattern. If the primary provider fails, the system seamlessly falls back to the next one.
 
 | Layer | Technology | Role | Language Support |
@@ -42,7 +42,7 @@ To ensure high availability and zero downtime, we built a **Multi-Provider Route
 *   **Context Compression:** The Arabic model (`allam-2-7b`) has a strict token limit. We implemented dynamic context compression that strips redundant data and sends only the last 2 messages, ensuring fast and accurate Arabic responses without hitting the limit.
 *   **Circuit Breaker:** If a provider fails 3 times in a row, it enters a 60-second cooldown, and traffic is routed to the next provider.
 
-### 🛡️ AI Safety & L4 Validation
+### ðŸ›¡ï¸ AI Safety & L4 Validation
 Because FLASH is a scientific tool, the AI must never hallucinate or make medical claims. We built a robust **Validator Layer** that intercepts every LLM output before it reaches the user.
 
 *   **Evidence Ladder:** The AI is strictly restricted to L0-L3 (Observed, Derived, Estimated, Hypothesized). **L4 (Clinical Diagnosis) is strictly PROHIBITED.**
@@ -50,7 +50,7 @@ Because FLASH is a scientific tool, the AI must never hallucinate or make medica
 *   **Hype Filter:** Blocks over-reaching claims like "supercharge your brain" or "100% effective".
 *   **Echo Detector:** Detects if the LLM is just repeating the user's data back to them (fact-sheet echo) and forces a re-generation.
 
-### ✨ The 15 AI Features
+### âœ¨ The 15 AI Features
 The AI system is not a single endpoint; it's a suite of 15 distinct features that work together to create a personalized training experience.
 
 | # | Feature | Description | Impact |
@@ -71,11 +71,88 @@ The AI system is not a single endpoint; it's a suite of 15 distinct features tha
 | 14 | **Voice Coach** | Uses Groq's `whisper-large-v3-turbo` to allow voice-to-text interactions with the AI Coach. | Hands-free accessibility. |
 | 15 | **In-Game Nudge** | The AI sends micro-coaching nudges mid-game (e.g., "Take a breath, focus on accuracy") if it detects frustration. | Real-time intervention. |
 
-### ⚙️ AI & Adaptive Difficulty Engine
+### âš™ï¸ AI & Adaptive Difficulty Engine
 The AI doesn't just talk; it drives the core difficulty engine.
 *   **Weighted Staircase + EMA:** Every session feeds into an Exponential Moving Average model to calculate the user's "ability" and "uncertainty".
 *   **10 Reason Codes:** The engine explains *why* it promoted or demoted you (e.g., `PROMOTE_STABLE`, `DEMOTE_STRUGGLE`, `HOLD_FRUSTRATION`). The AI takes these codes and translates them into human-readable feedback.
 *   **Norms & Percentiles:** When sufficient data is collected, the AI maps the user's score to a percentile based on a normal distribution (CDF).
+
+
+## 🧠 FLASH AI System: Deep Technical Deep Dive
+
+FLASH is not a simple wrapper around an LLM. It is a **Cognitive Training Director**. The AI is not just a chatbot embedded in the UI; it is the central nervous system that drives the platform's adaptive logic, analyzes behavioral data, and generates personalized coaching. 
+
+To achieve this without incurring massive costs or sacrificing reliability, we designed a highly robust, multi-layered AI architecture.
+
+### 1. The Multi-Provider Routing Architecture
+LLM providers are notoriously unreliable (rate limits, downtime, deprecation). To guarantee 99.9% uptime, we implemented a **Multi-Provider Router** with a **Circuit Breaker** pattern and **Language-Aware Model Selection**.
+
+| Layer | Provider | Models Used | Purpose |
+|-------|----------|-------------|---------|
+| **Primary** | Groq | EN: `gpt-oss-120b`<br>AR: `allam-2-7b`<br>Fast: `gpt-oss-20b` | Extreme speed, JSON mode, primary heavy lifter. |
+| **Fallback 1** | OpenRouter | `google/gemini-2.0-flash-exp:free` | Secondary routing when Groq hits rate limits. |
+| **Fallback 2** | Google Gemini | `gemini-2.0-flash` | Tertiary fallback. |
+| **Rule Fallback** | Internal Policy | `fallback/policy.ts` | Zero-latency static responses when all LLMs fail. |
+
+**Key Technical Implementations:**
+*   **Language-Aware Routing:** The router automatically detects the user's language. For Arabic, it routes to `allam-2-7b` (SDAIA) because it natively understands Arabic nuances. For English, it uses `gpt-oss-120b`.
+*   **Context Compression (The Arabic Challenge):** The `allam-2-7b` model has a strict ~4K token limit. We built a dynamic context compressor that strips redundant data (like full session histories) and retains only the last 2 messages + a compressed summary of the user's cognitive profile. This prevents context overflow and saves tokens.
+*   **Circuit Breaker:** We track health per provider. If a provider fails 3 consecutive times, it enters a 60-second cooldown. During this time, the router skips it entirely and routes traffic to the next provider.
+
+### 2. AI Safety: The L4 Gatekeeper & Validator
+Because FLASH is a scientific instrument, we cannot allow the LLM to hallucinate medical advice. Every single AI output passes through a strict **Validator Layer** before it reaches the frontend.
+
+*   **The Evidence Ladder:** The AI is restricted to L0-L3 claims. **L4 (Clinical Claims) is strictly prohibited.**
+*   **L4 Regex Filters (EN/AR):** We block terms like ADHD, Autism, Depression, IQ, Brain Age, Diagnosis (and their Arabic equivalents like التوحد، الاكتئاب، تشخيص). 
+*   **Hype Filter:** Blocks over-reaching marketing claims like "Supercharge your brain" or "100% effective".
+*   **Echo Detector:** If the LLM just repeats the user's data back to them in a `key: value` format (Fact-sheet echo), the validator rejects the response and forces a re-generation.
+*   **Shape Validator:** Ensures the JSON output from the LLM matches the exact Zod schema expected by the frontend.
+
+### 3. The 15 AI Features (Full Breakdown)
+The AI system is a suite of micro-services. Each feature is powered by a specific prompt template, a dedicated endpoint, and a validator schema.
+
+#### A. Real-Time & Conversational
+| Feature | Endpoint | Technical Description |
+|---------|----------|-----------------------|
+| **AI Coach Chat** | `POST /ai/chat` | The central assistant ("Dr. Flash"). It fetches the user's entire cognitive snapshot before replying. |
+| **In-Game Nudge** | `POST /ai/nudge` | Injected into the game iframe. If the user makes 3 consecutive mistakes, the AI generates a micro-coaching tip (e.g., "Take a breath"). |
+| **Session Recap** | `POST /ai/recap` | Triggered immediately after a session. It feeds the accuracy, median RT, and Engine Decision to the LLM to write a 2-sentence personalized analysis. |
+| **Voice Coach** | `POST /ai/voice/chat` | Uses Groq's `whisper-large-v3-turbo` to transcribe voice input, then feeds it into the standard Chat pipeline. |
+
+#### B. Deep Analytics & Insights
+| Feature | Endpoint | Technical Description |
+|---------|----------|-----------------------|
+| **Weekly Insights** | `GET /ai/insights` | Aggregates 7 days of data. The LLM analyzes domain gaps, streak consistency, and RT trends to generate a weekly digest. |
+| **Cognitive Fingerprint** | `GET /ai/fingerprint` | Analyzes historical session data to assign the user an archetype (e.g., "Tidewatcher" — strong starts, fades late). |
+| **Predictive Coach** | `GET /ai/predictions` | Uses a weighted linear regression model to predict future performance. The AI translates these math predictions into readable advice. |
+| **Error Patterns** | `GET /ai/error-patterns` | Detects behavioral anomalies (post-error slowdown, late-session fatigue) and writes an analysis of the user's cognitive endurance. |
+| **Transfer Tracker** | `GET /ai/transfer-tracker` | Calculates Pearson correlations between domains (e.g., Memory vs. Attention). The AI explains what this overlap means for the user. |
+
+#### C. System & Content Generation
+| Feature | Endpoint | Technical Description |
+|---------|----------|-----------------------|
+| **Daily Plan (Ritual)** | `GET /ai/daily-plan` | Generates a 3-session plan (Warm-up, Main, Challenge) based on the user's current ability and fatigue levels. |
+| **Dynamic Variants** | `GET /ai/variants/*` | Generates infinite variations of game stimuli (e.g., new word lists, new matrix patterns) to prevent memorization. |
+| **Micro-Lessons** | `GET /ai/lessons` | Delivers 60-second scientifically-backed cognitive tips (e.g., "Chunking technique for memory") directly to the dashboard. |
+| **AI Lab** | `POST /ai/lab/*` | An experimental space where the user can try novel training protocols suggested by the AI based on their weakest domains. |
+| **Director Mode** | `POST /ai/director/*` | The AI takes full control of the session. It dynamically selects the next game, mode, and difficulty based on real-time performance. |
+| **AI Journal** | `POST /ai/journal/*` | A daily reflection tool. The AI summarizes the user's cognitive state and emotional journey based on the day's sessions. |
+
+### 4. The Adaptive Difficulty Engine (AI + Math)
+The AI does not operate in isolation; it feeds the core mathematical engine.
+*   **Weighted Staircase + EMA:** We use an Exponential Moving Average to calculate the user's "ability" and "uncertainty". 
+*   **The 10 Reason Codes:** When the engine promotes or demotes a user, it outputs a code. The AI translates these codes into human language.
+
+| Reason Code | Meaning | AI Translation Example |
+|-------------|---------|------------------------|
+| `PROMOTE_STABLE` | Accuracy > 85% for 2 sessions | "You've mastered this level, moving you up!" |
+| `DEMOTE_STRUGGLE` | Accuracy < 60% | "This level is too tough right now, let's rebuild momentum." |
+| `HOLD_FRUSTRATION` | 3 consecutive failures | "Take a breath, we're keeping it steady to help you recover." |
+
+### 5. Fallback Policy (Zero Downtime)
+When all 3 LLM providers fail (e.g., total network outage), the system does not break. The `fallback-policy.ts` module intercepts the error and returns a **safe, pre-written static response**.
+*   **Example:** If `/ai/chat` fails, it returns: *"The AI coach is temporarily unavailable. Your data is safe — try again in a few minutes."* (in EN/AR).
+*   **Difficulty Fallback:** If `/ai/director` fails, it defaults to `HOLD_IN_BAND` (keep the user at their current level).
 
 
 ## License
