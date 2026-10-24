@@ -25,11 +25,11 @@ We are looking for a Technical Co-Founder / Senior Engineer to help with archite
 
 ---
 
-## ÃƒÂ°Ã…Â¸Ã‚Â¤Ã¢â‚¬â€œ AI System & Cognitive Intelligence
+##  AI System & Cognitive Intelligence
 
 FLASH is not just a collection of games; it is a **cognitive training director**. The AI is deeply integrated into the core architecture, acting as a personalized coach, an adaptive difficulty engine, and a data analyst.
 
-### ÃƒÂ°Ã…Â¸Ã‚Â§Ã‚Â  The AI Provider Architecture
+###   The AI Provider Architecture
 To ensure high availability and zero downtime, we built a **Multi-Provider Router** with a Circuit Breaker pattern. If the primary provider fails, the system seamlessly falls back to the next one.
 
 | Layer | Technology | Role | Language Support |
@@ -42,7 +42,7 @@ To ensure high availability and zero downtime, we built a **Multi-Provider Route
 *   **Context Compression:** The Arabic model (`allam-2-7b`) has a strict token limit. We implemented dynamic context compression that strips redundant data and sends only the last 2 messages, ensuring fast and accurate Arabic responses without hitting the limit.
 *   **Circuit Breaker:** If a provider fails 3 times in a row, it enters a 60-second cooldown, and traffic is routed to the next provider.
 
-### ÃƒÂ°Ã…Â¸Ã¢â‚¬ÂºÃ‚Â¡ÃƒÂ¯Ã‚Â¸Ã‚Â AI Safety & L4 Validation
+###  AI Safety & L4 Validation
 Because FLASH is a scientific tool, the AI must never hallucinate or make medical claims. We built a robust **Validator Layer** that intercepts every LLM output before it reaches the user.
 
 *   **Evidence Ladder:** The AI is strictly restricted to L0-L3 (Observed, Derived, Estimated, Hypothesized). **L4 (Clinical Diagnosis) is strictly PROHIBITED.**
@@ -50,7 +50,7 @@ Because FLASH is a scientific tool, the AI must never hallucinate or make medica
 *   **Hype Filter:** Blocks over-reaching claims like "supercharge your brain" or "100% effective".
 *   **Echo Detector:** Detects if the LLM is just repeating the user's data back to them (fact-sheet echo) and forces a re-generation.
 
-### ÃƒÂ¢Ã…â€œÃ‚Â¨ The 15 AI Features
+### ¨ The 15 AI Features
 The AI system is not a single endpoint; it's a suite of 15 distinct features that work together to create a personalized training experience.
 
 | # | Feature | Description | Impact |
@@ -71,14 +71,14 @@ The AI system is not a single endpoint; it's a suite of 15 distinct features tha
 | 14 | **Voice Coach** | Uses Groq's `whisper-large-v3-turbo` to allow voice-to-text interactions with the AI Coach. | Hands-free accessibility. |
 | 15 | **In-Game Nudge** | The AI sends micro-coaching nudges mid-game (e.g., "Take a breath, focus on accuracy") if it detects frustration. | Real-time intervention. |
 
-### ÃƒÂ¢Ã…Â¡Ã¢â€žÂ¢ÃƒÂ¯Ã‚Â¸Ã‚Â AI & Adaptive Difficulty Engine
+###  AI & Adaptive Difficulty Engine
 The AI doesn't just talk; it drives the core difficulty engine.
 *   **Weighted Staircase + EMA:** Every session feeds into an Exponential Moving Average model to calculate the user's "ability" and "uncertainty".
 *   **10 Reason Codes:** The engine explains *why* it promoted or demoted you (e.g., `PROMOTE_STABLE`, `DEMOTE_STRUGGLE`, `HOLD_FRUSTRATION`). The AI takes these codes and translates them into human-readable feedback.
 *   **Norms & Percentiles:** When sufficient data is collected, the AI maps the user's score to a percentile based on a normal distribution (CDF).
 
 
-## Ã°Å¸Â§Â  FLASH AI System: Deep Technical Deep Dive
+##   FLASH AI System: Deep Technical Deep Dive
 
 FLASH is not a simple wrapper around an LLM. It is a **Cognitive Training Director**. The AI is not just a chatbot embedded in the UI; it is the central nervous system that drives the platform's adaptive logic, analyzes behavioral data, and generates personalized coaching. 
 
@@ -155,7 +155,7 @@ When all 3 LLM providers fail (e.g., total network outage), the system does not 
 *   **Difficulty Fallback:** If `/ai/director` fails, it defaults to `HOLD_IN_BAND` (keep the user at their current level).
 
 
-## ðŸ—ï¸ Backend & Database: The Engine Room
+##  Backend & Database: The Engine Room
 
 While the frontend handles the user experience, the backend is where the heavy lifting happens. FLASH is built as a **Modular Monolith** using **Fastify 5** and **TypeScript 5.6**. We chose Fastify over Express for its superior performance (3x faster routing), native TypeScript support, and schema-based validation.
 
